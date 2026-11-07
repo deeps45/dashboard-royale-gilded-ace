@@ -2,7 +2,7 @@
 
 **Dashboard:** https://deeps45.github.io/dashboard-royale-gilded-ace/
 
-**Verdict: don't replace the bottom 10.** Nine of the ten sit in the Back Forty, the lowest-traffic zone, and five are 5%-hold games that earn less per dollar played by design. Judged fairly, by coin-in per day against their own zone's median, **none** draws less play than its neighbours. A same-slot swap (M-1120 → M-5076) already failed.
+**Verdict: don't replace the bottom 10.** Nine of the ten sit in the Back Forty, the lowest-traffic zone, and five are 5%-hold games that earn less per dollar played by design. Judged by coin-in per day against their zone's median, **none** draws less play than its neighbours. A same-slot swap (M-1120 → M-5076) already failed.
 
 **Luck.** We compute each machine's exact luck standard deviation from `sum_bet_squared × payout_multiplier_variance`. The luck scores (z) across 310 machines have SD 1.09, which matches pure luck. One machine stands out: **M-1158** (z = −4.6, 3.0% hold vs 10% configured). A second, independent test explains why: it pays out on **38.6% of spins vs 31.5% configured, in every month (hit-rate z = +124)**, while every other machine is within ±3. Its payout table likely doesn't match its records, which costs about $73k a year. That's a reason to inspect, not an accusation. Any operator can run this audit monthly on meter data.
 
@@ -12,7 +12,7 @@
 
 **Players.** Card holders wagered $163.8M and lost $15.6M; the top 10% generate 66% of theo. Nothing targets heavy losers.
 
-**Model.** Six forecasters of daily coin-in were compared by rolling-origin CV inside Jan–Apr. The winner, gradient boosting, was scored once on May–Jun: MAE **$52.5k vs $218k for the flat-mean baseline (−76%)**, with an 80% interval covering 75% of days. The June promotion's lift was inside the model's noise and below its cost, so we fund no promotion. It also serves as the counterfactual for July.
+**Model.** Six forecasters of daily coin-in were compared by rolling-origin CV inside Jan–Apr. The winner, gradient boosting, was scored once on May–Jun: MAE **$52.5k vs $218k for the flat-mean baseline (−76%)**. The June promotion's lift was inside the model's noise and below its cost, so we fund no promotion. It also serves as the counterfactual for July.
 
 **Plan: $15,100. Keep $84,900.**
 
