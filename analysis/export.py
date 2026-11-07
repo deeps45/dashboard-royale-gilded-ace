@@ -47,6 +47,7 @@ out['staff']=q("""with o as (select cast(opened_at_utc - interval 13 hour as dat
 r as (select gaming_date, shift, actual_headcount techs from 'data/5_optional/shift_roster.parquet' where role='slot_tech')
 select o.shift, r.techs, count(*) n, avg(w) wait from o join r on r.gaming_date=o.gd and r.shift=o.shift group by all order by all""").round(2).to_dict('records')
 out['roster']=q("""select strftime(gaming_date,'%Y-%m') mo, shift, avg(planned_headcount) plan, avg(actual_headcount) act from 'data/5_optional/shift_roster.parquet' where role='slot_tech' group by all order by all""").round(2).to_dict('list')
+out['robust']=json.load(open('analysis/robustness.json'))
 out['events']=q("select name, event_type, start_date::varchar s, end_date::varchar e, announced_date::varchar a from 'data/4_context/events.parquet'").to_dict('records')
 out['actions']=q("select action_type_id id, name, unit_cost_cents/100.0 cost, recurring_cost_cents_per_day/100.0 rec, lead_days lead, quantity_limit lim, incompatibility_group grp from 'data/2_machine_decision/action_catalog.parquet'").to_dict('records')
 s=json.dumps(out,separators=(',',':'),default=str).replace('NaN','null'); open('docs/data.json','w').write(s); print(len(s)/1e6,'MB', len(dates), len(mids), len(banks))

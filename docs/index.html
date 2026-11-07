@@ -18,7 +18,7 @@ header{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:
 .bar{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
 .bar h1{font-size:17px;margin:0 12px 0 0}.bar label{font-size:12px;color:var(--text2);display:flex;flex-direction:column;gap:2px}
 select,input,button{font:inherit;font-size:13px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 8px}
-button{cursor:pointer}button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+button{cursor:pointer}:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 nav{max-width:1240px;margin:0 auto;padding:0 16px 8px;display:flex;gap:14px;overflow-x:auto;font-size:13px}nav a{color:var(--text2);text-decoration:none;white-space:nowrap}nav a:hover{color:var(--accent)}
 main{max-width:1240px;margin:0 auto;padding:16px}
 section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin:0 0 18px}
@@ -40,7 +40,7 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
 </style>
 </head>
 <body>
-<header>
+<a href="#main" style="position:absolute;left:-999px" onfocus="this.style.left='8px'">Skip to content</a><header>
  <div class="bar">
   <h1>🎰 Gilded Ace · Luck, Location, or a Leak?</h1>
   <label>From<input type="date" id="f0" min="2025-01-01" max="2025-06-30" value="2025-01-01"></label>
@@ -52,9 +52,9 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
   <label>Age<select id="fa"><option value="">All ages</option></select></label>
   <label>Home region<select id="fr"><option value="">All regions</option></select></label>
  </div>
- <nav><a href="#verdict">Verdict</a><a href="#q1">1 · Machines</a><a href="#leak">Leak Detector</a><a href="#q2">2 · Demand</a><a href="#q3">3 · Downtime</a><a href="#q4">4 · Players</a><a href="#q5">5 · Comps</a><a href="#model">Model</a><a href="#plan">6 · $100k plan</a><a href="#evidence">Evidence</a></nav>
+ <nav><a href="#verdict">Verdict</a><a href="#q1">1 · Machines</a><a href="#leak">Leak Detector</a><a href="#q2">2 · Demand</a><a href="#q3">3 · Downtime</a><a href="#q4">4 · Players</a><a href="#q5">5 · Comps</a><a href="#model">Model</a><a href="#plan">6 · $100k plan</a><a href="#robust">Stress tests</a><a href="#evidence">Evidence</a></nav>
 </header>
-<main>
+<main id="main">
 <section id="verdict">
  <h2>Verdict: don't replace the bottom 10. Most are victims of location and luck, and one is leaking.</h2>
  <p class="lead" id="vlead">Loading…</p>
@@ -67,8 +67,8 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
  <h2>1 · Which machines are truly underperforming?</h2>
  <p class="q">A machine's luck score (z) is (actual house win − theo) ÷ the standard deviation expected from luck alone. That standard deviation is computed exactly from each machine's <code>sum_bet_squared</code> × its game's <code>payout_multiplier_variance</code>. A score between −2 and +2 is ordinary luck. Demand is measured as theo per day on the floor: what the machine <i>should</i> earn given how much it was played, which removes luck.</p>
  <div class="grid">
-  <div><h3>Luck score vs demand: the GM's bottom 10 circled</h3><div id="c_scatter" class="chart tall"></div></div>
-  <div><h3>Luck is well-calibrated: the distribution of luck scores matches a normal curve</h3><div id="c_zhist" class="chart tall"></div></div>
+  <div><h3>Luck score vs demand: the GM's bottom 10 circled</h3><div id="c_scatter" role="img" class="chart tall"></div></div>
+  <div><h3>Luck is well-calibrated: the distribution of luck scores matches a normal curve</h3><div id="c_zhist" role="img" class="chart tall"></div></div>
  </div>
  <h3>The GM's list (lowest house win in the period) and the reason behind each</h3>
  <div class="tw"><table id="t_bottom"></table></div>
@@ -80,8 +80,8 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
  <h2>Leak Detector: two independent tests</h2>
  <p class="q">A luck score alone can't separate bad luck from a broken machine. So we add a second test that luck barely touches: <b>hit frequency</b>. Each game's <code>hit_probability</code> says what share of spins should pay something. Over ~700,000 spins, the real share should land within a fraction of a point of it. Hit-rate z = (hits − p·spins) ÷ √(p(1−p)·spins). A machine that fails <i>both</i> tests is very likely misconfigured, not unlucky. This audit uses only standard meter data, so any operator or regulator could run it monthly at no cost.</p>
  <div class="grid">
-  <div><h3>Payout luck vs hit frequency (click a dot to open it in the Luck Lens)</h3><div id="c_leak" class="chart tall"></div></div>
-  <div><h3>Luck Lens: <select id="lens"></select></h3><div id="c_lens" class="chart tall"></div><p class="ev" id="lens_txt"></p></div>
+  <div><h3>Payout luck vs hit frequency (click a dot to open it in the Luck Lens)</h3><div id="c_leak" role="img" class="chart tall"></div></div>
+  <div><h3>Luck Lens: <select id="lens"></select></h3><div id="c_lens" role="img" class="chart tall"></div><p class="ev" id="lens_txt"></p></div>
  </div>
  <p class="ev">The Luck Lens plots cumulative (house win − theo). The shaded band is ±2σ of pure luck, which widens as play accumulates. A healthy machine wanders inside it; a leak drifts out and stays out. Competing explanation, tampering: the 80 reported tampering attempts are scattered (at most 3 on any machine), and none involve M-1158. A steady 38.6% hit rate from January 1 fits a configuration or records mismatch, not an intermittent intrusion. Code: <code>analysis/hit_audit.py</code>.</p>
 </section>
@@ -89,10 +89,10 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
 <section id="q2">
  <h2>2 · What changed in demand, and why?</h2>
  <p class="q">Floor coin-in per day, with events shaded. Back Forty is the floor's weakest zone. When its entrance walkway closed for renovation (Mar 3 – Apr 7), Back Forty demand fell sharply while the rest of the floor rose: a natural experiment showing that Back Forty's results depend on foot traffic.</p>
- <div id="c_daily" class="chart"></div>
+ <div id="c_daily" role="img" class="chart"></div>
  <div class="grid">
-  <div><h3>Demand per machine-day by zone and month (theo $)</h3><div id="c_zone" class="chart"></div></div>
-  <div><h3>Walkway closure: difference-in-differences</h3><div id="c_did" class="chart"></div></div>
+  <div><h3>Demand per machine-day by zone and month (theo $)</h3><div id="c_zone" role="img" class="chart"></div></div>
+  <div><h3>Walkway closure: difference-in-differences</h3><div id="c_did" role="img" class="chart"></div></div>
  </div>
  <p class="ev" id="ev_q2"></p>
 </section>
@@ -102,11 +102,11 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
  <p class="q">Lost theo = hours unavailable × the machine's theo per available hour in the selected period. Downtime is small (availability is about 99.6%) and concentrated: Ridgeline machines fault about 3.7× as often as Halcyon machines, and overnight faults wait about twice as long for a technician. <b>The vacancies are new:</b> in April and May the day shift ran at about 0.9 techs against 1.7 planned. With 0 techs a fault waits about 4.9 hours, with 1 about 1.2–2.6 hours, and with 2 about 0.1–0.7 hours. Refilling planned shifts is free and comes first. A paid extra technician ($11,520) would save only about $1k of theo a month, so it is not funded.</p>
  <div class="tiles" id="dtiles"></div>
  <div class="grid">
-  <div><h3>Lost theo to downtime by month</h3><div id="c_down" class="chart"></div></div>
-  <div><h3>Faults per machine by manufacturer</h3><div id="c_mf" class="chart"></div></div>
-  <div><h3>Average wait for a technician by shift (hours)</h3><div id="c_wait" class="chart"></div></div>
-  <div><h3>Staffing drives repair speed: wait by techs on shift</h3><div id="c_staff" class="chart"></div></div>
-  <div><h3>Tech headcount: planned vs actual by month</h3><div id="c_roster" class="chart"></div></div>
+  <div><h3>Lost theo to downtime by month</h3><div id="c_down" role="img" class="chart"></div></div>
+  <div><h3>Faults per machine by manufacturer</h3><div id="c_mf" role="img" class="chart"></div></div>
+  <div><h3>Average wait for a technician by shift (hours)</h3><div id="c_wait" role="img" class="chart"></div></div>
+  <div><h3>Staffing drives repair speed: wait by techs on shift</h3><div id="c_staff" role="img" class="chart"></div></div>
+  <div><h3>Tech headcount: planned vs actual by month</h3><div id="c_roster" role="img" class="chart"></div></div>
  </div>
  <p class="ev">Sources: <code>machine_day.available_seconds</code> vs <code>scheduled_seconds</code> (accounts for the 23-hour DST day), and <code>operations</code> (fault_repair: opened → work_started → available). Fault charts follow the date filter but not the bank filter.</p>
 </section>
@@ -116,8 +116,8 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
  <p class="q">Loyalty-card play only, so it will not match the machine meters. Filter by tier and age above. Net is from the player's side: negative means players lost.</p>
  <div class="tiles" id="ptiles"></div>
  <div class="grid">
-  <div><h3>Wagered, paid back, and net by month</h3><div id="c_pmonth" class="chart"></div></div>
-  <div><h3>Concentration: share of theo from the top X% of players</h3><div id="c_lorenz" class="chart"></div></div>
+  <div><h3>Wagered, paid back, and net by month</h3><div id="c_pmonth" role="img" class="chart"></div></div>
+  <div><h3>Concentration: share of theo from the top X% of players</h3><div id="c_lorenz" role="img" class="chart"></div></div>
  </div>
  <p class="ev">Source: <code>player_period</code> (ratio of sums, never averaged ratios). The concentration curve uses each player's 6-month theo and ignores the date filter. Protective note: the heaviest-losing groups should be offered limit-setting tools, not more incentives.</p>
 </section>
@@ -127,8 +127,8 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
  <p class="q"><b>Yes. On May 1, 2025, the point price of every comp fell from about 12.4 to about 5.8 points per $1</b> (−53%), overnight, for every item. Points earned per $ wagered did not change. After the change, comp cost per $ of theo rose, and coin-in did not.</p>
  <div class="tiles" id="ctiles"></div>
  <div class="grid">
-  <div><h3>Points charged per $1 of comp value (daily)</h3><div id="c_ppd" class="chart"></div></div>
-  <div><h3>Comp cost as % of theo, by month</h3><div id="c_cpt" class="chart"></div></div>
+  <div><h3>Points charged per $1 of comp value (daily)</h3><div id="c_ppd" role="img" class="chart"></div></div>
+  <div><h3>Comp cost as % of theo, by month</h3><div id="c_cpt" role="img" class="chart"></div></div>
  </div>
  <p class="ev">Source: <code>loyalty_ledger</code> (redeem events: points_delta ÷ face_value) and <code>property_day.comp_cost_usd</code> (already included in POS cogs; counted once). Competing explanation: an intentional promotion. It isn't in <code>events</code>, and visits and coin-in did not rise, so either way the change was not paid for by extra play.</p>
 </section>
@@ -140,10 +140,10 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
  <div class="grid">
   <div><h3>All candidates: CV error (used to choose) vs test error (reported once)</h3><div class="tw"><table id="t_models"></table></div>
    <p class="ev">The ridge model with a trend term looked better in CV but failed on the holdout. This is why the test set isn't used to choose. Mean absolute error (MAE) is in dollars of coin-in per day.</p></div>
-  <div><h3>July 2025 forecast by weekday (selected model, refit on all 6 months)</h3><div id="c_jul" class="chart"></div></div>
+  <div><h3>July 2025 forecast by weekday (selected model, refit on all 6 months)</h3><div id="c_jul" role="img" class="chart"></div></div>
  </div>
  <h3>Actual vs forecast with an 80% interval: training, holdout, and July</h3>
- <div id="c_model" class="chart tall"></div>
+ <div id="c_model" role="img" class="chart tall"></div>
  <div class="callout"><b>How it changes decisions:</b> (1) <b>Staffing:</b> July Saturdays are forecast at about 1.6× Tuesdays. The vacant day and swing tech shifts (Section 3) should be refilled first on Fri–Sun, where each hour of downtime costs the most. (2) <b>Promotions:</b> out of sample, Locals Week added only about +$11k theo over 7 days, inside the interval and below the $15k cost, so we don't fund a promotion weekend. (3) <b>Measurement:</b> the July forecast with its interval is the counterfactual for the sign and comp tests. A real effect has to push the actual line outside the band.</p>
  <p class="ev">Code: <code>analysis/model2.py</code> (selection, conformal interval, July forecast) and <code>analysis/model.py</code> (first version). The interval is ±the 80th percentile of absolute CV residuals; it covered <span id="cov"></span> of holdout days against a nominal 80%, so treat it as slightly optimistic.</p>
 </section>
@@ -167,6 +167,14 @@ html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-pl
  <div class="tw"><table id="t_why"></table></div>
 </section>
 
+<section id="robust">
+ <h2>Stress tests: do the findings survive?</h2>
+ <p class="q">Each headline finding was attacked with a test designed to break it. Every number on this page is also re-derived from the raw tables by <code>analysis/verify.py</code> (21 assertions: money integrity, headline numbers, budget arithmetic, dashboard data completeness), and all of them pass.</p>
+ <div class="tw" style="max-height:none"><table id="t_robust"></table></div>
+ <div class="grid"><div><h3>Placebo test: the walkway effect vs 80 fake closures</h3><div id="c_placebo" role="img" class="chart"></div></div>
+ <div><h3>The GM's raw ranking is unstable: who is in the bottom 10 by period</h3><div class="tw"><table id="t_b10"></table></div><p class="ev">In Q1, 8 of the raw bottom 10 are new Center Pit machines with only 8 days on the floor. Raw totals mostly rank how long a machine has been installed. In every window, none of the listed machines draws weak play for its zone.</p></div></div>
+</section>
+
 <section id="evidence">
  <h2>Claims &amp; evidence</h2>
  <p class="q">Each claim traced to its table or query, the result, the alternative explanation we tested, and its limitation. The full appendix is in <a href="https://github.com/deeps45/dashboard-royale-gilded-ace/blob/main/APPENDIX.md">APPENDIX.md</a>.</p>
@@ -182,7 +190,7 @@ function lay(extra={}){return Object.assign({paper_bgcolor:'rgba(0,0,0,0)',plot_
  margin:{l:56,r:12,t:10,b:40},xaxis:{gridcolor:css('--grid'),zerolinecolor:css('--border'),linecolor:css('--border')},yaxis:{gridcolor:css('--grid'),zerolinecolor:css('--border'),linecolor:css('--border')},
  legend:{orientation:'h',y:1.1,x:0},hoverlabel:{bgcolor:css('--surface'),bordercolor:css('--border'),font:{color:css('--text')}}},extra)}
 const cfg={displayModeBar:false,responsive:true};
-const plot=(id,t,l)=>Plotly.react(id,t,lay(l),cfg);
+const plot=(id,t,l)=>{const el=document.getElementById(id);if(!el.getAttribute('aria-label')){const h=el.previousElementSibling||el.parentElement.querySelector('h3');el.setAttribute('aria-label',(h?h.textContent:id)+'. Values are in the tables and text nearby.')}return Plotly.react(id,t,lay(l),cfg)};
 
 fetch('data.json').then(r=>r.json()).then(d=>{D=d;init();render()}).catch(e=>{$('#vlead').textContent='Error: '+e.message+' '+(e.stack||'').split('\n')[1];console.error(e)});
 function init(){
@@ -200,7 +208,7 @@ function init(){
 }
 function clearPreset(){document.querySelectorAll('[data-p]').forEach(b=>b.classList.remove('on'))}
 function fillBanks(){const s=$('#fb');s.length=1;D.banks.forEach(([b,z])=>{if(!S.zone||z===S.zone)s.add(new Option(b+' · '+D.zones[z],b))})}
-function dayRange(){const i0=D.dates.indexOf(S.f0),i1=D.dates.indexOf(S.f1);return [i0<0?0:i0,i1<0?D.dates.length-1:i1]}
+function dayRange(){if(S.f0>S.f1){[S.f0,S.f1]=[S.f1,S.f0];$('#f0').value=S.f0;$('#f1').value=S.f1}if(S.f0<'2025-01-01')S.f0='2025-01-01';if(S.f1>'2025-06-30')S.f1='2025-06-30';const i0=D.dates.indexOf(S.f0),i1=D.dates.indexOf(S.f1);return [i0<0?0:i0,i1<0?D.dates.length-1:i1]}
 
 // ---------- machine aggregation ----------
 function machAgg(){
@@ -252,8 +260,8 @@ function render(){
  const cnt=bins.map(b=>zs.filter(z=>z>=b&&z<b+0.5).length),nc=bins.map(b=>rows.length*0.5*Math.exp(-((b+0.25)**2)/2)/Math.sqrt(2*Math.PI));
  plot('c_zhist',[{type:'bar',x:bins.map(b=>b+0.25),y:cnt,name:'Machines',marker:{color:css('--s1')},hovertemplate:'z %{x}: %{y} machines<extra></extra>'},{type:'scatter',mode:'lines',x:bins.map(b=>b+0.25),y:nc,name:'Expected if pure luck',line:{color:css('--s2'),width:2}}],
   {bargap:0.08,xaxis:{title:'Luck score z',gridcolor:css('--grid')},yaxis:{title:'Machines',gridcolor:css('--grid')}});
- table('#t_bottom',MCOLS,bottom,'hw');table('#t_all',MCOLS,filt,'z');
- renderLeak(rows);renderLens();renderDemand(rows);renderDown(filt);renderStaff();renderComps();renderPlayers();renderModel();
+ table('#t_bottom',MCOLS,bottom,'hw');if(filt.length)table('#t_all',MCOLS,filt,'z');else $('#t_all').innerHTML='<tr><td>No machines on the floor for this zone/bank in the selected period. Widen the filters.</td></tr>';
+ renderLeak(rows);renderLens();renderDemand(rows);renderDown(filt);renderStaff();renderRobust();renderComps();renderPlayers();renderModel();
 }
 function sumByDay(sel){const [a,b]=dayRange(),md=D.md,o={};for(let i=0;i<md.m.length;i++){const d=md.d[i];if(d<a||d>b)continue;if(sel&&!sel(i))continue;
  const r=o[d]||(o[d]={ci:0,th:0,n:0,lost:0,sc:0,av:0});r.ci+=md.ci[i];r.th+=md.th[i];r.n++;r.sc+=md.sc[i];r.av+=md.av[i];r.lost+=(md.sc[i]-md.av[i])*(md.av[i]>0?md.th[i]/md.av[i]:0)}return o}
@@ -315,6 +323,21 @@ function renderDown(filt){
 function renderStaff(){const st=D.staff,sh=['day','swing','grave'],cols={day:css('--s1'),swing:css('--s3'),grave:css('--s2')};
  plot('c_staff',sh.map(h=>{const r=st.filter(x=>x.shift===h);return{type:'scatter',mode:'lines+markers',name:h[0].toUpperCase()+h.slice(1),x:r.map(x=>x.techs),y:r.map(x=>x.wait),text:r.map(x=>x.n+' faults'),line:{color:cols[h],width:2},marker:{size:10},hovertemplate:'%{x} techs: %{y:.2f} h wait (%{text})<extra></extra>'}}),{xaxis:{title:'Techs actually on shift',dtick:1,gridcolor:css('--grid')},yaxis:{title:'Avg hours to start repair',gridcolor:css('--grid'),rangemode:'tozero'}});
  const R=D.roster,ms=[...new Set(R.mo)];plot('c_roster',sh.flatMap(h=>[{type:'scatter',mode:'lines',name:h+' planned',x:ms,y:ms.map(m=>R.plan[R.mo.findIndex((x,i)=>x===m&&R.shift[i]===h)]),line:{color:cols[h],dash:'dot',width:1.5},showlegend:false,hovertemplate:h+' planned %{y:.2f}<extra></extra>'},{type:'scatter',mode:'lines+markers',name:h,x:ms,y:ms.map(m=>R.act[R.mo.findIndex((x,i)=>x===m&&R.shift[i]===h)]),line:{color:cols[h],width:2},hovertemplate:h+' actual %{y:.2f}<extra></extra>'}]),{yaxis:{title:'Avg techs (dotted = planned)',gridcolor:css('--grid'),rangemode:'tozero'}});}
+function renderRobust(){const r=D.robust,pc=x=>(x>0?'+':'')+fmt(x*100,1)+'%';
+ table('#t_robust',[{k:'f',h:'Finding',l:1},{k:'t',h:'Attack',l:1},{k:'r',h:'Result',l:1},{k:'v',h:'Verdict',l:1}],[
+ {f:'Back Forty demand follows access',t:'Placebo: same diff-in-diff on '+r.did.placebo_n+' fake 34-day "closures" at other dates',r:`Real ${pc(r.did.real)}; placebos ${pc(r.did.placebo_min)} to ${pc(r.did.placebo_max)}; p < ${fmt(1/r.did.placebo_n,3)}`,v:'<span class="tag t-good">Holds</span>'},
+ {f:'Low earners are mostly unlucky',t:'Does luck persist? Correlate each machine\'s luck z in Jan–Mar vs Apr–Jun',r:`r = ${fmt(r.luck.corr_halves,2)} (${fmt(r.luck.corr_halves_excl_1158,2)} without M-1158): past luck predicts almost nothing`,v:'<span class="tag t-good">Holds</span>'},
+ {f:'Luck model is calibrated',t:'SD of luck z across 310 machines should be ≈ 1',r:`SD = ${fmt(r.luck.sd_all,3)}`,v:'<span class="tag t-good">Holds</span>'},
+ {f:'Hit-frequency test is calibrated',t:'SD of hit-rate z excluding M-1158 should be ≈ 1',r:`SD = ${fmt(r.hit.sd_excl_1158,3)}; max |z| = ${fmt(r.hit.max_abs_excl_1158,1)}`,v:'<span class="tag t-good">Holds</span>'},
+ {f:'M-1158 is misconfigured, not unlucky',t:'Is it a single bad stretch? Test each month separately',r:`Weakest month z = +${fmt(r.hit.m1158_min_month_z,0)}; luck z Q1 ${fmt(r.luck.m1158_q1,1)}, Q2 ${fmt(r.luck.m1158_q2,1)}`,v:'<span class="tag t-good">Holds</span>'},
+ {f:'M-1158 is not tampering',t:'Cross-check security_incidents',r:'80 tampering reports, max 3 per machine, 0 on M-1158',v:'<span class="tag t-good">Holds</span>'},
+ {f:'Comp price changed on May 1',t:'Is May 1 the largest break in the daily series?',r:`Largest break ${r.comp.break_date} (${fmt(r.comp.break_size,2)} pts/$); next largest ${fmt(r.comp.second_largest,2)}`,v:'<span class="tag t-good">Holds</span>'},
+ {f:'No GM-listed machine is a weak game',t:'Repeat for H1, Q1, Q2 separately',r:Object.entries(r.bottom10).map(([k,w])=>`${k}: ${w.weak_play} weak, min ${fmt(w.min_rel*100,0)}% of zone`).join(' · '),v:'<span class="tag t-good">Holds</span>'},
+ {f:'Forecast chosen fairly',t:'Choose on CV, score the holdout once; does the CV winner generalize?',r:`${D.model2.selected}: CV ${usd(D.model2.cv[D.model2.selected])} → holdout ${usd(D.model2.test[D.model2.selected])}. Ridge + trend overfit (CV ${usd(D.model2.cv['Ridge + trend'])} → ${usd(D.model2.test['Ridge + trend'])})`,v:'<span class="tag t-warn">Holds; interval covers 75% vs 80%</span>'},
+ {f:'Back Forty signs will lift demand',t:'Signs ≠ walkway; the effect size is untested',r:'Break-even at +2.6% lift; range 0–10% assumed',v:'<span class="tag t-warn">Uncertain; measured by diff-in-diff in July</span>'}],'f');
+ document.querySelectorAll('#t_robust td').forEach(td=>td.style.whiteSpace='normal');
+ plot('c_placebo',[{type:'bar',x:['Placebo windows (min→max)'],y:[r.did.placebo_max-r.did.placebo_min],base:[r.did.placebo_min*100].map(x=>x/100),marker:{color:css('--muted')},hovertemplate:'placebo range<extra></extra>',name:'80 placebos'},{type:'bar',x:['Real closure'],y:[r.did.real],marker:{color:css('--s2')},name:'Real closure',hovertemplate:'%{y:.1%}<extra></extra>'}],{yaxis:{title:'Diff-in-diff (Back Forty vs rest)',tickformat:'.0%',gridcolor:css('--grid'),zeroline:true,zerolinecolor:css('--text2')},showlegend:false,bargap:0.5});
+ table('#t_b10',[{k:'w',h:'Window',l:1},{k:'bf',h:'In Back Forty'},{k:'wk',h:'Weak play'},{k:'mr',h:'Lowest coin-in vs zone'}],Object.entries(r.bottom10).map(([w,x])=>({w,bf:x.back_forty+'/10',wk:x.weak_play,mr:fmt(x.min_rel*100,0)+'%'})),'w');}
 function renderPlayers(){
  const P=D.pp,m0=S.f0.slice(0,7),m1=S.f1.slice(0,7),mo={};let t={ci:0,po:0,th:0,cc:0,n:0,w:0,contrib:0};
  P.mo.forEach((m,i)=>{if(m<m0||m>m1||(S.tier&&P.tier[i]!==S.tier)||(S.age&&P.age[i]!==S.age)||(S.reg&&P.reg[i]!==S.reg))return;const r=mo[m]||(mo[m]={ci:0,po:0});r.ci+=P.ci[i];r.po+=P.po[i];t.ci+=P.ci[i];t.po+=P.po[i];t.th+=P.th[i];t.cc+=P.cc[i];t.n+=P.n[i];t.w+=P.nwin[i];t.contrib+=P.contrib[i]});
@@ -363,7 +386,7 @@ const WHY={'A-INSPECT':['M-1158 (fails both tests: luck z −4.6, hit-rate z +12
 function buildPlan(){const t=$('#t_plan');
  t.innerHTML='<thead><tr><th class="l">Action</th><th>Unit cost</th><th>Per day</th><th>Lead days</th><th>Limit</th><th>Quantity</th><th>Cost (July)</th></tr></thead><tbody>'+D.actions.map(a=>`<tr><td class="l">${a.name}<br><span class="t-mut">${a.id}</span></td><td>${usd(a.cost)}</td><td>${a.rec?usd(a.rec):'–'}</td><td>${a.lead}</td><td>${a.lim}</td><td><input type="number" min="0" max="${a.lim}" value="${PLAN[a.id]||0}" data-id="${a.id}"></td><td data-c="${a.id}"></td></tr>`).join('')+'</tbody>';
  t.querySelectorAll('input').forEach(i=>i.oninput=calcPlan);calcPlan();calcSim();
- table('#t_why',[{k:'a',h:'Action',l:1},{k:'t',h:'Targets & rationale',l:1},{k:'e',h:'Expected effect & uncertainty',l:1},{k:'m',h:'Measurement',l:1}],Object.entries(WHY).map(([id,[t,e,m]])=>({a:D.actions.find(x=>x.id===id).name,t,e,m})),'a');
+ table('#t_why',[{k:'a',h:'Action',l:1},{k:'t',h:'Targets & rationale',l:1},{k:'e',h:'Expected effect & uncertainty',l:1},{k:'m',h:'Measurement',l:1}],Object.entries(WHY).map(([id,[t,e,m]],o)=>({o,a:(o<3?'✅ ':'✖ ')+D.actions.find(x=>x.id===id).name,t,e,m})),'o');
  document.querySelectorAll('#t_why td').forEach(td=>td.style.whiteSpace='normal');
  const EV=[['M-1158 runs a different payout table than recorded','hit_audit.py: hit-rate z = (hits − p·spins)/√(p(1−p)·spins)','z = +124: 38.6% vs 31.5% in every month; next machine +2.8; same-game peers match','Luck: impossible at z = 124. Meter error: payouts also exceed theo (luck z −4.6), so the two tests agree','Fixed vs recorded config unknown until inspected; not evidence of wrongdoing'],['9 of the GM\'s bottom 10 are in Back Forty','prepared_daily_view: bottom 10 by SUM(house_win), grouped by zone_name','9/10 Back Forty (M-1118, retired Feb 24, is the other); zone theo/day $280 vs $497 for Center Pit','Bad machines: their coin-in/day is at or above the Back Forty median; 5 are 5%-hold games','Zone assignment uses the last location in the period; machines rarely move (4 moves)'],
   ['M-1158 pays out improbably much','machine_day ⋈ game_math: z = Σ(hw−theo)/√Σ(bet²·var)','z = −4.57, hold 3.0% vs 10%; collapsed after the Mar 10 repair','Luck: p ≈ 2e-6, still significant after a Bonferroni correction across 310 machines','Variance formula assumes independent spins; a progressive jackpot could explain it → inspect'],
@@ -377,7 +400,7 @@ function buildPlan(){const t=$('#t_plan');
 }
 function calcSim(){const p=+$('#s_p').value/100,l=+$('#s_l').value/100,cs=+$('#s_c').value/100;$('#v_p').textContent=fmt(p*100)+'%';$('#v_l').textContent=fmt(l*100,1)+'%';$('#v_c').textContent=fmt(cs*100)+'%';
  const leak=p*200*29,signs=l*49*294*20,comp=cs*0.5*3100*25/30,cost=15100,net=leak+signs+comp-cost;
- $('#simtiles').innerHTML=[[usd(leak),'expected July value: M-1158 fix'],[usd(signs),'expected July theo from Back Forty signs'],[usd(comp),'expected July comp savings'],[usd(net),'net value in July after the $15,100 cost'],[usd(p*200*365+l*49*294*365+cs*3100*12),'annual upside if every effect holds (theo, before costs; signs uncertain)']].map(([x,s])=>`<div class="tile"><b class="${s.startsWith('net')?(net>=0?'ok':'bad'):''}">${x}</b><span>${s}</span></div>`).join('');
+ $('#simtiles').innerHTML=[[usd(leak),'expected July value: M-1158 fix'],[usd(signs),'expected July theo from Back Forty signs'],[usd(comp),'expected July comp savings'],[usd(net),'net value in July after the $15,100 cost'],[usd(p*200*365+cs*3100*12),'conservative annual value: M-1158 fix + comp fix only (signs excluded until proven)']].map(([x,s])=>`<div class="tile"><b class="${s.startsWith('net')?(net>=0?'ok':'bad'):''}">${x}</b><span>${s}</span></div>`).join('');
  $('#impact').innerHTML=`<b>Real-world impact.</b> The GM's plan would spend $33,800–$220,000 replacing machines that draw normal play for their zone. Ours spends $15,100, keeps $84,900, and finds a misconfigured machine worth about $73k a year. It's caught by a two-test audit that any casino or regulator can run monthly on standard meter data, with no new hardware. The same method guards players: a machine paying <i>less</i> than its approved setting would fail the same test.`;}
 function calcPlan(){let tot=0,types=0,errs=[];const q={};
  document.querySelectorAll('#t_plan input').forEach(i=>{const a=D.actions.find(x=>x.id===i.dataset.id),n=+i.value||0;q[a.id]=n;
