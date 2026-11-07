@@ -10,7 +10,7 @@
 
 **0:55 – Downtime and comps (Sections 3 & 5).** “Downtime is small, and Ridgeline machines cause most of it. The real surprise: on May 1, the point price of every comp was cut in half overnight. Comp cost per dollar of theo went up, and play didn't.” *Demo: click the May–Jun preset.*
 
-**1:15 – Model (Model section).** “Trained on January to April, tested on May and June, with no future information. Our model cuts error by 75% versus a flat average. It showed the June promotion's lift was inside the noise, so we don't buy a $15,000 promotion weekend.”
+**1:15 – Model (Model section).** “Trained on January to April, tested on May and June, with no future information. Our model cuts error by 76% versus a flat average. It showed the June promotion's lift was inside the noise, so we don't buy a $15,000 promotion weekend.”
 
 **1:35 – Plan (Section 6).** “Our plan spends $15,100: inspect three machines, put up signs for the Back Forty, and run a randomized comp pilot. Each has a measurement plan. We keep $84,900. Drag the sliders and the plan stays positive in July. The GM's replacements would have cost $33,800 or more and fixed nothing.” *Demo: type 10 into the lease replacement quantity and show the checker flag 4 action types.*
 
