@@ -1,0 +1,8 @@
+.venv/
+data/
+reference/
+scripts/
+GUIDE.md
+*.parquet
+__pycache__/
+.DS_Store

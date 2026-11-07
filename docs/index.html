@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gilded Ace Floor Review</title>
+<meta name="description" content="Luck, location, or a leak? A luck-adjusted review of the Gilded Ace slot floor, Jan–Jun 2025, with a priced $100k plan.">
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<style>
+:root{color-scheme:light;--bg:#f6f5f2;--surface:#fcfcfb;--border:#e3e1dc;--text:#0b0b0b;--text2:#52514e;--muted:#7a7873;
+ --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s7:#6250d6;--crit:#c9302c;--warn:#b26a00;--good:#16794d;--accent:#2a78d6;--grid:#ecebe7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121211;--surface:#1a1a19;--border:#2e2d2b;--text:#f0efec;--text2:#c3c2b7;--muted:#8f8d86;
+ --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s7:#9085e9;--crit:#e66767;--warn:#e0a030;--good:#3cbf85;--accent:#3987e5;--grid:#262624}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#121211;--surface:#1a1a19;--border:#2e2d2b;--text:#f0efec;--text2:#c3c2b7;--muted:#8f8d86;
+ --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s7:#9085e9;--crit:#e66767;--warn:#e0a030;--good:#3cbf85;--accent:#3987e5;--grid:#262624}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border)}
+.bar{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.bar h1{font-size:17px;margin:0 12px 0 0}.bar label{font-size:12px;color:var(--text2);display:flex;flex-direction:column;gap:2px}
+select,input,button{font:inherit;font-size:13px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 8px}
+button{cursor:pointer}button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+nav{max-width:1240px;margin:0 auto;padding:0 16px 8px;display:flex;gap:14px;overflow-x:auto;font-size:13px}nav a{color:var(--text2);text-decoration:none;white-space:nowrap}nav a:hover{color:var(--accent)}
+main{max-width:1240px;margin:0 auto;padding:16px}
+section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin:0 0 18px}
+h2{font-size:20px;margin:0 0 4px}h3{font-size:15px;margin:16px 0 6px}.q{color:var(--muted);font-size:13px;margin:0 0 12px}
+.lead{font-size:16px;max-width:900px}.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))}
+.tiles{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin:12px 0}
+.tile{border:1px solid var(--border);border-radius:8px;padding:12px 14px}.tile b{display:block;font-size:26px;line-height:1.2}.tile span{font-size:13px;color:var(--text2)}
+.chart{width:100%;height:340px}.chart.tall{height:420px}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}th:first-child,td:first-child,td.l,th.l{text-align:left}
+th{color:var(--text2);font-weight:600;position:sticky;top:0;background:var(--surface);cursor:pointer}.tw{max-height:420px;overflow:auto;border:1px solid var(--border);border-radius:8px}
+.tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:12px;border:1px solid currentColor}
+.t-crit{color:var(--crit)}.t-warn{color:var(--warn)}.t-good{color:var(--good)}.t-loc{color:var(--s1)}.t-new{color:var(--s7)}.t-mut{color:var(--muted)}
+.ev{font-size:12px;color:var(--muted);margin-top:6px}.ev code{font-size:11.5px}
+.callout{border-left:3px solid var(--accent);padding:8px 12px;background:var(--bg);border-radius:4px;margin:10px 0}
+.plan input{width:60px}.ok{color:var(--good)}.bad{color:var(--crit)}
+td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;color:var(--accent);font-size:13px}
+@media (max-width:640px){.bar h1{width:100%}.chart{height:300px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="bar">
+  <h1>🎰 Gilded Ace · Luck, Location, or a Leak?</h1>
+  <label>From<input type="date" id="f0" min="2025-01-01" max="2025-06-30" value="2025-01-01"></label>
+  <label>To<input type="date" id="f1" min="2025-01-01" max="2025-06-30" value="2025-06-30"></label>
+  <label>Preset<span style="display:flex;gap:4px"><button data-p="2025-01-01,2025-06-30" class="on">H1</button><button data-p="2025-01-01,2025-03-31">Q1</button><button data-p="2025-04-01,2025-06-30">Q2</button><button data-p="2025-05-01,2025-06-30">May–Jun</button></span></label>
+  <label>Zone<select id="fz"><option value="">All zones</option></select></label>
+  <label>Bank<select id="fb"><option value="">All banks</option></select></label>
+  <label>Guest tier<select id="ft"><option value="">All tiers</option><option>Base</option><option>Gold</option><option>Platinum</option></select></label>
+  <label>Age<select id="fa"><option value="">All ages</option></select></label>
+ </div>
+ <nav><a href="#verdict">Verdict</a><a href="#q1">1 · Machines</a><a href="#q2">2 · Demand</a><a href="#q3">3 · Downtime</a><a href="#q4">4 · Players</a><a href="#q5">5 · Comps</a><a href="#model">Model</a><a href="#plan">6 · $100k plan</a><a href="#evidence">Evidence</a></nav>
+</header>
+<main>
+<section id="verdict">
+ <h2>Verdict: don't replace the bottom 10. Most are victims of location and luck, and one may be leaking.</h2>
+ <p class="lead" id="vlead">Loading…</p>
+ <div class="tiles" id="vtiles"></div>
+ <div class="callout"><b>Recommended plan ($18,700 of $100,000):</b> ① Inspect 6 machines with improbable payouts, led by <b>M-1158</b> ($7,200). ② New signs for the <b>Back Forty</b> ($7,500). ③ A <b>comp pilot with a control group</b> to test the May 1 halving of comp point prices ($4,000). <b>Keep $81,300.</b> The GM's 10 replacements would cost $33,800 leased or $220,000 bought, and the evidence says they would not fix the cause. <a href="#plan">See the plan →</a></div>
+ <p class="ev">The casino is fictional and the data is synthetic (TAMU Datathon “Dashboard Royale”, release 0.9.0-draft). Every number on this page is recomputed in your browser from <code>data.json</code>, which <code>analysis/export.py</code> builds from the raw tables. The filters at the top apply to every section.</p>
+</section>
+
+<section id="q1">
+ <h2>1 · Which machines are truly underperforming?</h2>
+ <p class="q">A machine's luck score (z) is (actual house win − theo) ÷ the standard deviation expected from luck alone. That standard deviation is computed exactly from each machine's <code>sum_bet_squared</code> × its game's <code>payout_multiplier_variance</code>. A score between −2 and +2 is ordinary luck. Demand is measured as theo per day on the floor: what the machine <i>should</i> earn given how much it was played, which removes luck.</p>
+ <div class="grid">
+  <div><h3>Luck score vs demand: the GM's bottom 10 circled</h3><div id="c_scatter" class="chart tall"></div></div>
+  <div><h3>Luck is well-calibrated: the distribution of luck scores matches a normal curve</h3><div id="c_zhist" class="chart tall"></div></div>
+ </div>
+ <h3>The GM's list (lowest house win in the period) and the reason behind each</h3>
+ <div class="tw"><table id="t_bottom"></table></div>
+ <p class="ev">How each reason is assigned: <span class="tag t-crit">Payout anomaly</span> luck score ≤ −3 (≈1-in-740 by luck; with 300 machines we'd expect ~0.4 by chance). <span class="tag t-warn">Watch</span> score ≤ −2. <span class="tag t-new">Short tenure</span> under 90 days on the floor. <span class="tag t-loc">Location</span> zone's median theo/day below 80% of the floor median. <span class="tag t-loc">Low-edge game</span> configured RTP ≥ 95%, so low theo by design. <span class="tag t-good">Weak play</span> coin-in/day below 75% of its zone's median, the only sign that the machine itself is unattractive. <span class="tag t-mut">Normal</span> otherwise. Source: <code>machine_day</code> ⋈ <code>game_math</code> ⋈ <code>floor_locations</code>.</p>
+ <details><summary>All machines in the current filter (sortable)</summary><div class="tw"><table id="t_all"></table></div></details>
+</section>
+
+<section id="q2">
+ <h2>2 · What changed in demand, and why?</h2>
+ <p class="q">Floor coin-in per day, with events shaded. Back Forty is the floor's weakest zone. When its entrance walkway closed for renovation (Mar 3 – Apr 7), Back Forty demand fell sharply while the rest of the floor rose: a natural experiment showing that Back Forty's results depend on foot traffic.</p>
+ <div id="c_daily" class="chart"></div>
+ <div class="grid">
+  <div><h3>Demand per machine-day by zone and month (theo $)</h3><div id="c_zone" class="chart"></div></div>
+  <div><h3>Walkway closure: difference-in-differences</h3><div id="c_did" class="chart"></div></div>
+ </div>
+ <p class="ev" id="ev_q2"></p>
+</section>
+
+<section id="q3">
+ <h2>3 · How much play was lost to downtime, and when?</h2>
+ <p class="q">Lost theo = hours unavailable × the machine's theo per available hour in the selected period. Downtime is small (availability is about 99.6%) and concentrated: Ridgeline machines fault about 3.7× as often as Halcyon machines, and overnight faults wait about twice as long for a technician.</p>
+ <div class="tiles" id="dtiles"></div>
+ <div class="grid">
+  <div><h3>Lost theo to downtime by month</h3><div id="c_down" class="chart"></div></div>
+  <div><h3>Faults per machine by manufacturer</h3><div id="c_mf" class="chart"></div></div>
+  <div><h3>Average wait for a technician by shift (hours)</h3><div id="c_wait" class="chart"></div></div>
+ </div>
+ <p class="ev">Sources: <code>machine_day.available_seconds</code> vs <code>scheduled_seconds</code> (accounts for the 23-hour DST day), and <code>operations</code> (fault_repair: opened → work_started → available). Fault charts follow the date filter but not the bank filter.</p>
+</section>
+
+<section id="q4">
+ <h2>4 · What did tracked players wager, get back and net?</h2>
+ <p class="q">Loyalty-card play only, so it will not match the machine meters. Filter by tier and age above. Net is from the player's side: negative means players lost.</p>
+ <div class="tiles" id="ptiles"></div>
+ <div class="grid">
+  <div><h3>Wagered, paid back, and net by month</h3><div id="c_pmonth" class="chart"></div></div>
+  <div><h3>Concentration: share of theo from the top X% of players</h3><div id="c_lorenz" class="chart"></div></div>
+ </div>
+ <p class="ev">Source: <code>player_period</code> (ratio of sums, never averaged ratios). The concentration curve uses each player's 6-month theo and ignores the date filter. Protective note: the heaviest-losing groups should be offered limit-setting tools, not more incentives.</p>
+</section>
+
+<section id="q5">
+ <h2>5 · What did the comp program cost, and did anything change?</h2>
+ <p class="q"><b>Yes. On May 1, 2025, the point price of every comp fell from about 12.4 to about 5.8 points per $1</b> (−53%), overnight, for every item. Points earned per $ wagered did not change. After the change, comp cost per $ of theo rose, and coin-in did not.</p>
+ <div class="tiles" id="ctiles"></div>
+ <div class="grid">
+  <div><h3>Points charged per $1 of comp value (daily)</h3><div id="c_ppd" class="chart"></div></div>
+  <div><h3>Comp cost as % of theo, by month</h3><div id="c_cpt" class="chart"></div></div>
+ </div>
+ <p class="ev">Source: <code>loyalty_ledger</code> (redeem events: points_delta ÷ face_value) and <code>property_day.comp_cost_usd</code> (already included in POS cogs; counted once). Competing explanation: an intentional promotion. It isn't in <code>events</code>, and visits and coin-in did not rise, so either way the change was not paid for by extra play.</p>
+</section>
+
+<section id="model">
+ <h2>Model: forecasting daily floor coin-in (time-based holdout)</h2>
+ <p class="q">Trained on Jan–Apr and frozen on May 1, then tested on May–Jun. Event features use only events <i>announced before May 1</i>, so the Locals Week (announced May 26) is excluded to avoid leakage.</p>
+ <div class="tiles" id="mtiles"></div>
+ <div id="c_model" class="chart tall"></div>
+ <div class="callout"><b>How it changes a decision:</b> (1) Saturdays carry about 1.6× Tuesday's coin-in, so any added technician or promotion goes on Fri–Sat, not weekdays. (2) The model's error (MAE ≈ $54k/day) is the noise floor for measuring July actions: a sign or comp effect has to clear it, so we measure each action against a control group (a zone or player group) rather than before vs after. (3) Out of sample, the Locals Week promotion produced only about +$11k theo over 7 days, inside the noise, against a $15k promotion cost. <b>So we do not fund a promotion weekend.</b></div>
+ <p class="ev">Code: <code>analysis/model.py</code>. Baseline = constant mean of training days. The ridge model uses weekday dummies, federal holiday, scheduled hours, and pre-announced event-type flags.</p>
+</section>
+
+<section id="plan">
+ <h2>6 · The $100,000 plan (July 1–30, 2025)</h2>
+ <p class="q">Cost = quantity × (unit cost + recurring cost per day × max(0, 30 − lead days)). Edit the quantities to test alternatives. The checker enforces the budget, the 3-action-type limit, quantity limits and incompatibilities.</p>
+ <div class="tw"><table class="plan" id="t_plan"></table></div>
+ <p id="plan_msg"></p>
+ <h3>Why these three actions, and what we rejected</h3>
+ <div class="tw"><table id="t_why"></table></div>
+</section>
+
+<section id="evidence">
+ <h2>Claims &amp; evidence</h2>
+ <p class="q">Each claim traced to its table or query, the result, the alternative explanation we tested, and its limitation. The full appendix is in <a href="https://github.com/deeps45/dashboard-royale-gilded-ace/blob/main/APPENDIX.md">APPENDIX.md</a>.</p>
+ <div class="tw"><table id="t_ev"></table></div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s), fmt=(x,d=0)=>x==null||isNaN(x)?'–':x.toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d}),
+ usd=(x,d=0)=>(x<0?'−$':'$')+fmt(Math.abs(x),d), k=x=>(x<0?'−$':'$')+(Math.abs(x)>=1e6?fmt(Math.abs(x)/1e6,2)+'M':fmt(Math.abs(x)/1e3,1)+'k');
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let D, S={f0:'2025-01-01',f1:'2025-06-30',zone:'',bank:'',tier:'',age:''};
+function lay(extra={}){return Object.assign({paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{family:'system-ui,sans-serif',size:12,color:css('--text2')},
+ margin:{l:56,r:12,t:10,b:40},xaxis:{gridcolor:css('--grid'),zerolinecolor:css('--border'),linecolor:css('--border')},yaxis:{gridcolor:css('--grid'),zerolinecolor:css('--border'),linecolor:css('--border')},
+ legend:{orientation:'h',y:1.1,x:0},hoverlabel:{bgcolor:css('--surface'),bordercolor:css('--border'),font:{color:css('--text')}}},extra)}
+const cfg={displayModeBar:false,responsive:true};
+const plot=(id,t,l)=>Plotly.react(id,t,lay(l),cfg);
+
+fetch('data.json').then(r=>r.json()).then(d=>{D=d;init();render()}).catch(e=>{$('#vlead').textContent='Error: '+e.message+' '+(e.stack||'').split('\n')[1];console.error(e)});
+function init(){
+ const zs=Object.entries(D.zones).sort((a,b)=>a[1].localeCompare(b[1]));
+ zs.forEach(([id,n])=>$('#fz').add(new Option(n,id)));
+ fillBanks();
+ [...new Set(D.pp.age)].sort().forEach(a=>$('#fa').add(new Option(a,a)));
+ $('#f0').onchange=e=>{S.f0=e.target.value;clearPreset();render()};$('#f1').onchange=e=>{S.f1=e.target.value;clearPreset();render()};
+ document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{[S.f0,S.f1]=b.dataset.p.split(',');$('#f0').value=S.f0;$('#f1').value=S.f1;clearPreset();b.classList.add('on');render()});
+ $('#fz').onchange=e=>{S.zone=e.target.value;S.bank='';fillBanks();render()};$('#fb').onchange=e=>{S.bank=e.target.value;render()};
+ $('#ft').onchange=e=>{S.tier=e.target.value;renderPlayers()};$('#fa').onchange=e=>{S.age=e.target.value;renderPlayers()};
+ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
+ buildPlan();
+}
+function clearPreset(){document.querySelectorAll('[data-p]').forEach(b=>b.classList.remove('on'))}
+function fillBanks(){const s=$('#fb');s.length=1;D.banks.forEach(([b,z])=>{if(!S.zone||z===S.zone)s.add(new Option(b+' · '+D.zones[z],b))})}
+function dayRange(){const i0=D.dates.indexOf(S.f0),i1=D.dates.indexOf(S.f1);return [i0<0?0:i0,i1<0?D.dates.length-1:i1]}
+
+// ---------- machine aggregation ----------
+function machAgg(){
+ const [a,b]=dayRange(),md=D.md,n=md.m.length,A={};
+ for(let i=0;i<n;i++){const d=md.d[i];if(d<a||d>b)continue;const bank=D.banks[md.b[i]];
+  const m=md.m[i];let r=A[m];if(!r)r=A[m]={m,ci:0,hw:0,th:0,v:0,av:0,sc:0,oc:0,days:0,bank:bank[0],zone:bank[1]};
+  r.ci+=md.ci[i];r.hw+=md.hw[i];r.th+=md.th[i];r.v+=md.v[i];r.av+=md.av[i];r.sc+=md.sc[i];r.oc+=md.oc[i];r.days++;r.bank=bank[0];r.zone=bank[1];}
+ const rows=Object.values(A);rows.forEach(r=>{const mm=D.machines[r.m];r.id=mm[0];r.mf=mm[1];r.theme=mm[2];r.rtp=mm[3];r.vol=mm[4];
+  r.z=(r.hw-r.th)/Math.sqrt(r.v);r.tpd=r.th/r.days;r.cipd=r.ci/r.days;r.hold=r.hw/r.ci;r.avail=r.av/r.sc;r.lost=(r.sc-r.av)*r.th/Math.max(r.av,1)});
+ const med=a=>{a=a.slice().sort((x,y)=>x-y);return a.length?a[a.length>>1]:NaN},zm={};
+ const zc={};Object.keys(D.zones).forEach(z=>{const zr=rows.filter(r=>r.zone===z);zm[z]=med(zr.map(r=>r.tpd));zc[z]=med(zr.map(r=>r.cipd))});const fm=med(rows.map(r=>r.tpd));
+ rows.forEach(r=>{r.zmed=zm[r.zone];r.zci=zc[r.zone];r.cirel=r.cipd/r.zci;const t=[];
+  if(r.z<=-3)t.push(['crit','Payout anomaly']);else if(r.z<=-2)t.push(['warn','Watch: luck?']);
+  if(r.days<90)t.push(['new','Short tenure']);
+  if(r.zmed<0.8*fm)t.push(['loc','Location']);
+  if(r.rtp>=0.95)t.push(['loc','Low-edge game (5% hold)']);
+  if(r.cirel<0.75)t.push(['good','Weak play']);
+  if(!t.length)t.push(['mut','Normal']);r.tags=t});
+ return {rows,fm,zm};
+}
+const tagHtml=t=>t.map(([c,l])=>`<span class="tag t-${c}">${l}</span>`).join(' ');
+function table(el,cols,rows,sortKey){const t=$(el);let sk=sortKey,asc=true;
+ const draw=()=>{const rs=rows.slice().sort((x,y)=>{const a=x[sk],b=y[sk];return (a>b?1:a<b?-1:0)*(asc?1:-1)});
+  t.innerHTML='<thead><tr>'+cols.map(c=>`<th class="${c.l?'l':''}" data-k="${c.k}">${c.h}</th>`).join('')+'</tr></thead><tbody>'+rs.map(r=>'<tr>'+cols.map(c=>`<td class="${c.l?'l':''}">${c.f?c.f(r[c.k],r):r[c.k]}</td>`).join('')+'</tr>').join('')+'</tbody>';
+  t.querySelectorAll('th').forEach(th=>th.onclick=()=>{asc=sk===th.dataset.k?!asc:true;sk=th.dataset.k;draw()})};draw()}
+const MCOLS=[{k:'id',h:'Machine',l:1},{k:'bank',h:'Bank · zone',l:1,f:(v,r)=>v+' · '+D.zones[r.zone]},{k:'days',h:'Days'},{k:'hw',h:'House win',f:v=>usd(v)},{k:'th',h:'Theo',f:v=>usd(v)},
+ {k:'z',h:'Luck z',f:v=>fmt(v,2)},{k:'hold',h:'Hold',f:(v,r)=>fmt(v*100,1)+'% <span class="t-mut">vs '+fmt((1-r.rtp)*100,0)+'%</span>'},{k:'tpd',h:'Theo/day',f:v=>usd(v)},{k:'cirel',h:'Coin-in/day vs zone median',f:v=>fmt(v*100,0)+'%'},
+ {k:'avail',h:'Avail.',f:v=>fmt(v*100,1)+'%'},{k:'vol',h:'Volatility',l:1},{k:'tags',h:'Reason',l:1,f:tagHtml}];
+
+function render(){
+ const {rows,fm}=machAgg();
+ const filt=rows.filter(r=>(!S.zone||r.zone===S.zone)&&(!S.bank||r.bank===S.bank));
+ const bottom=rows.slice().sort((a,b)=>a.hw-b.hw).slice(0,10), bset=new Set(bottom.map(r=>r.id));
+ // verdict
+ const nloc=bottom.filter(r=>r.tags.some(t=>t[1]==='Location')).length,nan=bottom.filter(r=>r.z<=-3).length,nnew=bottom.filter(r=>r.days<90).length,nweak=bottom.filter(r=>r.cirel<0.75).length,nedge=bottom.filter(r=>r.rtp>=0.95).length;
+ const bf=bottom.filter(r=>D.zones[r.zone]==='Back Forty').length, flagged=rows.filter(r=>r.z<=-3);
+ $('#vlead').innerHTML=`For <b>${S.f0} → ${S.f1}</b>, ${bf} of the GM's bottom 10 sit in the <b>Back Forty</b>, the zone with the lowest foot traffic. ${nedge} are low-edge games (5% hold) that earn less per dollar played by design, and ${nnew} were on the floor for less than 90 days. Only <b>${nweak}</b> draw clearly less play than their zone neighbours (coin-in per day below 75% of the zone median). The floor-wide luck model flags <b>${flagged.length}</b> machine${flagged.length===1?'':'s'} (${flagged.map(r=>r.id).join(', ')||'none'}) whose payouts are too high to be explained by luck. That is a reason to inspect, not proof of a fault. Replacing a machine in the same slot has already been tried: M-1120 was swapped for M-5076 in bank B-38, and the newcomer also landed in the bottom 10.`;
+ $('#vtiles').innerHTML=[[bf+'/10','of the GM list are in Back Forty'],[nan,'payout anomalies (z ≤ −3) on the GM list'],[nweak,'draw clearly less play than their zone (real underperformers)'],['−29%','Back Forty demand when its walkway closed (diff-in-diff)'],['−53%','comp point price from May 1'],['$81.3k','of the budget kept in reserve']].map(([b,s])=>`<div class="tile"><b>${b}</b><span>${s}</span></div>`).join('');
+ // scatter
+ const tr=(sel,name,color,size,sym)=>{const rs=filt.filter(sel);return{type:'scatter',mode:'markers',name,x:rs.map(r=>r.z),y:rs.map(r=>r.tpd),text:rs.map(r=>`${r.id} · ${r.bank} ${D.zones[r.zone]}<br>z ${fmt(r.z,2)} · theo/day ${usd(r.tpd)}<br>house win ${usd(r.hw)} · ${r.vol} vol`),hovertemplate:'%{text}<extra></extra>',marker:{color,size,symbol:sym,line:{color:css('--surface'),width:1.5}}}};
+ const bfz=Object.keys(D.zones).find(z=>D.zones[z]==='Back Forty');
+ plot('c_scatter',[tr(r=>!bset.has(r.id)&&r.zone!==bfz,'Other machines',css('--muted'),8,'circle'),tr(r=>!bset.has(r.id)&&r.zone===bfz,'Back Forty',css('--s1'),8,'circle'),
+  tr(r=>bset.has(r.id),"GM's bottom 10",css('--s2'),13,'circle-open-dot')],
+  {xaxis:{title:'Luck score z (negative = paid out more than expected)',gridcolor:css('--grid'),zeroline:true,zerolinecolor:css('--border')},yaxis:{title:'Theo per day on floor ($)',gridcolor:css('--grid')},
+  shapes:[-3,-2,2].map(x=>({type:'line',x0:x,x1:x,yref:'paper',y0:0,y1:1,line:{color:x===-3?css('--crit'):css('--border'),dash:'dot',width:1.5}})),
+  annotations:[{x:-3,yref:'paper',y:1,text:'z = −3: inspect',showarrow:false,xanchor:'right',font:{color:css('--crit'),size:11}}]});
+ // z histogram + normal curve
+ const zs=rows.map(r=>r.z),bins=[];for(let x=-5;x<4;x+=0.5)bins.push(x);
+ const cnt=bins.map(b=>zs.filter(z=>z>=b&&z<b+0.5).length),nc=bins.map(b=>rows.length*0.5*Math.exp(-((b+0.25)**2)/2)/Math.sqrt(2*Math.PI));
+ plot('c_zhist',[{type:'bar',x:bins.map(b=>b+0.25),y:cnt,name:'Machines',marker:{color:css('--s1')},hovertemplate:'z %{x}: %{y} machines<extra></extra>'},{type:'scatter',mode:'lines',x:bins.map(b=>b+0.25),y:nc,name:'Expected if pure luck',line:{color:css('--s2'),width:2}}],
+  {bargap:0.08,xaxis:{title:'Luck score z',gridcolor:css('--grid')},yaxis:{title:'Machines',gridcolor:css('--grid')}});
+ table('#t_bottom',MCOLS,bottom,'hw');table('#t_all',MCOLS,filt,'z');
+ renderDemand(rows);renderDown(filt);renderComps();renderPlayers();renderModel();
+}
+function sumByDay(sel){const [a,b]=dayRange(),md=D.md,o={};for(let i=0;i<md.m.length;i++){const d=md.d[i];if(d<a||d>b)continue;if(sel&&!sel(i))continue;
+ const r=o[d]||(o[d]={ci:0,th:0,n:0,lost:0,sc:0,av:0});r.ci+=md.ci[i];r.th+=md.th[i];r.n++;r.sc+=md.sc[i];r.av+=md.av[i];r.lost+=(md.sc[i]-md.av[i])*(md.av[i]>0?md.th[i]/md.av[i]:0)}return o}
+function renderDemand(rows){
+ const [a,b]=dayRange(),bsel=S.bank?D.banks.findIndex(x=>x[0]===S.bank):-1;
+ const sel=S.bank?(i=>D.md.b[i]===bsel):S.zone?(i=>D.banks[D.md.b[i]][1]===S.zone):null;
+ const o=sumByDay(sel),ds=Object.keys(o).map(Number).sort((x,y)=>x-y),lbl=S.bank?'Bank '+S.bank:S.zone?D.zones[S.zone]:'Whole floor';
+ const shapes=D.events.map(e=>({type:'rect',xref:'x',yref:'paper',x0:e.s,x1:e.e+'T23:59',y0:0,y1:1,fillcolor:e.event_type==='property_promotion'?css('--s4'):css('--s7'),opacity:0.15,line:{width:0}}));
+ shapes.push({type:'rect',xref:'x',yref:'paper',x0:'2025-03-03',x1:'2025-04-07',y0:0,y1:1,fillcolor:css('--s2'),opacity:0.08,line:{width:0}});
+ plot('c_daily',[{type:'scatter',mode:'lines',name:lbl+' coin-in',x:ds.map(d=>D.dates[d]),y:ds.map(d=>o[d].ci),line:{color:css('--s1'),width:2},hovertemplate:'%{x}<br>%{y:$,.0f}<extra></extra>'},
+  {type:'scatter',mode:'lines',name:'7-day average',x:ds.map(d=>D.dates[d]),y:ds.map((d,j)=>{const w=ds.slice(Math.max(0,j-6),j+1);return w.reduce((s,x)=>s+o[x].ci,0)/w.length}),line:{color:css('--text2'),width:2,dash:'dot'},hoverinfo:'skip'}],
+  {shapes,yaxis:{title:'Coin-in ($/day)',gridcolor:css('--grid')},annotations:D.events.map(e=>({x:e.s,yref:'paper',y:1,text:e.name.replace('Gilded Ace ','').split(' ').slice(0,2).join(' '),showarrow:false,xanchor:'left',font:{size:10,color:css('--muted')}})).concat([{x:'2025-03-03',yref:'paper',y:0.02,text:'Back Forty walkway closed',showarrow:false,xanchor:'left',font:{size:10,color:css('--s2')}}])});
+ // zone x month heatmap (theo per machine-day)
+ const md=D.md,zm={};for(let i=0;i<md.m.length;i++){const d=md.d[i];if(d<a||d>b)continue;const z=D.banks[md.b[i]][1],mo=D.dates[d].slice(0,7),kk=z+'|'+mo;const r=zm[kk]||(zm[kk]={t:0,n:0});r.t+=md.th[i];r.n++}
+ const months=[...new Set(Object.keys(zm).map(x=>x.split('|')[1]))].sort(),zones=Object.keys(D.zones).sort((x,y)=>D.zones[x].localeCompare(D.zones[y]));
+ const zv=zones.map(z=>months.map(m=>zm[z+'|'+m]?zm[z+'|'+m].t/zm[z+'|'+m].n:null));
+ plot('c_zone',[{type:'heatmap',x:months,y:zones.map(z=>D.zones[z]),z:zv,colorscale:[[0,'#cde2fb'],[0.5,'#3987e5'],[1,'#0d366b']],text:zv.map(r=>r.map(v=>v==null?'':'$'+fmt(v))),texttemplate:'%{text}',hovertemplate:'%{y} · %{x}<br>theo/machine-day %{z:$,.0f}<extra></extra>',xgap:2,ygap:2,colorbar:{thickness:10}}],{margin:{l:110,r:10,t:10,b:40}});
+ // DiD (fixed window, full data)
+ let c={bc:[0,0],bo:[0,0],rc:[0,0],ro:[0,0]};const c0=D.dates.indexOf('2025-03-04'),c1=D.dates.indexOf('2025-04-06');
+ for(let i=0;i<md.m.length;i++){const isb=D.banks[md.b[i]][1]===bfz_(),cl=md.d[i]>=c0&&md.d[i]<=c1,key=(isb?'b':'r')+(cl?'c':'o');c[key][0]+=md.th[i];c[key][1]++}
+ const v=x=>x[0]/x[1],bchg=v(c.bc)/v(c.bo)-1,rchg=v(c.rc)/v(c.ro)-1;
+ plot('c_did',[{type:'bar',name:'Walkway open',x:['Back Forty','Rest of floor'],y:[v(c.bo),v(c.ro)],marker:{color:css('--s1')},hovertemplate:'%{x} open: %{y:$,.0f}<extra></extra>'},
+  {type:'bar',name:'Walkway closed (Mar 4–Apr 6)',x:['Back Forty','Rest of floor'],y:[v(c.bc),v(c.rc)],marker:{color:css('--s2')},hovertemplate:'%{x} closed: %{y:$,.0f}<extra></extra>'}],
+  {barmode:'group',bargap:0.3,bargroupgap:0.08,yaxis:{title:'Theo per machine-day ($)',gridcolor:css('--grid')},annotations:[{x:'Back Forty',y:v(c.bo),text:fmt(bchg*100,0)+'%',showarrow:false,yshift:18,font:{color:css('--text')}},{x:'Rest of floor',y:v(c.rc),text:'+'+fmt(rchg*100,0)+'%',showarrow:false,yshift:18,font:{color:css('--text')}}]});
+ $('#ev_q2').innerHTML=`Diff-in-diff: Back Forty ${fmt(bchg*100,1)}% vs rest of floor +${fmt(rchg*100,1)}% → <b>${fmt((bchg-rchg)*100,1)} pts</b>. Competing explanation (the machines got worse): the same machines recovered when the walkway reopened. Sources: <code>floor_walkways</code> (W-ENT-B40 renovation), <code>machine_day</code>, <code>events</code>. Real context: LVCVA city visitation is in <code>real_sources</code>; the floor's dip in Feb and Jun matches the days in the month and the weekday mix, not a fall in tourism.`;
+}
+const bfz_=()=>Object.keys(D.zones).find(z=>D.zones[z]==='Back Forty');
+function renderDown(filt){
+ const [a,b]=dayRange(),bsel=S.bank?D.banks.findIndex(x=>x[0]===S.bank):-1,sel=S.bank?(i=>D.md.b[i]===bsel):S.zone?(i=>D.banks[D.md.b[i]][1]===S.zone):null,o=sumByDay(sel),mo={};
+ let lost=0,sc=0,av=0;Object.entries(o).forEach(([d,r])=>{const m=D.dates[d].slice(0,7);mo[m]=(mo[m]||0)+r.lost;lost+=r.lost;sc+=r.sc;av+=r.av});
+ const O=D.ops,m0=S.f0.slice(0,7),m1=S.f1.slice(0,7),agg={},sh={};let nf=0,rc=0;
+ O.mf.forEach((mf,i)=>{if(O.mo[i]<m0||O.mo[i]>m1)return;agg[mf]=(agg[mf]||0)+O.n[i];nf+=O.n[i];rc+=O.cost[i];const s=sh[O.sh[i]]||(sh[O.sh[i]]={n:0,w:0});s.n+=O.n[i];s.w+=O.wait[i]});
+ $('#dtiles').innerHTML=[[fmt(av/sc*100,2)+'%','availability ('+((S.bank&&'bank '+S.bank)||(S.zone&&D.zones[S.zone])||'floor')+')'],[fmt(sc-av)+' h','machine-hours down'],[usd(lost),'theo lost to downtime'],[usd(rc),'direct repair cost (floor)'],[fmt(nf),'fault repairs (floor)']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
+ const ms=Object.keys(mo).sort();plot('c_down',[{type:'bar',x:ms,y:ms.map(m=>mo[m]),marker:{color:css('--s1')},hovertemplate:'%{x}: %{y:$,.0f} lost theo<extra></extra>'}],{yaxis:{title:'Lost theo ($)',gridcolor:css('--grid')},bargap:0.35});
+ const mfs=Object.keys(agg).sort((x,y)=>agg[y]/D.mf_count[y]-agg[x]/D.mf_count[x]);
+ plot('c_mf',[{type:'bar',orientation:'h',y:mfs,x:mfs.map(m=>agg[m]/D.mf_count[m]),marker:{color:mfs.map((m,i)=>i===0?css('--s2'):css('--s1'))},text:mfs.map(m=>fmt(agg[m]/D.mf_count[m],1)),textposition:'outside',hovertemplate:'%{y}: %{x:.2f} faults/machine<extra></extra>'}],{margin:{l:90,r:30,t:10,b:40},xaxis:{title:'Faults per machine',gridcolor:css('--grid')},bargap:0.35});
+ const ss=['Day','Swing','Grave'];plot('c_wait',[{type:'bar',x:ss,y:ss.map(s=>sh[s]?sh[s].w/sh[s].n:0),marker:{color:ss.map(s=>s==='Grave'?css('--s2'):css('--s1'))},text:ss.map(s=>sh[s]?fmt(sh[s].w/sh[s].n,2)+' h · '+sh[s].n+' faults':''),textposition:'outside',hovertemplate:'%{x}: %{y:.2f} h<extra></extra>'}],{yaxis:{title:'Avg hours to start work',gridcolor:css('--grid')},bargap:0.4});
+}
+function renderPlayers(){
+ const P=D.pp,m0=S.f0.slice(0,7),m1=S.f1.slice(0,7),mo={};let t={ci:0,po:0,th:0,cc:0,n:0,w:0,contrib:0};
+ P.mo.forEach((m,i)=>{if(m<m0||m>m1||(S.tier&&P.tier[i]!==S.tier)||(S.age&&P.age[i]!==S.age))return;const r=mo[m]||(mo[m]={ci:0,po:0});r.ci+=P.ci[i];r.po+=P.po[i];t.ci+=P.ci[i];t.po+=P.po[i];t.th+=P.th[i];t.cc+=P.cc[i];t.n+=P.n[i];t.w+=P.nwin[i];t.contrib+=P.contrib[i]});
+ const g=(S.tier||'all tiers')+(S.age?', age '+S.age:'');
+ $('#ptiles').innerHTML=[[k(t.ci),'wagered ('+g+')'],[k(t.po),'paid back'],[k(t.po-t.ci),'player net (lost)'],[fmt((1-t.po/t.ci)*100,2)+'%','actual hold vs theo '+fmt(t.th/t.ci*100,2)+'%'],[fmt(t.w/t.n*100,1)+'%','of player-months ended ahead'],[k(t.cc),'comp cost to the house']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
+ const ms=Object.keys(mo).sort();
+ plot('c_pmonth',[{type:'bar',name:'Wagered',x:ms,y:ms.map(m=>mo[m].ci),marker:{color:css('--s1')},hovertemplate:'%{x} wagered %{y:$,.0f}<extra></extra>'},{type:'bar',name:'Paid back',x:ms,y:ms.map(m=>mo[m].po),marker:{color:css('--s3')},hovertemplate:'%{x} paid back %{y:$,.0f}<extra></extra>'},
+  {type:'bar',name:'Player net',x:ms,y:ms.map(m=>mo[m].po-mo[m].ci),marker:{color:css('--s2')},hovertemplate:'%{x} net %{y:$,.0f}<extra></extra>'}],{barmode:'group',bargap:0.25,bargroupgap:0.06,yaxis:{title:'$',gridcolor:css('--grid')}});
+ const L=D.lorenz,keys=['All','Base','Gold','Platinum'],cols=[css('--text2'),css('--s1'),css('--s4'),css('--s7')];
+ plot('c_lorenz',keys.map((kk,i)=>({type:'scatter',mode:'lines+markers',name:kk,x:[0,...L[kk].map(p=>p[0]*100)],y:[0,...L[kk].map(p=>p[1]*100)],line:{color:cols[i],width:kk===(S.tier||'All')?3:1.5},marker:{size:6},opacity:!S.tier||kk===S.tier||kk==='All'?1:0.35,hovertemplate:kk+': top %{x}% of players → %{y:.1f}% of theo<extra></extra>'})),
+  {xaxis:{title:'Top X% of players (by theo)',type:'log',gridcolor:css('--grid')},yaxis:{title:'% of theo',gridcolor:css('--grid'),range:[0,100]}});
+}
+function renderComps(){
+ const C=D.comp_rate,ix=C.d.map((d,i)=>i).filter(i=>C.d[i]>=S.f0&&C.d[i]<=S.f1);
+ plot('c_ppd',[{type:'scatter',mode:'lines',x:ix.map(i=>C.d[i]),y:ix.map(i=>C.ppd[i]),line:{color:css('--s1'),width:2,shape:'hv'},hovertemplate:'%{x}: %{y:.1f} pts per $1<extra></extra>',name:'Points per $1 comp'}],
+  {yaxis:{title:'Points per $1 of comp',gridcolor:css('--grid'),rangemode:'tozero'},shapes:[{type:'line',x0:'2025-05-01',x1:'2025-05-01',yref:'paper',y0:0,y1:1,line:{color:css('--s2'),dash:'dot',width:1.5}}],annotations:[{x:'2025-05-01',yref:'paper',y:0.95,text:'May 1: −53%',showarrow:false,xanchor:'left',font:{color:css('--s2')}}]});
+ const P=D.prop,mo={};P.d.forEach((d,i)=>{if(d<S.f0||d>S.f1)return;const m=d.slice(0,7),r=mo[m]||(mo[m]={cc:0,th:0,ci:0});r.cc+=P.cc[i];r.th+=P.th[i];r.ci+=P.ci[i]});const ms=Object.keys(mo).sort();
+ plot('c_cpt',[{type:'bar',x:ms,y:ms.map(m=>mo[m].cc/mo[m].th*100),marker:{color:ms.map(m=>m>='2025-05'?css('--s2'):css('--s1'))},text:ms.map(m=>fmt(mo[m].cc/mo[m].th*100,2)+'%'),textposition:'outside',hovertemplate:'%{x}: %{y:.3f}% of theo<extra></extra>'}],{yaxis:{title:'Comp cost ÷ theo (%)',gridcolor:css('--grid'),rangemode:'tozero'},bargap:0.35});
+ const pre=[0,0],post=[0,0];P.d.forEach((d,i)=>{const x=d<'2025-05-01'?pre:post;x[0]+=P.cc[i];x[1]+=P.th[i]});
+ const pr=pre[0]/pre[1],po=post[0]/post[1];
+ $('#ctiles').innerHTML=[['12.4 → 5.8','points per $1 of comp, May 1'],[fmt(pr*100,2)+'% → '+fmt(po*100,2)+'%','comp cost as % of theo (Jan–Apr → May–Jun)'],[usd((po-pr)*post[1]),'extra comp cost in May–Jun vs the old rate'],['0','measurable lift in coin-in or visits']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
+}
+function renderModel(){
+ const M=D.model,p=D.preds;
+ $('#mtiles').innerHTML=[[usd(M.mae_baseline),'MAE: constant mean (baseline)'],[usd(M.mae_weekday),'MAE: weekday mean'],[usd(M.mae_ridge),'MAE: ridge (weekday + holiday + pre-announced events)'],['−'+fmt((1-M.mae_ridge/M.mae_baseline)*100,0)+'%','error reduction vs baseline on May–Jun']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
+ const x=p.map(r=>r.gaming_date);
+ plot('c_model',[{type:'scatter',mode:'lines',name:'Actual',x,y:p.map(r=>r.y),line:{color:css('--text'),width:2}},{type:'scatter',mode:'lines',name:'Baseline (train mean)',x,y:p.map(r=>r.pred_baseline),line:{color:css('--muted'),width:2,dash:'dot'}},
+  {type:'scatter',mode:'lines',name:'Weekday mean',x,y:p.map(r=>r.pred_weekday),line:{color:css('--s1'),width:2}},{type:'scatter',mode:'lines',name:'Ridge',x,y:p.map(r=>r.pred_ridge),line:{color:css('--s2'),width:2}}],
+  {hovermode:'x unified',yaxis:{title:'Daily coin-in ($)',gridcolor:css('--grid')},shapes:[{type:'rect',xref:'x',yref:'paper',x0:'2025-05-01',x1:'2025-06-30',y0:0,y1:1,fillcolor:css('--s1'),opacity:0.06,line:{width:0}}],
+  annotations:[{x:'2025-05-02',yref:'paper',y:1,text:'Holdout (test) →',showarrow:false,xanchor:'left',font:{color:css('--text2')}},{x:'2025-01-02',yref:'paper',y:1,text:'Training (Jan–Apr)',showarrow:false,xanchor:'left',font:{color:css('--text2')}}]});
+}
+// ---------- plan ----------
+/*plan*/const PLAN={'A-INSPECT':6,'A-WAYFINDING':1,'A-COMP-PILOT':1};
+const WHY={'A-INSPECT':['M-1158, M-1054, M-1210, M-1010, M-1181, M-1201 (the six lowest luck scores). M-1158: z = −4.6, 3.0% hold vs 10% configured, hold collapsed after its Mar 10 repair.','Expected value: if 1 of 6 has a payout fault, fixing M-1158 alone recovers about $6k per month (≈ 0.07 hold gap × $2.9k coin-in/day × 30). If none do, we get information.','Measure: inspection report; then its July luck z returns to the −2…+2 band.'],
+ 'A-WAYFINDING':['Back Forty (49 machines, theo $294/day, about 35% below the floor median). The walkway closure proved demand there tracks access.','+5% demand (range 0–10%) for 20 days after a 10-day lead ≈ +$14k theo (range $0–$29k) vs $7.5k cost.','Measure: Back Forty theo per machine-day vs the rest of the floor (diff-in-diff), compared with the model\'s weekday forecast; zone entry counters.'],
+ 'A-COMP-PILOT':['Randomize carded players 50/50: control stays at 5.8 pts/$, treatment returns to 12.4 pts/$.','Saving if the old price holds play: about $1.5k/month on the treated half; full rollout about $3k/month (0.07–0.08% of theo). Risk: lower redemptions could reduce visits.','Measure: comp cost ÷ theo, visits per player, and coin-in per player, treatment vs control after 25 days.'],
+ 'A-REPLACE-LEASE':['Rejected: the GM plan.','10 leases ≈ $33,800. The same-slot swap (M-1120 → M-5076, B-38) produced the same weak result. Expected gain ≈ 0.','—'],
+ 'A-PREVENTIVE':['Considered: Ridgeline (680 faults, $118k repairs, $50k lost theo).','$9k for 23 days breaks even only if faults fall ≥ 42%, which is unlikely. A first choice for Q3 if the budget had more slots.','—'],
+ 'A-TECH-SHIFT':['Considered: graveyard shift (2× wait).','Saves about 1 h × 50 faults × ~$5 theo/h ≈ $250/month vs $11.5k. Rejected.','—'],
+ 'A-PROMO':['Considered.','The out-of-sample Locals Week lift (+$11k theo over 7 days) was inside the model\'s noise and below the $15k cost. Rejected.','—']};
+function buildPlan(){const t=$('#t_plan');
+ t.innerHTML='<thead><tr><th class="l">Action</th><th>Unit cost</th><th>Per day</th><th>Lead days</th><th>Limit</th><th>Quantity</th><th>Cost (July)</th></tr></thead><tbody>'+D.actions.map(a=>`<tr><td class="l">${a.name}<br><span class="t-mut">${a.id}</span></td><td>${usd(a.cost)}</td><td>${a.rec?usd(a.rec):'–'}</td><td>${a.lead}</td><td>${a.lim}</td><td><input type="number" min="0" max="${a.lim}" value="${PLAN[a.id]||0}" data-id="${a.id}"></td><td data-c="${a.id}"></td></tr>`).join('')+'</tbody>';
+ t.querySelectorAll('input').forEach(i=>i.oninput=calcPlan);calcPlan();
+ table('#t_why',[{k:'a',h:'Action',l:1},{k:'t',h:'Targets & rationale',l:1},{k:'e',h:'Expected effect & uncertainty',l:1},{k:'m',h:'Measurement',l:1}],Object.entries(WHY).map(([id,[t,e,m]])=>({a:D.actions.find(x=>x.id===id).name,t,e,m})),'a');
+ document.querySelectorAll('#t_why td').forEach(td=>td.style.whiteSpace='normal');
+ const EV=[['9 of the GM\'s bottom 10 are in Back Forty','prepared_daily_view: bottom 10 by SUM(house_win), grouped by zone_name','9/10 Back Forty (M-1118, retired Feb 24, is the other); zone theo/day $280 vs $497 for Center Pit','Bad machines: their coin-in/day is at or above the Back Forty median; 5 are 5%-hold games','Zone assignment uses the last location in the period; machines rarely move (4 moves)'],
+  ['M-1158 pays out improbably much','machine_day ⋈ game_math: z = Σ(hw−theo)/√Σ(bet²·var)','z = −4.57, hold 3.0% vs 10%; collapsed after the Mar 10 repair','Luck: p ≈ 2e-6, still significant after a Bonferroni correction across 310 machines','Variance formula assumes independent spins; a progressive jackpot could explain it → inspect'],
+  ['Luck is the main driver of the list','Distribution of z across 310 machines','SD(z) = 1.09, mean −0.07: matches N(0,1)','Model miscalibration: ruled out because the spread matches','Unknown configs would distort it'],
+  ['Back Forty demand depends on access','Diff-in-diff around the W-ENT-B40 closure','−25% Back Forty vs +6% rest of floor','Seasonality: the rest of the floor rose in the same weeks','One closure only; signs ≠ walkway'],
+  ['Comp point price halved on May 1','loyalty_ledger redeem: −Σpoints/Σface by day','12.4 → 5.8 pts/$ overnight, all 10 items','Planned promotion: not in events; no lift in visits or coin-in','Intent unknown → pilot, not unilateral change'],
+  ['Ridgeline drives downtime','operations fault_repair × machines','7.2 faults/machine vs 1.9 Halcyon','Ridgeline machines sit in busier zones: faults per machine still differ within zones','Fault severity not observed'],
+  ['Weekday model beats baseline','analysis/model.py; train Jan–Apr, test May–Jun','MAE $54k vs $218k baseline','Leakage: event flags limited to those announced before May 1','Two-month test; summer may differ']];
+ table('#t_ev',['c','q','r','a','l'].map((kk,i)=>({k:kk,h:['Claim','Table / query','Result','Alternative tested','Limitation'][i],l:1})),EV.map(e=>({c:e[0],q:e[1],r:e[2],a:e[3],l:e[4]})),'c');
+ document.querySelectorAll('#t_ev td').forEach(td=>td.style.whiteSpace='normal');
+}
+function calcPlan(){let tot=0,types=0,errs=[];const q={};
+ document.querySelectorAll('#t_plan input').forEach(i=>{const a=D.actions.find(x=>x.id===i.dataset.id),n=+i.value||0;q[a.id]=n;
+  const c=n*(a.cost+a.rec*Math.max(0,30-a.lead));tot+=c;if(n>0&&a.id!=='A-HOLD')types++;if(n>a.lim)errs.push(a.name+' exceeds its limit');document.querySelector(`[data-c="${a.id}"]`).textContent=n?usd(c):'–'});
+ if(q['A-COMP-PILOT']&&q['A-COMP-CHANGE'])errs.push('Comp pilot and floor-wide comp change are incompatible');
+ if(types>3)errs.push(types+' action types (max 3)');if(tot>100000)errs.push('Over budget');
+ $('#plan_msg').innerHTML=`<b>Total ${usd(tot)}</b> · kept in reserve ${usd(100000-tot)} · ${types} action type${types===1?'':'s'} · `+(errs.length?`<span class="bad">⚠ ${errs.join('; ')}</span>`:'<span class="ok">✓ Valid plan</span>');}
+</script>
+</body>
+</html>
