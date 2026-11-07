@@ -33,7 +33,7 @@ th{color:var(--text2);font-weight:600;position:sticky;top:0;background:var(--sur
 .t-crit{color:var(--crit)}.t-warn{color:var(--warn)}.t-good{color:var(--good)}.t-loc{color:var(--s1)}.t-new{color:var(--s7)}.t-mut{color:var(--muted)}
 .ev{font-size:12px;color:var(--muted);margin-top:6px}.ev code{font-size:11.5px}
 .callout{border-left:3px solid var(--accent);padding:8px 12px;background:var(--bg);border-radius:4px;margin:10px 0}
-.plan input{width:60px}.ok{color:var(--good)}.bad{color:var(--crit)}
+.plan input{width:60px}.sl{display:block;font-size:13px;color:var(--text2);margin:0 0 14px}.sl input{width:100%;padding:0}.ok{color:var(--good)}.bad{color:var(--crit)}
 td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;color:var(--accent);font-size:13px}
 @media (max-width:640px){.bar h1{width:100%}.chart{height:300px}}
 </style>
@@ -49,15 +49,16 @@ td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;
   <label>Bank<select id="fb"><option value="">All banks</option></select></label>
   <label>Guest tier<select id="ft"><option value="">All tiers</option><option>Base</option><option>Gold</option><option>Platinum</option></select></label>
   <label>Age<select id="fa"><option value="">All ages</option></select></label>
+  <label>Home region<select id="fr"><option value="">All regions</option></select></label>
  </div>
- <nav><a href="#verdict">Verdict</a><a href="#q1">1 · Machines</a><a href="#q2">2 · Demand</a><a href="#q3">3 · Downtime</a><a href="#q4">4 · Players</a><a href="#q5">5 · Comps</a><a href="#model">Model</a><a href="#plan">6 · $100k plan</a><a href="#evidence">Evidence</a></nav>
+ <nav><a href="#verdict">Verdict</a><a href="#q1">1 · Machines</a><a href="#leak">Leak Detector</a><a href="#q2">2 · Demand</a><a href="#q3">3 · Downtime</a><a href="#q4">4 · Players</a><a href="#q5">5 · Comps</a><a href="#model">Model</a><a href="#plan">6 · $100k plan</a><a href="#evidence">Evidence</a></nav>
 </header>
 <main>
 <section id="verdict">
- <h2>Verdict: don't replace the bottom 10. Most are victims of location and luck, and one may be leaking.</h2>
+ <h2>Verdict: don't replace the bottom 10. Most are victims of location and luck, and one is leaking.</h2>
  <p class="lead" id="vlead">Loading…</p>
  <div class="tiles" id="vtiles"></div>
- <div class="callout"><b>Recommended plan ($18,700 of $100,000):</b> ① Inspect 6 machines with improbable payouts, led by <b>M-1158</b> ($7,200). ② New signs for the <b>Back Forty</b> ($7,500). ③ A <b>comp pilot with a control group</b> to test the May 1 halving of comp point prices ($4,000). <b>Keep $81,300.</b> The GM's 10 replacements would cost $33,800 leased or $220,000 bought, and the evidence says they would not fix the cause. <a href="#plan">See the plan →</a></div>
+ <div class="callout"><b>Recommended plan ($15,100 of $100,000):</b> ① Inspect <b>M-1158</b>, whose payout table doesn't match its records (hit-rate z = +124), plus the next two lowest luck scores ($3,600). ② New signs for the <b>Back Forty</b> ($7,500). ③ A <b>comp pilot with a control group</b> to test the May 1 halving of comp point prices ($4,000). <b>Keep $84,900.</b> The GM's 10 replacements would cost $33,800 leased or $220,000 bought, and the evidence says they would not fix the cause. <a href="#plan">See the plan →</a></div>
  <p class="ev">The casino is fictional and the data is synthetic (TAMU Datathon “Dashboard Royale”, release 0.9.0-draft). Every number on this page is recomputed in your browser from <code>data.json</code>, which <code>analysis/export.py</code> builds from the raw tables. The filters at the top apply to every section.</p>
 </section>
 
@@ -70,8 +71,18 @@ td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;
  </div>
  <h3>The GM's list (lowest house win in the period) and the reason behind each</h3>
  <div class="tw"><table id="t_bottom"></table></div>
- <p class="ev">How each reason is assigned: <span class="tag t-crit">Payout anomaly</span> luck score ≤ −3 (≈1-in-740 by luck; with 300 machines we'd expect ~0.4 by chance). <span class="tag t-warn">Watch</span> score ≤ −2. <span class="tag t-new">Short tenure</span> under 90 days on the floor. <span class="tag t-loc">Location</span> zone's median theo/day below 80% of the floor median. <span class="tag t-loc">Low-edge game</span> configured RTP ≥ 95%, so low theo by design. <span class="tag t-good">Weak play</span> coin-in/day below 75% of its zone's median, the only sign that the machine itself is unattractive. <span class="tag t-mut">Normal</span> otherwise. Source: <code>machine_day</code> ⋈ <code>game_math</code> ⋈ <code>floor_locations</code>.</p>
+ <p class="ev">How each reason is assigned: <span class="tag t-crit">Hit-rate mismatch</span> hit-rate z beyond ±5 (see the Leak Detector). <span class="tag t-crit">Payout anomaly</span> luck score ≤ −3 (≈1-in-740 by luck; with 300 machines we'd expect ~0.4 by chance). <span class="tag t-warn">Watch</span> score ≤ −2. <span class="tag t-new">Short tenure</span> under 90 days on the floor. <span class="tag t-loc">Location</span> zone's median theo/day below 80% of the floor median. <span class="tag t-loc">Low-edge game</span> configured RTP ≥ 95%, so low theo by design. <span class="tag t-good">Weak play</span> coin-in/day below 75% of its zone's median, the only sign that the machine itself is unattractive. <span class="tag t-mut">Normal</span> otherwise. Source: <code>machine_day</code> ⋈ <code>game_math</code> ⋈ <code>floor_locations</code>.</p>
  <details><summary>All machines in the current filter (sortable)</summary><div class="tw"><table id="t_all"></table></div></details>
+</section>
+
+<section id="leak">
+ <h2>Leak Detector: two independent tests</h2>
+ <p class="q">A luck score alone can't separate bad luck from a broken machine. So we add a second test that luck barely touches: <b>hit frequency</b>. Each game's <code>hit_probability</code> says what share of spins should pay something. Over ~700,000 spins, the real share should land within a fraction of a point of it. Hit-rate z = (hits − p·spins) ÷ √(p(1−p)·spins). A machine that fails <i>both</i> tests is very likely misconfigured, not unlucky. This audit uses only standard meter data, so any operator or regulator could run it monthly at no cost.</p>
+ <div class="grid">
+  <div><h3>Payout luck vs hit frequency (click a dot to open it in the Luck Lens)</h3><div id="c_leak" class="chart tall"></div></div>
+  <div><h3>Luck Lens: <select id="lens"></select></h3><div id="c_lens" class="chart tall"></div><p class="ev" id="lens_txt"></p></div>
+ </div>
+ <p class="ev">The Luck Lens plots cumulative (house win − theo). The shaded band is ±2σ of pure luck, which widens as play accumulates. A healthy machine wanders inside it; a leak drifts out and stays out. Code: <code>analysis/hit_audit.py</code>.</p>
 </section>
 
 <section id="q2">
@@ -133,6 +144,16 @@ td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;
  <p class="q">Cost = quantity × (unit cost + recurring cost per day × max(0, 30 − lead days)). Edit the quantities to test alternatives. The checker enforces the budget, the 3-action-type limit, quantity limits and incompatibilities.</p>
  <div class="tw"><table class="plan" id="t_plan"></table></div>
  <p id="plan_msg"></p>
+ <h3>Simulator: move the assumptions and watch the value change</h3>
+ <div class="grid" style="align-items:start">
+  <div>
+   <label class="sl">Chance the M-1158 inspection confirms a fixable fault: <b id="v_p">85%</b><input class="sim" id="s_p" type="range" min="0" max="100" value="85"></label>
+   <label class="sl">Back Forty demand lift from new signs: <b id="v_l">5%</b><input class="sim" id="s_l" type="range" min="0" max="15" value="5" step="0.5"></label>
+   <label class="sl">Pilot: share of the May 1 comp cost increase saved on the treated half: <b id="v_c">60%</b><input class="sim" id="s_c" type="range" min="0" max="100" value="60"></label>
+  </div>
+  <div class="tiles" id="simtiles" style="margin:0"></div>
+ </div>
+ <div class="callout" id="impact"></div>
  <h3>Why these three actions, and what we rejected</h3>
  <div class="tw"><table id="t_why"></table></div>
 </section>
@@ -147,7 +168,7 @@ td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;
 const $=s=>document.querySelector(s), fmt=(x,d=0)=>x==null||isNaN(x)?'–':x.toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d}),
  usd=(x,d=0)=>(x<0?'−$':'$')+fmt(Math.abs(x),d), k=x=>(x<0?'−$':'$')+(Math.abs(x)>=1e6?fmt(Math.abs(x)/1e6,2)+'M':fmt(Math.abs(x)/1e3,1)+'k');
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-let D, S={f0:'2025-01-01',f1:'2025-06-30',zone:'',bank:'',tier:'',age:''};
+let D, S={f0:'2025-01-01',f1:'2025-06-30',zone:'',bank:'',tier:'',age:'',reg:'',lens:'M-1158'};
 function lay(extra={}){return Object.assign({paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{family:'system-ui,sans-serif',size:12,color:css('--text2')},
  margin:{l:56,r:12,t:10,b:40},xaxis:{gridcolor:css('--grid'),zerolinecolor:css('--border'),linecolor:css('--border')},yaxis:{gridcolor:css('--grid'),zerolinecolor:css('--border'),linecolor:css('--border')},
  legend:{orientation:'h',y:1.1,x:0},hoverlabel:{bgcolor:css('--surface'),bordercolor:css('--border'),font:{color:css('--text')}}},extra)}
@@ -159,7 +180,8 @@ function init(){
  const zs=Object.entries(D.zones).sort((a,b)=>a[1].localeCompare(b[1]));
  zs.forEach(([id,n])=>$('#fz').add(new Option(n,id)));
  fillBanks();
- [...new Set(D.pp.age)].sort().forEach(a=>$('#fa').add(new Option(a,a)));
+ [...new Set(D.pp.age)].sort().forEach(a=>$('#fa').add(new Option(a,a)));[...new Set(D.pp.reg)].sort().forEach(a=>$('#fr').add(new Option(a,a)));$('#fr').onchange=e=>{S.reg=e.target.value;renderPlayers()};
+ D.machines.forEach(m=>$('#lens').add(new Option(m[0]+' · '+m[1]+' · '+m[2],m[0])));$('#lens').value=S.lens;$('#lens').onchange=e=>{S.lens=e.target.value;renderLens()};document.querySelectorAll('.sim').forEach(x=>x.oninput=calcSim);
  $('#f0').onchange=e=>{S.f0=e.target.value;clearPreset();render()};$('#f1').onchange=e=>{S.f1=e.target.value;clearPreset();render()};
  document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{[S.f0,S.f1]=b.dataset.p.split(',');$('#f0').value=S.f0;$('#f1').value=S.f1;clearPreset();b.classList.add('on');render()});
  $('#fz').onchange=e=>{S.zone=e.target.value;S.bank='';fillBanks();render()};$('#fb').onchange=e=>{S.bank=e.target.value;render()};
@@ -175,14 +197,14 @@ function dayRange(){const i0=D.dates.indexOf(S.f0),i1=D.dates.indexOf(S.f1);retu
 function machAgg(){
  const [a,b]=dayRange(),md=D.md,n=md.m.length,A={};
  for(let i=0;i<n;i++){const d=md.d[i];if(d<a||d>b)continue;const bank=D.banks[md.b[i]];
-  const m=md.m[i];let r=A[m];if(!r)r=A[m]={m,ci:0,hw:0,th:0,v:0,av:0,sc:0,oc:0,days:0,bank:bank[0],zone:bank[1]};
-  r.ci+=md.ci[i];r.hw+=md.hw[i];r.th+=md.th[i];r.v+=md.v[i];r.av+=md.av[i];r.sc+=md.sc[i];r.oc+=md.oc[i];r.days++;r.bank=bank[0];r.zone=bank[1];}
+  const m=md.m[i];let r=A[m];if(!r)r=A[m]={m,ci:0,hw:0,th:0,v:0,av:0,sc:0,oc:0,days:0,sp:0,hi:0,bank:bank[0],zone:bank[1]};
+  r.ci+=md.ci[i];r.hw+=md.hw[i];r.th+=md.th[i];r.v+=md.v[i];r.av+=md.av[i];r.sc+=md.sc[i];r.oc+=md.oc[i];r.days++;r.sp+=md.sp[i];r.hi+=md.hi[i];r.bank=bank[0];r.zone=bank[1];}
  const rows=Object.values(A);rows.forEach(r=>{const mm=D.machines[r.m];r.id=mm[0];r.mf=mm[1];r.theme=mm[2];r.rtp=mm[3];r.vol=mm[4];
-  r.z=(r.hw-r.th)/Math.sqrt(r.v);r.tpd=r.th/r.days;r.cipd=r.ci/r.days;r.hold=r.hw/r.ci;r.avail=r.av/r.sc;r.lost=(r.sc-r.av)*r.th/Math.max(r.av,1)});
+  r.hp=mm[5];r.hrate=r.hi/r.sp;r.hz=(r.hi-r.hp*r.sp)/Math.sqrt(r.hp*(1-r.hp)*r.sp);r.z=(r.hw-r.th)/Math.sqrt(r.v);r.tpd=r.th/r.days;r.cipd=r.ci/r.days;r.hold=r.hw/r.ci;r.avail=r.av/r.sc;r.lost=(r.sc-r.av)*r.th/Math.max(r.av,1)});
  const med=a=>{a=a.slice().sort((x,y)=>x-y);return a.length?a[a.length>>1]:NaN},zm={};
  const zc={};Object.keys(D.zones).forEach(z=>{const zr=rows.filter(r=>r.zone===z);zm[z]=med(zr.map(r=>r.tpd));zc[z]=med(zr.map(r=>r.cipd))});const fm=med(rows.map(r=>r.tpd));
  rows.forEach(r=>{r.zmed=zm[r.zone];r.zci=zc[r.zone];r.cirel=r.cipd/r.zci;const t=[];
-  if(r.z<=-3)t.push(['crit','Payout anomaly']);else if(r.z<=-2)t.push(['warn','Watch: luck?']);
+  if(Math.abs(r.hz)>=5)t.push(['crit','Hit-rate mismatch']);if(r.z<=-3)t.push(['crit','Payout anomaly']);else if(r.z<=-2)t.push(['warn','Watch: luck?']);
   if(r.days<90)t.push(['new','Short tenure']);
   if(r.zmed<0.8*fm)t.push(['loc','Location']);
   if(r.rtp>=0.95)t.push(['loc','Low-edge game (5% hold)']);
@@ -197,7 +219,7 @@ function table(el,cols,rows,sortKey){const t=$(el);let sk=sortKey,asc=true;
   t.querySelectorAll('th').forEach(th=>th.onclick=()=>{asc=sk===th.dataset.k?!asc:true;sk=th.dataset.k;draw()})};draw()}
 const MCOLS=[{k:'id',h:'Machine',l:1},{k:'bank',h:'Bank · zone',l:1,f:(v,r)=>v+' · '+D.zones[r.zone]},{k:'days',h:'Days'},{k:'hw',h:'House win',f:v=>usd(v)},{k:'th',h:'Theo',f:v=>usd(v)},
  {k:'z',h:'Luck z',f:v=>fmt(v,2)},{k:'hold',h:'Hold',f:(v,r)=>fmt(v*100,1)+'% <span class="t-mut">vs '+fmt((1-r.rtp)*100,0)+'%</span>'},{k:'tpd',h:'Theo/day',f:v=>usd(v)},{k:'cirel',h:'Coin-in/day vs zone median',f:v=>fmt(v*100,0)+'%'},
- {k:'avail',h:'Avail.',f:v=>fmt(v*100,1)+'%'},{k:'vol',h:'Volatility',l:1},{k:'tags',h:'Reason',l:1,f:tagHtml}];
+ {k:'hz',h:'Hit-rate z',f:v=>fmt(v,1)},{k:'avail',h:'Avail.',f:v=>fmt(v*100,1)+'%'},{k:'vol',h:'Volatility',l:1},{k:'tags',h:'Reason',l:1,f:tagHtml}];
 
 function render(){
  const {rows,fm}=machAgg();
@@ -206,8 +228,8 @@ function render(){
  // verdict
  const nloc=bottom.filter(r=>r.tags.some(t=>t[1]==='Location')).length,nan=bottom.filter(r=>r.z<=-3).length,nnew=bottom.filter(r=>r.days<90).length,nweak=bottom.filter(r=>r.cirel<0.75).length,nedge=bottom.filter(r=>r.rtp>=0.95).length;
  const bf=bottom.filter(r=>D.zones[r.zone]==='Back Forty').length, flagged=rows.filter(r=>r.z<=-3);
- $('#vlead').innerHTML=`For <b>${S.f0} → ${S.f1}</b>, ${bf} of the GM's bottom 10 sit in the <b>Back Forty</b>, the zone with the lowest foot traffic. ${nedge} are low-edge games (5% hold) that earn less per dollar played by design, and ${nnew} were on the floor for less than 90 days. Only <b>${nweak}</b> draw clearly less play than their zone neighbours (coin-in per day below 75% of the zone median). The floor-wide luck model flags <b>${flagged.length}</b> machine${flagged.length===1?'':'s'} (${flagged.map(r=>r.id).join(', ')||'none'}) whose payouts are too high to be explained by luck. That is a reason to inspect, not proof of a fault. Replacing a machine in the same slot has already been tried: M-1120 was swapped for M-5076 in bank B-38, and the newcomer also landed in the bottom 10.`;
- $('#vtiles').innerHTML=[[bf+'/10','of the GM list are in Back Forty'],[nan,'payout anomalies (z ≤ −3) on the GM list'],[nweak,'draw clearly less play than their zone (real underperformers)'],['−29%','Back Forty demand when its walkway closed (diff-in-diff)'],['−53%','comp point price from May 1'],['$81.3k','of the budget kept in reserve']].map(([b,s])=>`<div class="tile"><b>${b}</b><span>${s}</span></div>`).join('');
+ $('#vlead').innerHTML=`For <b>${S.f0} → ${S.f1}</b>, ${bf} of the GM's bottom 10 sit in the <b>Back Forty</b>, the zone with the lowest foot traffic. ${nedge} are low-edge games (5% hold) that earn less per dollar played by design, and ${nnew} were on the floor for less than 90 days. Only <b>${nweak}</b> draw clearly less play than their zone neighbours (coin-in per day below 75% of the zone median). The floor-wide luck model flags <b>${flagged.length}</b> machine${flagged.length===1?'':'s'} (${flagged.map(r=>r.id).join(', ')||'none'}) whose payouts are too high to be explained by luck. A second, independent test shows why: M-1158 pays out on 38.6% of spins in every month since January, against the 31.5% its game is configured for (z = +124; every other machine is within ±3). Its payout table likely doesn't match its records, which costs about $200 a day. That's a reason to inspect, not proof of wrongdoing. Replacing a machine in the same slot has already been tried: M-1120 was swapped for M-5076 in bank B-38, and the newcomer also landed in the bottom 10.`;
+ $('#vtiles').innerHTML=[[bf+'/10','of the GM list are in Back Forty'],[nan,'payout anomalies (z ≤ −3) on the GM list'],[nweak,'draw clearly less play than their zone (real underperformers)'],['−29%','Back Forty demand when its walkway closed (diff-in-diff)'],['−53%','comp point price from May 1'],['+124','hit-rate z for M-1158: it pays on 38.6% of spins vs 31.5% configured'],['$84.9k','of the budget kept in reserve']].map(([b,s])=>`<div class="tile"><b>${b}</b><span>${s}</span></div>`).join('');
  // scatter
  const tr=(sel,name,color,size,sym)=>{const rs=filt.filter(sel);return{type:'scatter',mode:'markers',name,x:rs.map(r=>r.z),y:rs.map(r=>r.tpd),text:rs.map(r=>`${r.id} · ${r.bank} ${D.zones[r.zone]}<br>z ${fmt(r.z,2)} · theo/day ${usd(r.tpd)}<br>house win ${usd(r.hw)} · ${r.vol} vol`),hovertemplate:'%{text}<extra></extra>',marker:{color,size,symbol:sym,line:{color:css('--surface'),width:1.5}}}};
  const bfz=Object.keys(D.zones).find(z=>D.zones[z]==='Back Forty');
@@ -222,10 +244,30 @@ function render(){
  plot('c_zhist',[{type:'bar',x:bins.map(b=>b+0.25),y:cnt,name:'Machines',marker:{color:css('--s1')},hovertemplate:'z %{x}: %{y} machines<extra></extra>'},{type:'scatter',mode:'lines',x:bins.map(b=>b+0.25),y:nc,name:'Expected if pure luck',line:{color:css('--s2'),width:2}}],
   {bargap:0.08,xaxis:{title:'Luck score z',gridcolor:css('--grid')},yaxis:{title:'Machines',gridcolor:css('--grid')}});
  table('#t_bottom',MCOLS,bottom,'hw');table('#t_all',MCOLS,filt,'z');
- renderDemand(rows);renderDown(filt);renderComps();renderPlayers();renderModel();
+ renderLeak(rows);renderLens();renderDemand(rows);renderDown(filt);renderComps();renderPlayers();renderModel();
 }
 function sumByDay(sel){const [a,b]=dayRange(),md=D.md,o={};for(let i=0;i<md.m.length;i++){const d=md.d[i];if(d<a||d>b)continue;if(sel&&!sel(i))continue;
  const r=o[d]||(o[d]={ci:0,th:0,n:0,lost:0,sc:0,av:0});r.ci+=md.ci[i];r.th+=md.th[i];r.n++;r.sc+=md.sc[i];r.av+=md.av[i];r.lost+=(md.sc[i]-md.av[i])*(md.av[i]>0?md.th[i]/md.av[i]:0)}return o}
+function renderLeak(rows){
+ const cap=v=>Math.max(-9,Math.min(9.5,v)),mk=(sel,name,color,size)=>{const rs=rows.filter(sel);return{type:'scatter',mode:'markers',name,x:rs.map(r=>r.z),y:rs.map(r=>cap(r.hz)),customdata:rs.map(r=>r.id),
+  text:rs.map(r=>`${r.id} · ${D.zones[r.zone]}<br>luck z ${fmt(r.z,2)} · hit-rate z ${fmt(r.hz,1)}<br>hit rate ${fmt(r.hrate*100,2)}% vs ${fmt(r.hp*100,2)}% configured`),hovertemplate:'%{text}<extra></extra>',marker:{color,size,line:{color:css('--surface'),width:1.5}}}};
+ const bad=r=>Math.abs(r.hz)>=5;
+ plot('c_leak',[mk(r=>!bad(r),'Machines',css('--s1'),8),mk(bad,'Fails both tests',css('--crit'),15)],
+  {xaxis:{title:'Payout luck z',gridcolor:css('--grid'),zeroline:true,zerolinecolor:css('--border')},yaxis:{title:'Hit-rate z (capped at 9.5)',gridcolor:css('--grid'),range:[-6,11]},
+  shapes:[{type:'rect',x0:-2,x1:2,y0:-3,y1:3,fillcolor:css('--s3'),opacity:0.08,line:{width:0}}],
+  annotations:rows.filter(bad).map(r=>({x:r.z,y:9.5,text:`<b>${r.id}</b>: hit-rate z = +${fmt(r.hz,0)} ↑`,ax:60,ay:20,font:{color:css('--crit')},arrowcolor:css('--crit')})).concat([{x:0,y:-3,text:'normal-luck zone',showarrow:false,yshift:-10,font:{size:11,color:css('--good')}}])});
+ const el=document.getElementById('c_leak');el.removeAllListeners&&el.removeAllListeners('plotly_click');el.on('plotly_click',e=>{S.lens=e.points[0].customdata;$('#lens').value=S.lens;renderLens();});
+}
+function renderLens(){
+ const mi=D.machines.findIndex(m=>m[0]===S.lens),[a,b]=dayRange(),md=D.md,x=[],y=[],up=[],lo=[],hr=[];let c=0,v=0,sp=0,hi=0;
+ for(let i=0;i<md.m.length;i++){if(md.m[i]!==mi||md.d[i]<a||md.d[i]>b)continue;c+=md.hw[i]-md.th[i];v+=md.v[i];sp+=md.sp[i];hi+=md.hi[i];x.push(D.dates[md.d[i]]);y.push(c);up.push(2*Math.sqrt(v));lo.push(-2*Math.sqrt(v))}
+ const hp=D.machines[mi][5];
+ plot('c_lens',[{type:'scatter',mode:'lines',x,y:up,line:{width:0},hoverinfo:'skip',showlegend:false},{type:'scatter',mode:'lines',x,y:lo,fill:'tonexty',fillcolor:'rgba(27,175,122,0.15)',line:{width:0},name:'±2σ pure luck',hoverinfo:'skip'},
+  {type:'scatter',mode:'lines',x,y,name:'Cumulative house win − theo',line:{color:css('--s2'),width:2},hovertemplate:'%{x}: %{y:$,.0f}<extra></extra>'}],
+  {yaxis:{title:'$ vs expected',gridcolor:css('--grid'),zeroline:true,zerolinecolor:css('--border')},shapes:S.lens==='M-1158'?[{type:'line',x0:'2025-03-10',x1:'2025-03-10',yref:'paper',y0:0,y1:1,line:{color:css('--muted'),dash:'dot',width:1}}]:[]});
+ const hz=(hi-hp*sp)/Math.sqrt(hp*(1-hp)*sp),m=D.machines[mi];
+ $('#lens_txt').innerHTML=`<b>${m[0]}</b> (${m[1]} · ${m[2]} · ${m[4]} volatility): ended ${usd(c)} vs expected, where pure luck spans ±${usd(2*Math.sqrt(v))}. Hit rate ${fmt(hi/sp*100,2)}% vs ${fmt(hp*100,2)}% configured (z ${fmt(hz,1)}).`+(Math.abs(hz)>=5?' <span class="tag t-crit">Fails both tests: inspect</span>':Math.abs(c)>2*Math.sqrt(v)?' <span class="tag t-warn">Outside the luck band on payouts only: watch</span>':' <span class="tag t-good">Consistent with luck</span>');
+}
 function renderDemand(rows){
  const [a,b]=dayRange(),bsel=S.bank?D.banks.findIndex(x=>x[0]===S.bank):-1;
  const sel=S.bank?(i=>D.md.b[i]===bsel):S.zone?(i=>D.banks[D.md.b[i]][1]===S.zone):null;
@@ -263,8 +305,8 @@ function renderDown(filt){
 }
 function renderPlayers(){
  const P=D.pp,m0=S.f0.slice(0,7),m1=S.f1.slice(0,7),mo={};let t={ci:0,po:0,th:0,cc:0,n:0,w:0,contrib:0};
- P.mo.forEach((m,i)=>{if(m<m0||m>m1||(S.tier&&P.tier[i]!==S.tier)||(S.age&&P.age[i]!==S.age))return;const r=mo[m]||(mo[m]={ci:0,po:0});r.ci+=P.ci[i];r.po+=P.po[i];t.ci+=P.ci[i];t.po+=P.po[i];t.th+=P.th[i];t.cc+=P.cc[i];t.n+=P.n[i];t.w+=P.nwin[i];t.contrib+=P.contrib[i]});
- const g=(S.tier||'all tiers')+(S.age?', age '+S.age:'');
+ P.mo.forEach((m,i)=>{if(m<m0||m>m1||(S.tier&&P.tier[i]!==S.tier)||(S.age&&P.age[i]!==S.age)||(S.reg&&P.reg[i]!==S.reg))return;const r=mo[m]||(mo[m]={ci:0,po:0});r.ci+=P.ci[i];r.po+=P.po[i];t.ci+=P.ci[i];t.po+=P.po[i];t.th+=P.th[i];t.cc+=P.cc[i];t.n+=P.n[i];t.w+=P.nwin[i];t.contrib+=P.contrib[i]});
+ const g=(S.tier||'all tiers')+(S.age?', age '+S.age:'')+(S.reg?', '+S.reg:'');
  $('#ptiles').innerHTML=[[k(t.ci),'wagered ('+g+')'],[k(t.po),'paid back'],[k(t.po-t.ci),'player net (lost)'],[fmt((1-t.po/t.ci)*100,2)+'%','actual hold vs theo '+fmt(t.th/t.ci*100,2)+'%'],[fmt(t.w/t.n*100,1)+'%','of player-months ended ahead'],[k(t.cc),'comp cost to the house']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
  const ms=Object.keys(mo).sort();
  plot('c_pmonth',[{type:'bar',name:'Wagered',x:ms,y:ms.map(m=>mo[m].ci),marker:{color:css('--s1')},hovertemplate:'%{x} wagered %{y:$,.0f}<extra></extra>'},{type:'bar',name:'Paid back',x:ms,y:ms.map(m=>mo[m].po),marker:{color:css('--s3')},hovertemplate:'%{x} paid back %{y:$,.0f}<extra></extra>'},
@@ -293,8 +335,8 @@ function renderModel(){
   annotations:[{x:'2025-05-02',yref:'paper',y:1,text:'Holdout (test) →',showarrow:false,xanchor:'left',font:{color:css('--text2')}},{x:'2025-01-02',yref:'paper',y:1,text:'Training (Jan–Apr)',showarrow:false,xanchor:'left',font:{color:css('--text2')}}]});
 }
 // ---------- plan ----------
-/*plan*/const PLAN={'A-INSPECT':6,'A-WAYFINDING':1,'A-COMP-PILOT':1};
-const WHY={'A-INSPECT':['M-1158, M-1054, M-1210, M-1010, M-1181, M-1201 (the six lowest luck scores). M-1158: z = −4.6, 3.0% hold vs 10% configured, hold collapsed after its Mar 10 repair.','Expected value: if 1 of 6 has a payout fault, fixing M-1158 alone recovers about $6k per month (≈ 0.07 hold gap × $2.9k coin-in/day × 30). If none do, we get information.','Measure: inspection report; then its July luck z returns to the −2…+2 band.'],
+/*plan*/const PLAN={'A-INSPECT':3,'A-WAYFINDING':1,'A-COMP-PILOT':1};
+const WHY={'A-INSPECT':['M-1158 (fails both tests: luck z −4.6, hit-rate z +124), plus M-1054 and M-1210 (the next lowest luck scores, hit rates normal). Three, not fifteen: the hit-rate test clears every other machine.','Fixing M-1158 recovers about 7 points of hold × $2.9k coin-in/day ≈ $200/day: about $5.8k over the 29 days after the 1-day lead, and about $73k a year. Very likely: the hit rate is off in all six months.','Measure: inspection report; after the fix, the hit rate is back at 31.5% and the Luck Lens line returns to the band. Recheck in 30 days.'],
  'A-WAYFINDING':['Back Forty (49 machines, theo $294/day, about 35% below the floor median). The walkway closure proved demand there tracks access.','+5% demand (range 0–10%) for 20 days after a 10-day lead ≈ +$14k theo (range $0–$29k) vs $7.5k cost.','Measure: Back Forty theo per machine-day vs the rest of the floor (diff-in-diff), compared with the model\'s weekday forecast; zone entry counters.'],
  'A-COMP-PILOT':['Randomize carded players 50/50: control stays at 5.8 pts/$, treatment returns to 12.4 pts/$.','Saving if the old price holds play: about $1.5k/month on the treated half; full rollout about $3k/month (0.07–0.08% of theo). Risk: lower redemptions could reduce visits.','Measure: comp cost ÷ theo, visits per player, and coin-in per player, treatment vs control after 25 days.'],
  'A-REPLACE-LEASE':['Rejected: the GM plan.','10 leases ≈ $33,800. The same-slot swap (M-1120 → M-5076, B-38) produced the same weak result. Expected gain ≈ 0.','—'],
@@ -303,10 +345,10 @@ const WHY={'A-INSPECT':['M-1158, M-1054, M-1210, M-1010, M-1181, M-1201 (the six
  'A-PROMO':['Considered.','The out-of-sample Locals Week lift (+$11k theo over 7 days) was inside the model\'s noise and below the $15k cost. Rejected.','—']};
 function buildPlan(){const t=$('#t_plan');
  t.innerHTML='<thead><tr><th class="l">Action</th><th>Unit cost</th><th>Per day</th><th>Lead days</th><th>Limit</th><th>Quantity</th><th>Cost (July)</th></tr></thead><tbody>'+D.actions.map(a=>`<tr><td class="l">${a.name}<br><span class="t-mut">${a.id}</span></td><td>${usd(a.cost)}</td><td>${a.rec?usd(a.rec):'–'}</td><td>${a.lead}</td><td>${a.lim}</td><td><input type="number" min="0" max="${a.lim}" value="${PLAN[a.id]||0}" data-id="${a.id}"></td><td data-c="${a.id}"></td></tr>`).join('')+'</tbody>';
- t.querySelectorAll('input').forEach(i=>i.oninput=calcPlan);calcPlan();
+ t.querySelectorAll('input').forEach(i=>i.oninput=calcPlan);calcPlan();calcSim();
  table('#t_why',[{k:'a',h:'Action',l:1},{k:'t',h:'Targets & rationale',l:1},{k:'e',h:'Expected effect & uncertainty',l:1},{k:'m',h:'Measurement',l:1}],Object.entries(WHY).map(([id,[t,e,m]])=>({a:D.actions.find(x=>x.id===id).name,t,e,m})),'a');
  document.querySelectorAll('#t_why td').forEach(td=>td.style.whiteSpace='normal');
- const EV=[['9 of the GM\'s bottom 10 are in Back Forty','prepared_daily_view: bottom 10 by SUM(house_win), grouped by zone_name','9/10 Back Forty (M-1118, retired Feb 24, is the other); zone theo/day $280 vs $497 for Center Pit','Bad machines: their coin-in/day is at or above the Back Forty median; 5 are 5%-hold games','Zone assignment uses the last location in the period; machines rarely move (4 moves)'],
+ const EV=[['M-1158 runs a different payout table than recorded','hit_audit.py: hit-rate z = (hits − p·spins)/√(p(1−p)·spins)','z = +124: 38.6% vs 31.5% in every month; next machine +2.8; same-game peers match','Luck: impossible at z = 124. Meter error: payouts also exceed theo (luck z −4.6), so the two tests agree','Fixed vs recorded config unknown until inspected; not evidence of wrongdoing'],['9 of the GM\'s bottom 10 are in Back Forty','prepared_daily_view: bottom 10 by SUM(house_win), grouped by zone_name','9/10 Back Forty (M-1118, retired Feb 24, is the other); zone theo/day $280 vs $497 for Center Pit','Bad machines: their coin-in/day is at or above the Back Forty median; 5 are 5%-hold games','Zone assignment uses the last location in the period; machines rarely move (4 moves)'],
   ['M-1158 pays out improbably much','machine_day ⋈ game_math: z = Σ(hw−theo)/√Σ(bet²·var)','z = −4.57, hold 3.0% vs 10%; collapsed after the Mar 10 repair','Luck: p ≈ 2e-6, still significant after a Bonferroni correction across 310 machines','Variance formula assumes independent spins; a progressive jackpot could explain it → inspect'],
   ['Luck is the main driver of the list','Distribution of z across 310 machines','SD(z) = 1.09, mean −0.07: matches N(0,1)','Model miscalibration: ruled out because the spread matches','Unknown configs would distort it'],
   ['Back Forty demand depends on access','Diff-in-diff around the W-ENT-B40 closure','−25% Back Forty vs +6% rest of floor','Seasonality: the rest of the floor rose in the same weeks','One closure only; signs ≠ walkway'],
@@ -316,6 +358,10 @@ function buildPlan(){const t=$('#t_plan');
  table('#t_ev',['c','q','r','a','l'].map((kk,i)=>({k:kk,h:['Claim','Table / query','Result','Alternative tested','Limitation'][i],l:1})),EV.map(e=>({c:e[0],q:e[1],r:e[2],a:e[3],l:e[4]})),'c');
  document.querySelectorAll('#t_ev td').forEach(td=>td.style.whiteSpace='normal');
 }
+function calcSim(){const p=+$('#s_p').value/100,l=+$('#s_l').value/100,cs=+$('#s_c').value/100;$('#v_p').textContent=fmt(p*100)+'%';$('#v_l').textContent=fmt(l*100,1)+'%';$('#v_c').textContent=fmt(cs*100)+'%';
+ const leak=p*200*29,signs=l*49*294*20,comp=cs*0.5*3100*25/30,cost=15100,net=leak+signs+comp-cost;
+ $('#simtiles').innerHTML=[[usd(leak),'expected July value: M-1158 fix'],[usd(signs),'expected July theo from Back Forty signs'],[usd(comp),'expected July comp savings'],[usd(net),'net value in July after the $15,100 cost'],[usd(p*200*365+l*49*294*365+cs*3100*12),'annual upside if every effect holds (theo, before costs; signs uncertain)']].map(([x,s])=>`<div class="tile"><b class="${s.startsWith('net')?(net>=0?'ok':'bad'):''}">${x}</b><span>${s}</span></div>`).join('');
+ $('#impact').innerHTML=`<b>Real-world impact.</b> The GM's plan would spend $33,800–$220,000 replacing machines that draw normal play for their zone. Ours spends $15,100, keeps $84,900, and finds a misconfigured machine worth about $73k a year. It's caught by a two-test audit that any casino or regulator can run monthly on standard meter data, with no new hardware. The same method guards players: a machine paying <i>less</i> than its approved setting would fail the same test.`;}
 function calcPlan(){let tot=0,types=0,errs=[];const q={};
  document.querySelectorAll('#t_plan input').forEach(i=>{const a=D.actions.find(x=>x.id===i.dataset.id),n=+i.value||0;q[a.id]=n;
   const c=n*(a.cost+a.rec*Math.max(0,30-a.lead));tot+=c;if(n>0&&a.id!=='A-HOLD')types++;if(n>a.lim)errs.push(a.name+' exceeds its limit');document.querySelector(`[data-c="${a.id}"]`).textContent=n?usd(c):'–'});

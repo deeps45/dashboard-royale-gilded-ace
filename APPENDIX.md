@@ -9,6 +9,7 @@ All code is in `analysis/`. Data: [tamu-datathon-org/dashboard-royale](https://g
 | 3 | Replacing a machine in the same slot doesn't help | `placements`, `machines`: M-1120 → M-5076 in B-38 on May 13; theo/day $143 → $153, both in the bottom 3 | The new machine needed ramp-up time: possible, but its coin-in/day already matched the zone median (106%) | One swap only |
 | 4 | Luck is well calibrated | z = Σ(hw − theo) / √Σ(sum_bet_squared × payout_multiplier_variance); SD(z) = 1.09, mean −0.07, 1 machine with \|z\| > 3 | The variance model is wrong: an empirical SD near 1 supports it | Assumes independent spins |
 | 5 | M-1158 needs an inspection | z = −4.57 (p ≈ 2e-6 one-sided; Bonferroni ×310 → 8e-4); hold 5.6% before Mar 10, −0.4% Mar 10–May, 6.1% in June; configured 10%. A fault repair was opened Mar 10 | Luck: rejected even after the multiple-test correction. A one-off jackpot: the shortfall is spread over 3 months, not one day | An unusual pattern is not proof of a fault or wrongdoing |
+| 5b | M-1158 runs a different payout table than recorded | `hit_audit.py`: hit-rate z = (hits − p·spins)/√(p(1−p)·spins) = +124; 38.5–38.9% each month vs 31.5% configured; same-game peers 31.65%; next machine z +2.8 | Luck: impossible at z = 124. Meter error: payouts also exceed theo (luck z −4.6), so the tests agree. Repair-caused: the hit rate is high from January, before the Mar 10 repair | Which table is actually installed is unknown until inspected; not evidence of wrongdoing |
 | 6 | Back Forty demand depends on access | Diff-in-diff around the W-ENT-B40 renovation closure (`floor_walkways`): Back Forty −24.6%, rest of floor +6.4% | Seasonality or events: the rest of the floor saw the same calendar and rose | One closure; signs are a weaker intervention than a walkway |
 | 7 | Downtime is small and Ridgeline-driven | `operations` fault_repair: 1,207 repairs, 5,021 machine-hours, $92.6k theo lost, $213k repairs; Ridgeline 7.2 faults/machine vs Northwind 3.0, Halcyon 1.9 | Ridgeline sits in busier zones: it has the most faults in every zone (e.g. Center Pit 8.9 vs 2.5) | Severity and parts are not observed |
 | 8 | Overnight repairs wait twice as long | Average wait opened → work_started: Grave 1.96 h vs Day 0.90 h, Swing 0.85 h; roster shows 1 tech on grave | Fewer faults at night: there are fewer, but each waits longer | Small benefit: ~1 h × 50 faults × ~$5 theo/h per month |
@@ -20,7 +21,7 @@ All code is in `analysis/`. Data: [tamu-datathon-org/dashboard-royale](https://g
 
 ## Budget arithmetic
 
-Cost = quantity × (unit + per-day × max(0, 30 − lead)). Inspect 6 × $1,200 = $7,200. Wayfinding 1 × $7,500. Comp pilot $4,000. **Total $18,700. Reserve $81,300.** For comparison, 10 leases = 10 × ($2,500 + 16 × $55) = $33,800, and 10 purchases = $220,000 (over budget).
+Cost = quantity × (unit + per-day × max(0, 30 − lead)). Inspect 3 × $1,200 = $3,600 (M-1158, M-1054, M-1210). Wayfinding 1 × $7,500. Comp pilot $4,000. **Total $15,100. Reserve $84,900.** For comparison, 10 leases = 10 × ($2,500 + 16 × $55) = $33,800, and 10 purchases = $220,000 (over budget).
 
 Sensitivity: the signs break even at +2.6% Back Forty demand. Preventive maintenance ($9k) would need a ≥ 42% fault reduction on Ridgeline over 23 days. The inspections pay back if one fault worth ≥ $1.2k is found.
 

@@ -3,7 +3,7 @@ import duckdb, json, pandas as pd
 con=duckdb.connect()
 q=lambda s: con.sql(s).df()
 md=q("""select m.machine_id, m.gaming_date::varchar d, l.bank_id, l.zone_id, coin_in_cents/100.0 ci, house_win_cents/100.0 hw, theo_cents/100.0 th,
- sum_bet_squared*g.payout_multiplier_variance/1e4 var, available_seconds/3600.0 av, scheduled_seconds/3600.0 sc, occupied_seconds/3600.0 oc
+ sum_bet_squared*g.payout_multiplier_variance/1e4 var, available_seconds/3600.0 av, scheduled_seconds/3600.0 sc, occupied_seconds/3600.0 oc, paid_spins sp, payout_positive_spins hi
  from 'data/2_machine_decision/machine_day.parquet' m join 'data/2_machine_decision/game_math.parquet' g using(config_id)
  left join 'data/2_machine_decision/floor_locations.parquet' l on l.location_id=m.location_id where m.location_id is not null order by d, machine_id""")
 dates=sorted(md.d.unique()); D={x:i for i,x in enumerate(dates)}
@@ -11,12 +11,12 @@ mids=sorted(md.machine_id.unique()); M={x:i for i,x in enumerate(mids)}
 banks=sorted(md.bank_id.dropna().unique()); B={x:i for i,x in enumerate(banks)}
 zones=q("select distinct zone_id, zone_name from 'data/1_prepared_views/prepared_daily_view.parquet' where zone_id is not null").set_index('zone_id').zone_name.to_dict()
 bz=md.groupby('bank_id').zone_id.first().to_dict()
-meta=q("""select m.machine_id, manufacturer, m.theme, g.configured_rtp::double rtp, g.volatility_class vol, install_date::varchar inst, retire_date::varchar ret
+meta=q("""select m.machine_id, manufacturer, m.theme, g.configured_rtp::double rtp, g.volatility_class vol, g.hit_probability::double hp, install_date::varchar inst, retire_date::varchar ret
  from 'data/2_machine_decision/machines.parquet' m join (select machine_id, any_value(config_id) c from 'data/2_machine_decision/machine_day.parquet' group by 1) x using(machine_id) join 'data/2_machine_decision/game_math.parquet' g on g.config_id=x.c""").set_index('machine_id')
-cols={'m':md.machine_id.map(M),'d':md.d.map(D),'b':md.bank_id.map(B),'ci':md.ci.round(0),'hw':md.hw.round(0),'th':md.th.round(0),'v':md['var'].round(0),'av':md.av.round(2),'sc':md.sc.round(2),'oc':md.oc.round(2)}
-out={'dates':dates,'machines':[[x,*meta.loc[x,['manufacturer','theme','rtp','vol']].tolist()] for x in mids],
- 'banks':[[b,bz[b]] for b in banks],'zones':zones,'md':{k:v.astype(int if k in('m','d','b') else float).tolist() for k,v in cols.items()}}
-out['md']={k:[int(x) if k in('m','d','b','ci','hw','th','v') else x for x in v] for k,v in out['md'].items()}
+cols={'m':md.machine_id.map(M),'d':md.d.map(D),'b':md.bank_id.map(B),'ci':md.ci.round(0),'hw':md.hw.round(0),'th':md.th.round(0),'v':md['var'].round(0),'av':md.av.round(2),'sc':md.sc.round(2),'oc':md.oc.round(2),'sp':md.sp,'hi':md.hi}
+out={'dates':dates,'machines':[[x,*meta.loc[x,['manufacturer','theme','rtp','vol','hp']].tolist()] for x in mids],
+ 'banks':[[b,bz[b]] for b in banks],'zones':zones,'md':{k:v.astype(int if k in('m','d','b','sp','hi') else float).tolist() for k,v in cols.items()}}
+out['md']={k:[int(x) if k in('m','d','b','ci','hw','th','v','sp','hi') else x for x in v] for k,v in out['md'].items()}
 pdx=q("""select gaming_date::varchar d, local_weekday wd, coin_in_usd::double ci, house_win_usd::double hw, theo_usd::double th, comp_cost_usd::double cc, comp_face_value_usd::double cf,
  pos_cash_usd::double fnb, faults_opened f, total_zone_entries_observed::double ent, counter_coverage_share::double cov, available_machine_hours::double avh, occupied_machine_hours::double och, active_machines am, events_active ev,
  contribution_after_supplied_costs_usd::double contrib from 'data/1_prepared_views/property_day.parquet' order by 1""")
