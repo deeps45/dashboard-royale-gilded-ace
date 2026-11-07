@@ -30,3 +30,17 @@ Sensitivity: the signs break even at +2.6% Back Forty demand. Preventive mainten
 ## AI-use disclosure
 
 We used Claude (Anthropic, via Claude Code) to help write DuckDB/pandas analysis code, build the static Plotly dashboard, and draft this write-up and appendix. Every number was produced by the scripts in `analysis/` from the challenge data and checked by running them. The analytical choices (luck z-score, diff-in-diff, time-split holdout, action selection) were reviewed by the team.
+
+## Robustness checks (`analysis/robustness.py`) and verification (`analysis/verify.py`)
+
+| Finding | Attack | Result |
+|---|---|---|
+| Back Forty demand follows access | Placebo diff-in-diff on 80 fake 34-day closures | Real −31.0%; placebos +3.7% to +13.4% (p < 1/80) |
+| Low earners are mostly unlucky | Correlation of each machine's luck z, Jan–Mar vs Apr–Jun | r = 0.11 (0.08 without M-1158): luck does not persist |
+| Luck model is calibrated | SD of luck z across machines | 1.095 |
+| Hit-frequency test is calibrated | SD of hit-rate z excluding M-1158 | 1.006, max \|z\| = 2.8 |
+| M-1158 is not a short bad stretch | Hit-rate z month by month | Weakest month +47 |
+| Comp change is a single break | Largest day-over-day change in points per $ | May 1 (−6.56); next largest 0.47 |
+| The GM's raw ranking is unstable | Bottom 10 by raw house win in Q1 | 8 of 10 are new machines with 8 days on the floor; 0 weak-play machines in any window |
+
+`python analysis/verify.py` re-derives 21 headline numbers from the raw tables (money integrity, Q1–Q5 figures, model metrics, budget arithmetic, dashboard data completeness) and exits non-zero on any mismatch. All 21 pass.

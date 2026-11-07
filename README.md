@@ -21,7 +21,9 @@ python analysis/q5c.py           # comp price change date, downtime cost
 python analysis/model.py         # first forecast version
 python analysis/model2.py        # CV model selection, interval, July forecast
 python analysis/hit_audit.py     # hit-frequency leak test
+python analysis/robustness.py    # placebo + calibration stress tests
 python analysis/export.py        # builds docs/data.json for the dashboard
+python analysis/verify.py        # 21 assertions; exits 1 on any mismatch
 cd docs && python -m http.server # open http://localhost:8000
 ```
 
