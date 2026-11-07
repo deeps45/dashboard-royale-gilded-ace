@@ -18,7 +18,9 @@ python analysis/q2.py            # walkways, events, property trends
 python analysis/q345.py          # downtime, staffing, players, comps
 python analysis/q5b.py           # comp redemption detail
 python analysis/q5c.py           # comp price change date, downtime cost
-python analysis/model.py         # forecast + time-based holdout
+python analysis/model.py         # first forecast version
+python analysis/model2.py        # CV model selection, interval, July forecast
+python analysis/hit_audit.py     # hit-frequency leak test
 python analysis/export.py        # builds docs/data.json for the dashboard
 cd docs && python -m http.server # open http://localhost:8000
 ```

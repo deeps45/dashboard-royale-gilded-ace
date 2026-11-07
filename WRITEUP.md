@@ -8,11 +8,11 @@
 
 **Location.** When the Back Forty walkway closed (Mar 3 – Apr 7), Back Forty demand fell 25% while the rest of the floor rose 6%. Demand there follows access.
 
-**Other leaks.** Downtime is small (99.6% availability, about $93k theo lost) and mostly on Ridgeline machines, which fault 3.7× as often as Halcyon. On **May 1 the comp point price was cut 53%** overnight. Comp cost per $ of theo rose from 0.78% to 0.86%, and play did not.
+**Other leaks.** Downtime is small (99.6% availability, about $93k theo lost) and mostly on Ridgeline machines. April–May tech vacancies tripled repair waits; refilling shifts is free. On **May 1 the comp point price was cut 53%** overnight. Comp cost per $ of theo rose from 0.78% to 0.86%, and play did not.
 
 **Players.** Card holders wagered $163.8M and lost $15.6M; the top 10% generate 66% of theo. Nothing targets heavy losers.
 
-**Model.** We forecast daily floor coin-in, training on Jan–Apr and testing on May–Jun with only pre-announced events. MAE: flat-mean baseline $218k, **ridge $54k (−75%)**. The June promotion's lift was inside the model's noise and below its cost, so we fund no promotion. It also serves as the counterfactual for July.
+**Model.** Six forecasters of daily coin-in were compared by rolling-origin CV inside Jan–Apr. The winner, gradient boosting, was scored once on May–Jun: MAE **$52.5k vs $218k for the flat-mean baseline (−76%)**, with an 80% interval covering 75% of days. The June promotion's lift was inside the model's noise and below its cost, so we fund no promotion. It also serves as the counterfactual for July.
 
 **Plan: $15,100. Keep $84,900.**
 

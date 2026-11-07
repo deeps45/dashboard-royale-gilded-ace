@@ -35,7 +35,8 @@ th{color:var(--text2);font-weight:600;position:sticky;top:0;background:var(--sur
 .callout{border-left:3px solid var(--accent);padding:8px 12px;background:var(--bg);border-radius:4px;margin:10px 0}
 .plan input{width:60px}.sl{display:block;font-size:13px;color:var(--text2);margin:0 0 14px}.sl input{width:100%;padding:0}.ok{color:var(--good)}.bad{color:var(--crit)}
 td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;color:var(--accent);font-size:13px}
-@media (max-width:640px){.bar h1{width:100%}.chart{height:300px}}
+html,body{overflow-x:hidden}section,.grid>div{min-width:0;overflow:hidden}.js-plotly-plot,.chart{max-width:100%}
+@media (max-width:640px){header{position:static}.bar h1{width:100%;font-size:16px}.chart{height:300px}section{padding:14px 12px}main{padding:12px}.bar label{flex:1 1 40%}.bar select,.bar input{width:100%}h2{font-size:18px}}
 </style>
 </head>
 <body>
@@ -82,7 +83,7 @@ td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;
   <div><h3>Payout luck vs hit frequency (click a dot to open it in the Luck Lens)</h3><div id="c_leak" class="chart tall"></div></div>
   <div><h3>Luck Lens: <select id="lens"></select></h3><div id="c_lens" class="chart tall"></div><p class="ev" id="lens_txt"></p></div>
  </div>
- <p class="ev">The Luck Lens plots cumulative (house win − theo). The shaded band is ±2σ of pure luck, which widens as play accumulates. A healthy machine wanders inside it; a leak drifts out and stays out. Code: <code>analysis/hit_audit.py</code>.</p>
+ <p class="ev">The Luck Lens plots cumulative (house win − theo). The shaded band is ±2σ of pure luck, which widens as play accumulates. A healthy machine wanders inside it; a leak drifts out and stays out. Competing explanation, tampering: the 80 reported tampering attempts are scattered (at most 3 on any machine), and none involve M-1158. A steady 38.6% hit rate from January 1 fits a configuration or records mismatch, not an intermittent intrusion. Code: <code>analysis/hit_audit.py</code>.</p>
 </section>
 
 <section id="q2">
@@ -98,12 +99,14 @@ td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;
 
 <section id="q3">
  <h2>3 · How much play was lost to downtime, and when?</h2>
- <p class="q">Lost theo = hours unavailable × the machine's theo per available hour in the selected period. Downtime is small (availability is about 99.6%) and concentrated: Ridgeline machines fault about 3.7× as often as Halcyon machines, and overnight faults wait about twice as long for a technician.</p>
+ <p class="q">Lost theo = hours unavailable × the machine's theo per available hour in the selected period. Downtime is small (availability is about 99.6%) and concentrated: Ridgeline machines fault about 3.7× as often as Halcyon machines, and overnight faults wait about twice as long for a technician. <b>The vacancies are new:</b> in April and May the day shift ran at about 0.9 techs against 1.7 planned. With 0 techs a fault waits about 4.9 hours, with 1 about 1.2–2.6 hours, and with 2 about 0.1–0.7 hours. Refilling planned shifts is free and comes first. A paid extra technician ($11,520) would save only about $1k of theo a month, so it is not funded.</p>
  <div class="tiles" id="dtiles"></div>
  <div class="grid">
   <div><h3>Lost theo to downtime by month</h3><div id="c_down" class="chart"></div></div>
   <div><h3>Faults per machine by manufacturer</h3><div id="c_mf" class="chart"></div></div>
   <div><h3>Average wait for a technician by shift (hours)</h3><div id="c_wait" class="chart"></div></div>
+  <div><h3>Staffing drives repair speed: wait by techs on shift</h3><div id="c_staff" class="chart"></div></div>
+  <div><h3>Tech headcount: planned vs actual by month</h3><div id="c_roster" class="chart"></div></div>
  </div>
  <p class="ev">Sources: <code>machine_day.available_seconds</code> vs <code>scheduled_seconds</code> (accounts for the 23-hour DST day), and <code>operations</code> (fault_repair: opened → work_started → available). Fault charts follow the date filter but not the bank filter.</p>
 </section>
@@ -131,12 +134,18 @@ td:last-child{white-space:normal;min-width:160px}details summary{cursor:pointer;
 </section>
 
 <section id="model">
- <h2>Model: forecasting daily floor coin-in (time-based holdout)</h2>
- <p class="q">Trained on Jan–Apr and frozen on May 1, then tested on May–Jun. Event features use only events <i>announced before May 1</i>, so the Locals Week (announced May 26) is excluded to avoid leakage.</p>
+ <h2>Model: forecasting daily floor coin-in, validated without peeking</h2>
+ <p class="q"><b>Protocol.</b> (1) Six candidates were compared with <b>rolling-origin cross-validation inside Jan–Apr only</b>: five 14-day folds, each trained on the days before it. (2) The model with the lowest CV error was selected. (3) It was frozen on May 1 and scored <b>once</b> on May–Jun. Event flags include only events <i>announced before</i> the forecast date, so the Locals Week (announced May 26) is excluded. Weather and tourism data published later are not used.</p>
  <div class="tiles" id="mtiles"></div>
+ <div class="grid">
+  <div><h3>All candidates: CV error (used to choose) vs test error (reported once)</h3><div class="tw"><table id="t_models"></table></div>
+   <p class="ev">The ridge model with a trend term looked better in CV but failed on the holdout. This is why the test set isn't used to choose. Mean absolute error (MAE) is in dollars of coin-in per day.</p></div>
+  <div><h3>July 2025 forecast by weekday (selected model, refit on all 6 months)</h3><div id="c_jul" class="chart"></div></div>
+ </div>
+ <h3>Actual vs forecast with an 80% interval: training, holdout, and July</h3>
  <div id="c_model" class="chart tall"></div>
- <div class="callout"><b>How it changes a decision:</b> (1) Saturdays carry about 1.6× Tuesday's coin-in, so any added technician or promotion goes on Fri–Sat, not weekdays. (2) The model's error (MAE ≈ $54k/day) is the noise floor for measuring July actions: a sign or comp effect has to clear it, so we measure each action against a control group (a zone or player group) rather than before vs after. (3) Out of sample, the Locals Week promotion produced only about +$11k theo over 7 days, inside the noise, against a $15k promotion cost. <b>So we do not fund a promotion weekend.</b></div>
- <p class="ev">Code: <code>analysis/model.py</code>. Baseline = constant mean of training days. The ridge model uses weekday dummies, federal holiday, scheduled hours, and pre-announced event-type flags.</p>
+ <div class="callout"><b>How it changes decisions:</b> (1) <b>Staffing:</b> July Saturdays are forecast at about 1.6× Tuesdays. The vacant day and swing tech shifts (Section 3) should be refilled first on Fri–Sun, where each hour of downtime costs the most. (2) <b>Promotions:</b> out of sample, Locals Week added only about +$11k theo over 7 days, inside the interval and below the $15k cost, so we don't fund a promotion weekend. (3) <b>Measurement:</b> the July forecast with its interval is the counterfactual for the sign and comp tests. A real effect has to push the actual line outside the band.</p>
+ <p class="ev">Code: <code>analysis/model2.py</code> (selection, conformal interval, July forecast) and <code>analysis/model.py</code> (first version). The interval is ±the 80th percentile of absolute CV residuals; it covered <span id="cov"></span> of holdout days against a nominal 80%, so treat it as slightly optimistic.</p>
 </section>
 
 <section id="plan">
@@ -244,7 +253,7 @@ function render(){
  plot('c_zhist',[{type:'bar',x:bins.map(b=>b+0.25),y:cnt,name:'Machines',marker:{color:css('--s1')},hovertemplate:'z %{x}: %{y} machines<extra></extra>'},{type:'scatter',mode:'lines',x:bins.map(b=>b+0.25),y:nc,name:'Expected if pure luck',line:{color:css('--s2'),width:2}}],
   {bargap:0.08,xaxis:{title:'Luck score z',gridcolor:css('--grid')},yaxis:{title:'Machines',gridcolor:css('--grid')}});
  table('#t_bottom',MCOLS,bottom,'hw');table('#t_all',MCOLS,filt,'z');
- renderLeak(rows);renderLens();renderDemand(rows);renderDown(filt);renderComps();renderPlayers();renderModel();
+ renderLeak(rows);renderLens();renderDemand(rows);renderDown(filt);renderStaff();renderComps();renderPlayers();renderModel();
 }
 function sumByDay(sel){const [a,b]=dayRange(),md=D.md,o={};for(let i=0;i<md.m.length;i++){const d=md.d[i];if(d<a||d>b)continue;if(sel&&!sel(i))continue;
  const r=o[d]||(o[d]={ci:0,th:0,n:0,lost:0,sc:0,av:0});r.ci+=md.ci[i];r.th+=md.th[i];r.n++;r.sc+=md.sc[i];r.av+=md.av[i];r.lost+=(md.sc[i]-md.av[i])*(md.av[i]>0?md.th[i]/md.av[i]:0)}return o}
@@ -303,6 +312,9 @@ function renderDown(filt){
  plot('c_mf',[{type:'bar',orientation:'h',y:mfs,x:mfs.map(m=>agg[m]/D.mf_count[m]),marker:{color:mfs.map((m,i)=>i===0?css('--s2'):css('--s1'))},text:mfs.map(m=>fmt(agg[m]/D.mf_count[m],1)),textposition:'outside',hovertemplate:'%{y}: %{x:.2f} faults/machine<extra></extra>'}],{margin:{l:90,r:30,t:10,b:40},xaxis:{title:'Faults per machine',gridcolor:css('--grid')},bargap:0.35});
  const ss=['Day','Swing','Grave'];plot('c_wait',[{type:'bar',x:ss,y:ss.map(s=>sh[s]?sh[s].w/sh[s].n:0),marker:{color:ss.map(s=>s==='Grave'?css('--s2'):css('--s1'))},text:ss.map(s=>sh[s]?fmt(sh[s].w/sh[s].n,2)+' h · '+sh[s].n+' faults':''),textposition:'outside',hovertemplate:'%{x}: %{y:.2f} h<extra></extra>'}],{yaxis:{title:'Avg hours to start work',gridcolor:css('--grid')},bargap:0.4});
 }
+function renderStaff(){const st=D.staff,sh=['day','swing','grave'],cols={day:css('--s1'),swing:css('--s3'),grave:css('--s2')};
+ plot('c_staff',sh.map(h=>{const r=st.filter(x=>x.shift===h);return{type:'scatter',mode:'lines+markers',name:h[0].toUpperCase()+h.slice(1),x:r.map(x=>x.techs),y:r.map(x=>x.wait),text:r.map(x=>x.n+' faults'),line:{color:cols[h],width:2},marker:{size:10},hovertemplate:'%{x} techs: %{y:.2f} h wait (%{text})<extra></extra>'}}),{xaxis:{title:'Techs actually on shift',dtick:1,gridcolor:css('--grid')},yaxis:{title:'Avg hours to start repair',gridcolor:css('--grid'),rangemode:'tozero'}});
+ const R=D.roster,ms=[...new Set(R.mo)];plot('c_roster',sh.flatMap(h=>[{type:'scatter',mode:'lines',name:h+' planned',x:ms,y:ms.map(m=>R.plan[R.mo.findIndex((x,i)=>x===m&&R.shift[i]===h)]),line:{color:cols[h],dash:'dot',width:1.5},showlegend:false,hovertemplate:h+' planned %{y:.2f}<extra></extra>'},{type:'scatter',mode:'lines+markers',name:h,x:ms,y:ms.map(m=>R.act[R.mo.findIndex((x,i)=>x===m&&R.shift[i]===h)]),line:{color:cols[h],width:2},hovertemplate:h+' actual %{y:.2f}<extra></extra>'}]),{yaxis:{title:'Avg techs (dotted = planned)',gridcolor:css('--grid'),rangemode:'tozero'}});}
 function renderPlayers(){
  const P=D.pp,m0=S.f0.slice(0,7),m1=S.f1.slice(0,7),mo={};let t={ci:0,po:0,th:0,cc:0,n:0,w:0,contrib:0};
  P.mo.forEach((m,i)=>{if(m<m0||m>m1||(S.tier&&P.tier[i]!==S.tier)||(S.age&&P.age[i]!==S.age)||(S.reg&&P.reg[i]!==S.reg))return;const r=mo[m]||(mo[m]={ci:0,po:0});r.ci+=P.ci[i];r.po+=P.po[i];t.ci+=P.ci[i];t.po+=P.po[i];t.th+=P.th[i];t.cc+=P.cc[i];t.n+=P.n[i];t.w+=P.nwin[i];t.contrib+=P.contrib[i]});
@@ -326,13 +338,18 @@ function renderComps(){
  $('#ctiles').innerHTML=[['12.4 → 5.8','points per $1 of comp, May 1'],[fmt(pr*100,2)+'% → '+fmt(po*100,2)+'%','comp cost as % of theo (Jan–Apr → May–Jun)'],[usd((po-pr)*post[1]),'extra comp cost in May–Jun vs the old rate'],['0','measurable lift in coin-in or visits']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
 }
 function renderModel(){
- const M=D.model,p=D.preds;
- $('#mtiles').innerHTML=[[usd(M.mae_baseline),'MAE: constant mean (baseline)'],[usd(M.mae_weekday),'MAE: weekday mean'],[usd(M.mae_ridge),'MAE: ridge (weekday + holiday + pre-announced events)'],['−'+fmt((1-M.mae_ridge/M.mae_baseline)*100,0)+'%','error reduction vs baseline on May–Jun']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
- const x=p.map(r=>r.gaming_date);
- plot('c_model',[{type:'scatter',mode:'lines',name:'Actual',x,y:p.map(r=>r.y),line:{color:css('--text'),width:2}},{type:'scatter',mode:'lines',name:'Baseline (train mean)',x,y:p.map(r=>r.pred_baseline),line:{color:css('--muted'),width:2,dash:'dot'}},
-  {type:'scatter',mode:'lines',name:'Weekday mean',x,y:p.map(r=>r.pred_weekday),line:{color:css('--s1'),width:2}},{type:'scatter',mode:'lines',name:'Ridge',x,y:p.map(r=>r.pred_ridge),line:{color:css('--s2'),width:2}}],
-  {hovermode:'x unified',yaxis:{title:'Daily coin-in ($)',gridcolor:css('--grid')},shapes:[{type:'rect',xref:'x',yref:'paper',x0:'2025-05-01',x1:'2025-06-30',y0:0,y1:1,fillcolor:css('--s1'),opacity:0.06,line:{width:0}}],
-  annotations:[{x:'2025-05-02',yref:'paper',y:1,text:'Holdout (test) →',showarrow:false,xanchor:'left',font:{color:css('--text2')}},{x:'2025-01-02',yref:'paper',y:1,text:'Training (Jan–Apr)',showarrow:false,xanchor:'left',font:{color:css('--text2')}}]});
+ const M=D.model2,p=M.preds,best=M.selected;
+ $('#mtiles').innerHTML=[[usd(M.test[best]),'holdout MAE: '+best+' (chosen by CV)'],[usd(M.test['Constant mean']),'holdout MAE: constant-mean baseline'],['−'+fmt((1-M.test[best]/M.test['Constant mean'])*100,0)+'%','error vs baseline'],['−'+fmt((1-M.test[best]/M.test['Weekday mean'])*100,0)+'%','error vs the simple weekday average'],[fmt(M.coverage*100,0)+'%','of holdout days inside the 80% interval']].map(([x,s])=>`<div class="tile"><b>${x}</b><span>${s}</span></div>`).join('');
+ $('#cov').textContent=fmt(M.coverage*100,0)+'%';
+ table('#t_models',[{k:'n',h:'Model',l:1,f:v=>v===best?'<b>'+v+' ✓</b>':v},{k:'cv',h:'CV MAE (Jan–Apr)',f:v=>usd(v)},{k:'te',h:'Holdout MAE (May–Jun)',f:v=>usd(v)}],Object.keys(M.cv).map(n=>({n,cv:M.cv[n],te:M.test[n]})),'cv');
+ const x=p.map(r=>r.d);
+ plot('c_model',[{type:'scatter',mode:'lines',x,y:p.map(r=>r.hi),line:{width:0},hoverinfo:'skip',showlegend:false},{type:'scatter',mode:'lines',x,y:p.map(r=>r.lo),fill:'tonexty',fillcolor:'rgba(42,120,214,0.15)',line:{width:0},name:'80% interval',hoverinfo:'skip'},
+  {type:'scatter',mode:'lines',name:'Actual',x,y:p.map(r=>r.y),line:{color:css('--text'),width:2}},{type:'scatter',mode:'lines',name:'Baseline (train mean)',x,y:p.map(r=>r.base),line:{color:css('--muted'),width:2,dash:'dot'}},
+  {type:'scatter',mode:'lines',name:best,x,y:p.map(r=>r.p),line:{color:css('--s2'),width:2}}],
+  {hovermode:'x unified',yaxis:{title:'Daily coin-in ($)',gridcolor:css('--grid')},shapes:[{type:'rect',xref:'x',yref:'paper',x0:'2025-05-01',x1:'2025-06-30',y0:0,y1:1,fillcolor:css('--s1'),opacity:0.05,line:{width:0}},{type:'rect',xref:'x',yref:'paper',x0:'2025-07-01',x1:'2025-07-30',y0:0,y1:1,fillcolor:css('--s4'),opacity:0.08,line:{width:0}}],
+  annotations:[['2025-01-02','Training'],['2025-05-02','Holdout (scored once)'],['2025-07-02','July forecast']].map(([x,t])=>({x,yref:'paper',y:1,text:t,showarrow:false,xanchor:'left',font:{color:css('--text2')}}))});
+ const W=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+ plot('c_jul',[{type:'bar',x:W,y:W.map(w=>M.jul_by_wd[w]),marker:{color:W.map(w=>w==='Fri'||w==='Sat'?css('--s2'):css('--s1'))},text:W.map(w=>'$'+fmt(M.jul_by_wd[w]/1e6,2)+'M'),textposition:'outside',cliponaxis:false,hovertemplate:'%{x}: %{y:$,.0f}<extra></extra>'}],{yaxis:{title:'Forecast coin-in/day',gridcolor:css('--grid'),rangemode:'tozero'},bargap:0.35});
 }
 // ---------- plan ----------
 /*plan*/const PLAN={'A-INSPECT':3,'A-WAYFINDING':1,'A-COMP-PILOT':1};
@@ -341,7 +358,7 @@ const WHY={'A-INSPECT':['M-1158 (fails both tests: luck z −4.6, hit-rate z +12
  'A-COMP-PILOT':['Randomize carded players 50/50: control stays at 5.8 pts/$, treatment returns to 12.4 pts/$.','Saving if the old price holds play: about $1.5k/month on the treated half; full rollout about $3k/month (0.07–0.08% of theo). Risk: lower redemptions could reduce visits.','Measure: comp cost ÷ theo, visits per player, and coin-in per player, treatment vs control after 25 days.'],
  'A-REPLACE-LEASE':['Rejected: the GM plan.','10 leases ≈ $33,800. The same-slot swap (M-1120 → M-5076, B-38) produced the same weak result. Expected gain ≈ 0.','—'],
  'A-PREVENTIVE':['Considered: Ridgeline (680 faults, $118k repairs, $50k lost theo).','$9k for 23 days breaks even only if faults fall ≥ 42%, which is unlikely. A first choice for Q3 if the budget had more slots.','—'],
- 'A-TECH-SHIFT':['Considered: graveyard shift (2× wait).','Saves about 1 h × 50 faults × ~$5 theo/h ≈ $250/month vs $11.5k. Rejected.','—'],
+ 'A-TECH-SHIFT':['Considered: graveyard shift (2× wait).','Grave: 1 tech → 1.96 h wait; a second would save about 1.3 h × 50 faults/month × ~$18 lost theo per machine-hour ≈ $1.2k/month vs $11,520. Rejected; refilling vacant planned shifts first is free.','—'],
  'A-PROMO':['Considered.','The out-of-sample Locals Week lift (+$11k theo over 7 days) was inside the model\'s noise and below the $15k cost. Rejected.','—']};
 function buildPlan(){const t=$('#t_plan');
  t.innerHTML='<thead><tr><th class="l">Action</th><th>Unit cost</th><th>Per day</th><th>Lead days</th><th>Limit</th><th>Quantity</th><th>Cost (July)</th></tr></thead><tbody>'+D.actions.map(a=>`<tr><td class="l">${a.name}<br><span class="t-mut">${a.id}</span></td><td>${usd(a.cost)}</td><td>${a.rec?usd(a.rec):'–'}</td><td>${a.lead}</td><td>${a.lim}</td><td><input type="number" min="0" max="${a.lim}" value="${PLAN[a.id]||0}" data-id="${a.id}"></td><td data-c="${a.id}"></td></tr>`).join('')+'</tbody>';
@@ -353,8 +370,8 @@ function buildPlan(){const t=$('#t_plan');
   ['Luck is the main driver of the list','Distribution of z across 310 machines','SD(z) = 1.09, mean −0.07: matches N(0,1)','Model miscalibration: ruled out because the spread matches','Unknown configs would distort it'],
   ['Back Forty demand depends on access','Diff-in-diff around the W-ENT-B40 closure','−25% Back Forty vs +6% rest of floor','Seasonality: the rest of the floor rose in the same weeks','One closure only; signs ≠ walkway'],
   ['Comp point price halved on May 1','loyalty_ledger redeem: −Σpoints/Σface by day','12.4 → 5.8 pts/$ overnight, all 10 items','Planned promotion: not in events; no lift in visits or coin-in','Intent unknown → pilot, not unilateral change'],
-  ['Ridgeline drives downtime','operations fault_repair × machines','7.2 faults/machine vs 1.9 Halcyon','Ridgeline machines sit in busier zones: faults per machine still differ within zones','Fault severity not observed'],
-  ['Weekday model beats baseline','analysis/model.py; train Jan–Apr, test May–Jun','MAE $54k vs $218k baseline','Leakage: event flags limited to those announced before May 1','Two-month test; summer may differ']];
+  ['Tech vacancies slowed repairs','shift_roster ⋈ operations by gaming date and shift','Wait 4.9 h at 0 techs, 1.2–2.6 h at 1, 0.1–0.7 h at 2; day shift 0.9 vs 1.7 planned in May','Busier days: the same dose-response holds within each shift','Observational; headcount is not randomized'],['Ridgeline drives downtime','operations fault_repair × machines','7.2 faults/machine vs 1.9 Halcyon','Ridgeline machines sit in busier zones: faults per machine still differ within zones','Fault severity not observed'],
+  ['Forecast beats baseline','analysis/model2.py: 6 candidates, rolling-origin CV in Jan–Apr, holdout May–Jun scored once','Gradient boosting chosen by CV; holdout MAE $52.5k vs $218k baseline (−76%) and $68.7k weekday mean','Selection bias: chosen on CV, not on test. Leakage: only pre-announced events','80% interval covers 75%; a two-month test']];
  table('#t_ev',['c','q','r','a','l'].map((kk,i)=>({k:kk,h:['Claim','Table / query','Result','Alternative tested','Limitation'][i],l:1})),EV.map(e=>({c:e[0],q:e[1],r:e[2],a:e[3],l:e[4]})),'c');
  document.querySelectorAll('#t_ev td').forEach(td=>td.style.whiteSpace='normal');
 }
