@@ -2,24 +2,24 @@
 
 **Dashboard:** https://deeps45.github.io/dashboard-royale-gilded-ace/
 
-**Verdict: don't replace the bottom 10.** Nine of the GM's ten lowest earners sit in the Back Forty, the floor's lowest-traffic zone. Five are low-edge games (5% hold) that earn less per dollar played *by design*. Measured fairly, by coin-in per day against their own zone's median, **none** of them draws less play than its neighbours. The swap has already been tried: M-1120 was replaced by M-5076 in the same slot (B-38), and the newcomer also landed in the bottom 10.
+**Verdict: don't replace the bottom 10.** Nine of the ten sit in the Back Forty, the lowest-traffic zone, and five are 5%-hold games that earn less per dollar played by design. Judged fairly, by coin-in per day against their own zone's median, **none** draws less play than its neighbours. A same-slot swap (M-1120 → M-5076, bank B-38) has already been tried, and it failed.
 
-**Luck.** We compute each machine's exact luck standard deviation from `sum_bet_squared × payout_multiplier_variance` and score it as z = (house win − theo) / SD. Across 310 machines the z-scores have SD 1.09 and mean −0.07, which is what pure luck predicts. One machine stands out: **M-1158** (z = −4.6, 3.0% hold vs 10% configured). Its hold collapsed after a March 10 repair, and the result is still significant after a Bonferroni correction across all machines. That is a reason to inspect, not an accusation.
+**Luck.** We compute each machine's exact luck standard deviation from `sum_bet_squared × payout_multiplier_variance`. The luck scores (z) across 310 machines have SD 1.09, which matches pure luck. One machine stands out: **M-1158** (z = −4.6, 3.0% hold vs 10% configured). Its hold collapsed after a March 10 repair, and the result survives a Bonferroni correction. That's a reason to inspect, not an accusation.
 
-**Location.** The Back Forty walkway closure (Mar 3 – Apr 7) is a natural experiment. Back Forty demand fell 25% while the rest of the floor rose 6%, a −29-point difference-in-differences. Demand there follows access, not machines.
+**Location.** When the Back Forty walkway closed (Mar 3 – Apr 7), Back Forty demand fell 25% while the rest of the floor rose 6%. Demand there follows access.
 
-**Leaks elsewhere.** Downtime is small: 99.6% availability, about $93k of theo lost over six months, more than half of it on Ridgeline machines (7.2 faults per machine vs 1.9 for Halcyon in every zone). On **May 1 the comp point price fell 53%** (12.4 → 5.8 points per $1, on every item, overnight). Comp cost per $ of theo rose from 0.78% to 0.86%, and coin-in and visits did not rise.
+**Other leaks.** Downtime is small (99.6% availability, about $93k theo lost) and mostly on Ridgeline machines, which fault 3.7× as often as Halcyon. On **May 1 the comp point price was cut 53%** overnight. Comp cost per $ of theo rose from 0.78% to 0.86%, and play did not.
 
-**Players.** Card holders wagered $163.8M and lost $15.6M (9.5% hold vs 9.45% theo). 14% of player-months ended ahead. The top 10% of players generate 66% of theo. We propose no idea that pushes heavy losers to play more.
+**Players.** Card holders wagered $163.8M and lost $15.6M. 14% of player-months ended ahead. The top 10% of players generate 66% of theo. Nothing in our plan targets heavy losers.
 
-**Model.** We forecast daily floor coin-in, training on Jan–Apr and testing on May–Jun, using only events announced before May 1. MAE: constant-mean baseline $218k, weekday mean $69k, **ridge $54k (−75%)**. The model changes two decisions. Out of sample, the Locals Week promotion's lift (+$11k theo over 7 days) fell inside the model's noise and below the $15k promotion cost, so we skip promotions. And the forecast is the counterfactual for measuring July actions.
+**Model.** We forecast daily floor coin-in, training on Jan–Apr and testing on May–Jun with only pre-announced events. MAE: flat-mean baseline $218k, **ridge $54k (−75%)**. The June promotion's lift was inside the model's noise and below its cost, so we fund no promotion. The forecast also serves as the counterfactual for measuring July actions.
 
-**Plan: $18,700 of $100,000. Keep $81,300.**
+**Plan: $18,700. Keep $81,300.**
 
-| Action | Cost | Expected effect (range) | Measure |
+| Action | Cost | Expected effect | Measure |
 |---|---:|---|---|
-| Inspect 6 machines with the lowest z (M-1158 first) | $7,200 | ~$6k/month if M-1158 is faulty; otherwise information | Inspection report; July z back within ±2 |
-| New signs for Back Forty | $7,500 | +5% demand (0–10%) ≈ +$14k theo ($0–29k) | Diff-in-diff vs rest of floor, against the forecast |
-| Comp pilot (50/50 randomized: 12.4 vs 5.8 points per $) | $4,000 | ~$1.5k/month saved on the treated half | Comp cost ÷ theo, visits, coin-in per player |
+| Inspect 6 lowest-z machines | $7,200 | ~$6k/month if M-1158 is faulty | July z within ±2 |
+| Back Forty signs | $7,500 | +5% (0–10%) ≈ $14k theo | Diff-in-diff vs floor |
+| Randomized comp pilot | $4,000 | ~$1.5k/month saved | Comp ÷ theo, visits |
 
-We rejected the GM's replacements ($33.8k leased / $220k bought, expected gain ≈ 0), preventive maintenance (breaks even only if faults fall ≥ 42%), an extra technician (~$250/month benefit), and a promotion weekend.
+Rejected: the GM's replacements ($33.8k+, no gain), preventive maintenance (needs ≥42% fewer faults), an extra technician, and promotions.
