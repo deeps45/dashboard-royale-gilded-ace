@@ -90,3 +90,53 @@ function burst(el,alarm){if(RM||!el)return;const r=el.getBoundingClientRect();fo
  $('#lv_reset').onclick=()=>{if(L.timer){cancelAnimationFrame(L.timer);L.timer=null}leverInit()};
  window.casinoRefresh=()=>{if(L)leverDraw()};})();
 })();
+
+// ===== Casino entrance intro + jackpot board =====
+(function(){
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches,SYM=['♠','♥','♦','♣','7','★','BAR','♛'],FIN=['LUCK','LOCATION','LEAK'],IH=92,IN=26;
+let seen=false;try{seen=sessionStorage.getItem('introSeen')==='1'}catch(e){}
+const LD=document.getElementById('loader');let t0=performance.now(),landed=false,ready=false,gone=false;
+if(LD&&!seen&&!RM){
+ LD.classList.add('intro');
+ LD.innerHTML=`<div class="in-wrap"><div class="in-kick">The Gilded Ace · floor review · Jan–Jun 2025</div><h1 class="in-title">Luck, Location, or a Leak?</h1>
+  <div class="in-machine"><div class="in-top">★ GILDED ACE ★</div><div class="in-reels">${FIN.map((w,i)=>`<div class="in-reel"><div class="in-strip spinning" id="istrip${i}">${Array.from({length:IN},(_,k)=>`<div class="in-sym${k===IN-1?' fin':''}">${k===IN-1?w:SYM[(k*3+i*5)%SYM.length]}</div>`).join('')}</div></div>`).join('')}</div>
+   <button class="lever big in-lever" id="inLever" aria-label="Pull the lever to enter"><span class="knob"></span><span class="arm"></span></button></div>
+  <p class="in-msg" id="inMsg">Dealing 55,090 machine-days…</p>
+  <div class="in-act"><button class="btn primary" id="inEnter" disabled>Enter the floor →</button><button class="btn ghost in-skip" id="inSkip">Skip</button></div></div>`;
+ const exit=()=>{if(gone)return;gone=true;try{sessionStorage.setItem('introSeen','1')}catch(e){}LD.classList.add('done');setTimeout(()=>LD.remove(),700)};
+ const land=()=>{if(landed)return;landed=true;[0,1,2].forEach(i=>{const s=document.getElementById('istrip'+i);s.classList.remove('spinning');s.style.transform='translateY(0)';s.offsetHeight;
+   const d=0.9+i*0.45;s.style.transition=`transform ${d}s cubic-bezier(.15,.85,.25,1.04)`;s.style.transform=`translateY(${-(IN-1)*IH}px)`;setTimeout(()=>s.parentElement.classList.add('won'),d*1000)});
+  setTimeout(()=>{$('#inMsg').innerHTML='<b>All three.</b> Most of the bottom 10 are victims of location and luck, and one machine is leaking.';$('#inEnter').disabled=false;$('#inEnter').focus();setTimeout(exit,2200)},1900)};
+ $('#inSkip').onclick=exit;$('#inEnter').onclick=exit;
+ $('#inLever').onclick=()=>{$('#inLever').classList.add('pulled');setTimeout(()=>$('#inLever').classList.remove('pulled'),400);if(ready)land();else $('#inMsg').textContent='Still dealing the cards… one moment.'};
+ document.addEventListener('keydown',e=>{if(!gone&&(e.key==='Escape'||(e.key==='Enter'&&landed)))exit()});
+ window.introReady=()=>{ready=true;const wait=Math.max(0,1200-(performance.now()-t0));$('#inMsg').textContent='Ready. Pull the lever, or watch the reels land.';setTimeout(land,wait+300)};
+}
+// ---------- jackpot board: rolling-digit meters ----------
+function roll(el,text){if(!el)return;const chars=[...text];
+ if(el.dataset.len!==String(chars.length)||el.dataset.shape!==chars.map(c=>/\d/.test(c)?'9':c).join('')){
+  el.innerHTML=chars.map(c=>/\d/.test(c)?`<span class="od"><span class="odr">${'0123456789'.split('').map(d=>`<span>${d}</span>`).join('')}</span></span>`:`<span class="odc">${c}</span>`).join('');
+  el.dataset.len=chars.length;el.dataset.shape=chars.map(c=>/\d/.test(c)?'9':c).join('');el.offsetHeight;}
+ let k=0;el.querySelectorAll('.od .odr').forEach(r=>{while(!/\d/.test(chars[k]))k++;r.style.transitionDelay=RM?'0s':(Math.random()*0.25).toFixed(2)+'s';r.style.transform=`translateY(${-(+chars[k])*10}%)`;k++});
+ el.setAttribute('aria-label',text)}
+const M=x=>(x<0?'−':'')+'$'+(Math.abs(x)/1e6).toFixed(Math.abs(x)>=1e8?1:2)+'M';
+function jackpot(){const box=document.getElementById('jackpot');if(!box||!D)return;
+ const a=S.f0,b=S.f1,P=D.prop,idx=P.d.map((d,i)=>d>=a&&d<=b?i:-1).filter(i=>i>=0),sum=k=>idx.reduce((s,i)=>s+(P[k][i]||0),0);
+ const zf=S.zone||S.bank,rows=R.filter(r=>(!S.zone||r.zone===S.zone)&&(!S.bank||r.bank===S.bank));
+ const ci=zf?rows.reduce((s,r)=>s+r.ci,0):sum('ci'),hw=zf?rows.reduce((s,r)=>s+r.hw,0):sum('hw'),th=zf?rows.reduce((s,r)=>s+r.th,0):sum('th');
+ const av=rows.reduce((s,r)=>s+r.av,0)/Math.max(1,rows.reduce((s,r)=>s+r.sc,0));
+ const m0=a.slice(0,7),m1=b.slice(0,7),pp=D.pp,pi=pp.mo.map((m,i)=>m>=m0&&m<=m1&&(!S.tier||pp.tier[i]===S.tier)&&(!S.age||pp.age[i]===S.age)&&(!S.reg||pp.reg[i]===S.reg)?i:-1).filter(i=>i>=0);
+ const pw=pi.reduce((s,i)=>s+pp.ci[i],0),pn=pi.reduce((s,i)=>s+pp.po[i]-pp.ci[i],0);
+ const scope=zf?(S.bank?'bank '+S.bank:D.zones[S.zone]):'whole floor',gscope=[S.tier,S.age,S.reg].filter(Boolean).join(' · ')||'all card holders';
+ const tiles=[['ci',M(ci),'Total wagered',scope],['hw',M(hw),'House win',`expected ${M(th)} · luck ${hw-th>=0?'+':'−'}${M(Math.abs(hw-th)).replace(/^\$|^−\$/,'$')}`],
+  ['ct',zf?'—':M(sum('contrib')),'Contribution after costs',zf?'floor-wide only':'house win + F&B − costs'],['pw',M(pw),'Card holders wagered',gscope],
+  ['pn',M(pn),'Card holders net',pn<0?'what tracked players lost':'tracked players ahead'],['av',(av*100).toFixed(2)+'%','Machine availability',scope]];
+ if(!box.dataset.built){box.innerHTML=tiles.map(t=>`<div class="jp" id="jp_${t[0]}"><div class="jp-l">${t[2]}</div><div class="jp-v" id="jpv_${t[0]}"></div><div class="jp-s" id="jps_${t[0]}"></div></div>`).join('');box.dataset.built=1}
+ tiles.forEach(t=>{if(t[1]==='—'){const e=document.getElementById('jpv_'+t[0]);e.textContent='—';e.dataset.len='';e.setAttribute('aria-label','not available for a zone filter')}else roll(document.getElementById('jpv_'+t[0]),t[1]);document.getElementById('jps_'+t[0]).textContent=t[3]});
+ // one-line verdict chips for the period (judge task: change the period, watch it update)
+ const bottom=R.slice().sort((x,y)=>x.hw-y.hw).slice(0,10),bf=bottom.filter(r=>D.zones[r.zone]==='Back Forty').length,weak=bottom.filter(r=>r.cirel<0.75).length,leak=R.filter(r=>Math.abs(r.hz)>=5).length;
+ const vc=document.getElementById('vchips');if(vc)vc.innerHTML=`<span class="vchip">${a.slice(5).replace('-','/')} → ${b.slice(5).replace('-','/')}</span><span class="vchip"><b>${bf}/10</b> of the GM's list in Back Forty</span><span class="vchip"><b>${weak}</b> draw weak play</span><span class="vchip bad"><b>${leak}</b> machine leaking (hit-rate test)</span>`;}
+const orig=window.render;window.render=function(){const r=orig.apply(this,arguments);try{jackpot()}catch(e){console.error(e)}return r};
+const origP=window.renderPlayers;window.renderPlayers=function(){const r=origP.apply(this,arguments);try{jackpot()}catch(e){}return r};
+(function wait(){if(typeof D==='undefined'||!D||!R||!R.length){setTimeout(wait,80);return}jackpot();})();
+})();

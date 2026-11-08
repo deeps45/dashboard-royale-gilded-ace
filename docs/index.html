@@ -205,6 +205,38 @@ pre.code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:va
 @media (max-width:900px){.cgrow{grid-template-columns:1fr}.pcard{max-width:360px;margin:0 auto}.lvwrap{grid-template-columns:1fr}.lvctl{flex-direction:row}.slots{transform:scale(.85);transform-origin:right center}}
 @media (max-width:640px){.slots{display:none}.cgopts{grid-template-columns:1fr 1fr}}
 
+
+/* ===== entrance intro ===== */
+.loader.intro{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(90% 90% at 50% 40%,#17694c 0%,#0c3a2a 60%,#05140e 100%);color:#f6f0dc;transition:opacity .6s,transform .6s}
+.loader.intro.done{opacity:0;transform:scale(1.04)}
+.in-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px;text-align:center}
+.in-kick{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f0d58a}
+.in-title{font:700 clamp(30px,5vw,54px)/1.05 "Playfair Display",Georgia,serif;margin:0;background:linear-gradient(180deg,#fff7d6,#f0d58a 45%,#c9a13b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.in-machine{position:relative;display:flex;align-items:center;gap:14px;padding:46px 22px 22px 26px;border-radius:26px;background:linear-gradient(180deg,#4a3410,#1d1505);border:3px solid #c9a13b;box-shadow:inset 0 0 0 4px #0b0803,0 24px 60px rgba(0,0,0,.55),0 0 80px rgba(240,213,138,.18)}
+.in-top{position:absolute;top:10px;left:0;right:0;text-align:center;font:700 14px/1 Inter,sans-serif;letter-spacing:4px;color:#f0d58a;text-shadow:0 0 10px rgba(240,213,138,.8);animation:pulse 1.6s infinite}
+.in-reels{display:flex;gap:10px}
+.in-reel{width:clamp(96px,16vw,170px);height:92px;overflow:hidden;border-radius:12px;background:linear-gradient(180deg,#d9d4c5,#fffdf6 22%,#fffdf6 78%,#d9d4c5);box-shadow:inset 0 8px 12px rgba(0,0,0,.35),inset 0 -8px 12px rgba(0,0,0,.35)}
+.in-reel.won{box-shadow:inset 0 8px 12px rgba(0,0,0,.25),inset 0 -8px 12px rgba(0,0,0,.25),0 0 0 3px #f0d58a,0 0 28px rgba(240,213,138,.85)}
+.in-sym{height:92px;display:grid;place-items:center;font:700 40px/1 "Playfair Display",Georgia,serif;color:#14130f}.in-sym.fin{font:800 clamp(15px,2.4vw,24px)/1 Inter,sans-serif;letter-spacing:2px;color:#7a1f1f}
+.in-strip.spinning{animation:spinstrip .45s linear infinite}@keyframes spinstrip{from{transform:translateY(0)}to{transform:translateY(-736px)}}
+.in-lever{height:130px}.in-msg{min-height:24px;max-width:560px;margin:4px 0 0;font-size:16px;opacity:.95}.in-msg b{color:#f0d58a}
+.in-act{display:flex;gap:10px}.in-skip{color:#f6f0dc;border-color:rgba(255,255,255,.3)}
+/* ===== jackpot board ===== */
+.vchips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px}.vchip{font-size:13px;padding:5px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
+.vchip b{color:var(--text)}.vchip.bad{border-color:color-mix(in srgb,var(--crit) 50%,var(--border))}.vchip.bad b{color:var(--crit)}
+.jackpot{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+@media (min-width:900px){.jackpot{grid-template-columns:repeat(3,1fr)}}
+#vtiles[hidden],#vlead[hidden]{display:none!important}
+.jp{position:relative;border-radius:16px;padding:16px 18px 14px;background:linear-gradient(180deg,#1d1606,#0c0903);border:2px solid #c9a13b;box-shadow:inset 0 0 0 3px #000,0 8px 24px rgba(0,0,0,.25);color:#f6f0dc;overflow:hidden}
+.jp::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at 10px 10px,rgba(240,213,138,.18) 0 2px,transparent 2px 20px);opacity:.35;pointer-events:none}
+.jp-l{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#f0d58a;position:relative}
+.jp-v{position:relative;display:flex;align-items:flex-end;height:52px;margin:6px 0 4px;font:700 44px/52px "Inter",system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#fff3c4;text-shadow:0 0 12px rgba(240,213,138,.65),0 0 2px #fff}
+.od{display:inline-block;height:52px;overflow:hidden}.odr{display:flex;flex-direction:column;transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}.odr span{height:52px;line-height:52px;text-align:center}
+.odc{display:inline-block;line-height:52px}
+.jp-s{position:relative;font-size:12.5px;color:#cfc8b0}
+#jp_pn .jp-v{color:#ffb4a8;text-shadow:0 0 12px rgba(255,120,100,.55)}
+@media (max-width:640px){.in-machine{padding:42px 12px 14px 14px}.in-lever{display:none}.jp-v{font-size:36px}}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 </style>
@@ -242,8 +274,10 @@ pre.code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:va
  <div class="causes"><div class="tile"><b>Luck</b><span>Luck scores across 310 machines follow a normal curve (SD 1.09). Luck explains the spread, and it doesn't persist (r = 0.11 between halves).</span></div><div class="tile"><b>Location</b><span>9 of 10 sit in Back Forty. When its walkway closed, door counts fell 30% and play fell 29%: demand there is foot traffic.</span></div><div class="tile"><b class="bad">Leak</b><span>M-1158 pays on 38.6% of spins vs 31.5% configured, in the meters <i>and</i> in the carded sessions (z = +124 / +103).</span></div><div class="tile"><b class="bad">+$4.1M</b><span>Hidden comp exposure: on May 1 the 156M unredeemed points became worth 2.2× as much.</span></div></div>
 </section>
 <section>
- <div class="shead"><span class="kicker">The numbers behind the verdict</span><h2>What the data says for the selected period</h2><p class="answer" id="vlead">Loading…</p></div>
- <div class="tiles" id="vtiles"></div>
+ <div class="shead"><span class="kicker">The floor in numbers</span><h2>Six months at the Gilded Ace</h2></div>
+ <div class="vchips" id="vchips"></div>
+ <div class="jackpot" id="jackpot" aria-live="polite"></div>
+ <p class="answer" id="vlead" hidden></p><div class="tiles" id="vtiles" hidden></div>
 </section>
 <section>
  <div class="shead"><span class="kicker">Recommendation</span><h2>Spend $15,100. Keep $84,900.</h2><p class="answer">Three actions, each with a cost, an expected effect, a range and a way to measure it.</p></div>
@@ -922,7 +956,7 @@ function chapterNav(){const tabs=[...document.querySelectorAll('.tabs button')];
  tabs.forEach((b,i)=>{const p=document.getElementById('tab-'+b.dataset.tab);if(!p||p.querySelector('.chnav'))return;const nav=document.createElement('div');nav.className='chnav';
   if(i>0)nav.innerHTML+=`<button class="btn" data-go="${tabs[i-1].dataset.tab}">← ${tabs[i-1].textContent}</button>`;
   if(i<tabs.length-1)nav.innerHTML+=`<button class="btn primary nx" data-go="${tabs[i+1].dataset.tab}">Next: ${tabs[i+1].textContent} →</button>`;p.appendChild(nav)})}
-(function wait(){if(!D||!R.length){setTimeout(wait,50);return}buildMapControls();drawFloor();chapterNav();$('#loader').classList.add('done');setTimeout(()=>$('#loader').remove(),600);setTimeout(()=>countUp(document.querySelectorAll('#vtiles .tile b, .act .amt, .causes .tile b')),150);
+(function wait(){if(!D||!R.length){setTimeout(wait,50);return}buildMapControls();drawFloor();chapterNav();if(window.introReady)introReady();else{$('#loader').classList.add('done');setTimeout(()=>$('#loader').remove(),600)}setTimeout(()=>countUp(document.querySelectorAll('#vtiles .tile b, .act .amt, .causes .tile b')),150);
  const h=location.hash.slice(1);if(h&&document.getElementById(h))go(h);else show('overview');})();
 
 </script>
