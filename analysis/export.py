@@ -64,3 +64,12 @@ out['floor']={'m':{r.machine_id:[round(xy.loc[r.loc,'x'],1),round(xy.loc[r.loc,'
 out['events']=q("select name, event_type, start_date::varchar s, end_date::varchar e, announced_date::varchar a from 'data/4_context/events.parquet'").to_dict('records')
 out['actions']=q("select action_type_id id, name, unit_cost_cents/100.0 cost, recurring_cost_cents_per_day/100.0 rec, lead_days lead, quantity_limit lim, incompatibility_group grp from 'data/2_machine_decision/action_catalog.parquet'").to_dict('records')
 s=json.dumps(out,separators=(',',':'),default=str).replace('NaN','null'); open('docs/data.json','w').write(s); print(len(s)/1e6,'MB', len(dates), len(mids), len(banks))
+
+# Claims & evidence table, parsed from APPENDIX.md (single source for the Evidence tab and the AI assistant)
+import re
+claims=[]
+for line in open('APPENDIX.md').read().split('## Budget arithmetic')[0].splitlines():
+    c=[x.strip().replace('\\|','|') for x in re.split(r'(?<!\\)\|',line)[1:-1]]
+    if len(c)==5 and re.match(r'^\d+[a-c]?$',c[0]): claims.append({'#':c[0],'claim':c[1],'evidence':c[2],'alternative':c[3],'limitation':c[4]})
+out['claims']=claims
+s=json.dumps(out,separators=(',',':'),default=str).replace('NaN','null'); open('docs/data.json','w').write(s); print('claims',len(claims),'size',round(len(s)/1e6,2),'MB')

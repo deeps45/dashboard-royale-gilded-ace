@@ -7,3 +7,5 @@ GUIDE.md
 __pycache__/
 .DS_Store
 .env
+.wrangler/
+node_modules/

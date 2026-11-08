@@ -122,6 +122,25 @@ td:last-child{white-space:normal;min-width:160px}
 .chnav{display:flex;justify-content:space-between;gap:10px;margin:4px 0 18px}.chnav .nx{margin-left:auto}
 .loader{position:fixed;inset:0;z-index:60;display:grid;place-content:center;justify-items:center;gap:10px;background:var(--bg);color:var(--text2);transition:opacity .4s}
 .loader.done{opacity:0;pointer-events:none}
+.askfab{position:fixed;right:20px;bottom:20px;z-index:44;border:0;border-radius:999px;padding:12px 18px;font-weight:600;cursor:pointer;color:#1a1405;background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.askfab:hover{transform:translateY(-2px)}
+.askbox{position:fixed;right:20px;bottom:76px;z-index:45;width:min(420px,calc(100vw - 24px));height:min(600px,calc(100vh - 110px));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--gold2);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden}
+.askbox[hidden]{display:none}
+.askhead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--felt2),var(--felt1));color:var(--heroText)}
+.askhead b{display:block;font-size:15px;color:var(--gold2)}.askhead span{font-size:11.5px;opacity:.85}.askhead .btn{color:var(--heroText)}
+.asklog{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:88%;padding:9px 12px;border-radius:12px;font-size:13.5px;line-height:1.5}
+.msg.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.msg.bot{align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg .cite{font-size:11.5px;padding:0 6px;border:1px solid var(--gold);border-radius:10px;color:var(--gold);text-decoration:none;white-space:nowrap}
+.acts2{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}.acts2 span{font-size:11px;color:var(--s3);background:color-mix(in srgb,var(--s3) 12%,transparent);border-radius:8px;padding:1px 7px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:0 12px 8px;scrollbar-width:thin}.chips button{white-space:nowrap;font-size:12px;border-radius:999px;padding:5px 10px;cursor:pointer;background:var(--surface2)}
+.chips button:hover{border-color:var(--gold2)}
+.askform{display:flex;gap:6px;padding:0 12px 6px}.askform input{flex:1;padding:9px 12px;border-radius:10px}
+.asknote{font-size:10.5px;color:var(--muted);margin:0 12px 10px}
+.typing i{display:inline-block;width:6px;height:6px;margin-right:3px;border-radius:50%;background:var(--muted);animation:pulse 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@media (max-width:640px){.askbox{right:12px;bottom:70px}.askfab{right:12px;bottom:12px}}
+
 pre.code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:pre;color:var(--text)}
 #t_models td:first-child{white-space:normal;min-width:180px}.lmark{font-size:54px;color:var(--gold2);animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.12);opacity:.6}}
@@ -655,7 +674,7 @@ function buildPlan(){const t=$('#t_plan');
   ['Comp point price halved on May 1','loyalty_ledger redeem: −Σpoints/Σface by day','12.4 → 5.8 pts/$ overnight, all 10 items','Planned promotion: not in events; no lift in visits or coin-in','Intent unknown → pilot, not unilateral change'],
   ['Tech vacancies slowed repairs','shift_roster ⋈ operations by gaming date and shift','Wait 4.9 h at 0 techs, 1.2–2.6 h at 1, 0.1–0.7 h at 2; day shift 0.9 vs 1.7 planned in May','Busier days: the same dose-response holds within each shift','Observational; headcount is not randomized'],['Ridgeline drives downtime','operations fault_repair × machines','7.2 faults/machine vs 1.9 Halcyon','Ridgeline machines sit in busier zones: faults per machine still differ within zones','Fault severity not observed'],
   ['Forecast beats baseline','analysis/model2.py: 6 candidates, rolling-origin CV in Jan–Apr, holdout May–Jun scored once','Gradient boosting chosen by CV; holdout MAE $52.5k vs $218k baseline (−76%) and $68.7k weekday mean','Selection bias: chosen on CV, not on test. Leakage: only pre-announced events','80% interval covers 75%; a two-month test']];
- table('#t_ev',['c','q','r','a','l'].map((kk,i)=>({k:kk,h:['Claim','Table / query','Result','Alternative tested','Limitation'][i],l:1})),EV.map(e=>({c:e[0],q:e[1],r:e[2],a:e[3],l:e[4]})),'c');
+ table('#t_ev',[{k:'n',h:'#'},{k:'c',h:'Claim',l:1},{k:'q',h:'Table / query → result',l:1},{k:'a',h:'Alternative tested',l:1},{k:'l',h:'Limitation',l:1}],D.claims.map((e,o)=>({o,n:e['#'],c:e.claim,q:e.evidence.replace(/`([^`]+)`/g,'<code>$1</code>'),a:e.alternative,l:e.limitation})),'o');
  document.querySelectorAll('#t_ev td').forEach(td=>td.style.whiteSpace='normal');
 }
 function calcSim(){const p=+$('#s_p').value/100,l=+$('#s_l').value/100,cs=+$('#s_c').value/100;$('#v_p').textContent=fmt(p*100)+'%';$('#v_l').textContent=fmt(l*100,1)+'%';$('#v_c').textContent=fmt(cs*100)+'%';
@@ -812,5 +831,7 @@ function chapterNav(){const tabs=[...document.querySelectorAll('.tabs button')];
  const h=location.hash.slice(1);if(h&&document.getElementById(h))go(h);else show('overview');})();
 
 </script>
+<script src="ask-config.js"></script>
+<script src="ask.js"></script>
 </body>
 </html>

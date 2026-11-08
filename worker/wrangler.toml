@@ -1,0 +1,14 @@
+name = "gilded-ace-ask"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+# Per-visitor rate limit: 20 model calls per 60 seconds per IP (about 7-10 questions; each may take 2-3 calls)
+[[ratelimits]]
+name = "LIMITER"
+namespace_id = "1001"
+  [ratelimits.simple]
+  limit = 20
+  period = 60
+
+# GEMINI_API_KEY is stored as an encrypted secret: `npx wrangler secret put GEMINI_API_KEY`

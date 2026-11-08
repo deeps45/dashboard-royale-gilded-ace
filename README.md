@@ -45,3 +45,12 @@ python analysis/export.py      # adds the Tiger results to docs/data.json
 ```
 
 The dashboard is one static page (`docs/index.html`, Plotly). It recomputes every metric in the browser from `docs/data.json` for whatever period, zone, bank or guest group you select.
+
+### Ask the Floor (Gemini assistant, optional)
+
+`docs/ask.js` adds an in-page analyst powered by Google Gemini. It answers only from the dashboard's verified numbers and the appendix claims, and drives the dashboard through function calling: it can navigate, set filters, open machine profiles, rank machines, play the floor map and run the plan simulator. The Gemini key never reaches the browser. It is stored as an encrypted secret in a Cloudflare Worker (`worker/`), which only accepts requests from this site, allows three Gemini models, caps request and response size, and rate-limits each visitor.
+
+```sh
+cd worker && npx wrangler login && npx wrangler deploy
+npx wrangler secret put GEMINI_API_KEY      # paste the key; it is never committed
+```

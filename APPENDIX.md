@@ -39,7 +39,7 @@ Sensitivity: the signs break even at +2.6% Back Forty demand. Preventive mainten
 
 ## AI-use disclosure
 
-We used Claude (Anthropic, via Claude Code) to help write DuckDB/pandas and TimescaleDB (Tiger Data) analysis code, build the static Plotly dashboard, and draft this write-up and appendix. Every number was produced by the scripts in `analysis/` from the challenge data and checked by running them. The analytical choices (luck z-score, diff-in-diff, time-split holdout, action selection) were reviewed by the team.
+We used Claude (Anthropic, via Claude Code) to help write DuckDB/pandas and TimescaleDB (Tiger Data) analysis code, build the static Plotly dashboard, and draft this write-up and appendix. Every number was produced by the scripts in `analysis/` from the challenge data and checked by running them. The dashboard also includes an optional assistant, "Ask the Floor", that uses Google Gemini at run time. It is instructed to answer only from the dashboard's verified numbers and these claims, to cite claim numbers, and to frame anomalies as reasons to inspect. Its answers are labelled AI-generated, and no analytical result in this submission comes from it. The analytical choices (luck z-score, diff-in-diff, time-split holdout, action selection) were reviewed by the team.
 
 ## Robustness checks (`analysis/robustness.py`) and verification (`analysis/verify.py`)
 
