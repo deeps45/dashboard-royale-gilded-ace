@@ -7,7 +7,8 @@
 <meta name="description" content="Luck, location, or a leak? A luck-adjusted review of the Gilded Ace slot floor, Jan–Jun 2025, with a priced $100k plan.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<link rel="preload" href="data.json" as="fetch" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
 <style>
 :root{color-scheme:light;--bg:#f3f1ea;--surface:#fffefa;--surface2:#f8f6ef;--border:#e2ddd0;--text:#14130f;--text2:#4d4b45;--muted:#77746c;
  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s7:#6250d6;--crit:#c9302c;--warn:#b26a00;--good:#16794d;--accent:#2a78d6;--grid:#ece8dc;
@@ -499,7 +500,7 @@ function lay(extra={}){return Object.assign({paper_bgcolor:'rgba(0,0,0,0)',plot_
 const cfg={displayModeBar:false,responsive:true};
 const plot=(id,t,l)=>{const el=document.getElementById(id);if(!el.getAttribute('aria-label')){const h=el.previousElementSibling||el.parentElement.querySelector('h3');el.setAttribute('aria-label',(h?h.textContent:id)+'. Values are in the tables and text nearby.')}return Plotly.react(id,t,lay(l),cfg)};
 
-fetch('data.json').then(r=>r.json()).then(d=>{D=d;init();render();renderDeep();renderTiger()}).catch(e=>{document.getElementById('loader').classList.add('done');$('#vlead').textContent='Error: '+e.message+' '+(e.stack||'').split('\n')[1];console.error(e)});
+fetch('data.json').then(r=>r.json()).then(d=>new Promise(res=>{(function w(){window.Plotly?res(d):setTimeout(w,30)})()})).then(d=>{D=d;init();render();renderDeep();renderTiger()}).catch(e=>{document.getElementById('loader').classList.add('done');$('#vlead').textContent='Error: '+e.message+' '+(e.stack||'').split('\n')[1];console.error(e)});
 function init(){
  const zs=Object.entries(D.zones).sort((a,b)=>a[1].localeCompare(b[1]));
  zs.forEach(([id,n])=>$('#fz').add(new Option(n,id)));
