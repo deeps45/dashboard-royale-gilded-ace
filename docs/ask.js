@@ -87,7 +87,32 @@ async function call(contents,onText){let last;
    if(!parts.length){last='empty response';window.__askLast=m+': empty, buf='+buf.slice(0,120);break}
    return{role:'model',parts}}catch(e){clearTimeout(tm);last=e.name==='AbortError'?'timeout':e.message;window.__askLast=m+': '+e.name+' '+e.message;break}}}
  throw new Error(last||'no response');}
-async function ask(q){if(busy||!q.trim())return;let used=0;try{used=+sessionStorage.getItem('askN')||0;sessionStorage.setItem('askN',used+1)}catch(e){}
+// Verified answers: instant, no AI call, every number from the analysis (analysis/*.py, checked by verify.py)
+const PREBUILT=[
+ {q:"Should we replace the GM's bottom 10?",acts:['opened Machines'],act:()=>{closeDrawer();go('q1')},
+  a:"**No. Replacing them would cost $33,800 and fix nothing.** 9 of the 10 sit in **Back Forty**, the quietest zone, and 5 are 5%-hold games that earn less per dollar by design (Claim 1) (Claim 2). None draws weak play for its zone, and **all 10 are profitable after costs** ($90 to $323 a day). A lease ordered July 1 would need **+$211/day** of extra play just to pay itself back; the one real swap on bank B-38 added **$9/day** (Claim 3) (Claim 14). The money belongs on the causes: location and one leaking machine."},
+ {q:"Is M-1158 broken or unlucky? Show me.",acts:['opened M-1158'],act:()=>openDrawer('M-1158'),
+  a:"**Very likely misconfigured, not unlucky: inspect it.** M-1158 pays on **38.6% of spins vs 31.5% configured**, in every month since January. That's a hit-rate z of **+124** in the machine meters and **+103** in the separate player-tracking records, so it isn't a meter glitch (Claim 5b) (Claim 15). Payouts are also beyond luck (z = −4.6): hold is **3.0% vs 10%** configured, costing about **$200 a day, ~$73k a year** (Claim 5). There are no tampering reports on it, so this is a records or paytable mismatch to inspect, not an accusation (Claim 12c)."},
+ {q:"How early could we have caught it?",acts:['opened the Tiger Data live alarm'],act:()=>{closeDrawer();go('tiger')},
+  a:"**On its first day: after just 10 hours of play.** Running the same hit-rate test every hour in Tiger Data, M-1158 crossed the alarm line on the evening of **January 1** (1,276 spins, $911 played), with **zero false alarms** on the other 309 machines over six months (Claim 15b). Instead, the anomaly ran until June, with its house win about **$36k below expected**. The continuous aggregate answers this check **32× faster** than scanning raw meters, so a floor team could run it all day."},
+ {q:"Why is Back Forty so quiet?",acts:['playing the floor map'],act:()=>{closeDrawer();go('floorsec');setTimeout(()=>{if(!MAP.timer)$('#mapPlay').click()},400)},
+  a:"**Foot traffic, not the machines.** Back Forty's short route from the main doors is a single walkway; the other routes are 80–100 m detours. When that walkway closed for renovation (Mar 3 – Apr 7), its **door counts fell 30%** and **play fell 29%**, while Bar Row, the detour, rose 14% (Claim 16). Against the rest of the floor that's a **−31 point gap**, bigger than all 80 placebo tests (Claim 6). Back Forty's play moves **one-for-one with people walking in**, which is why we fund signs, not new machines. Watch March on the map."},
+ {q:"What changed on May 1, and what does it cost us?",acts:['opened Comps'],act:()=>{closeDrawer();go('q5')},
+  a:"**Every comp quietly got 53% cheaper in points.** Overnight, the points charged per $1 of comp fell from **12.5 to 5.8**, for every item, and it wasn't an announced promotion (Claim 9). The monthly bill barely moved (comp cost 0.78% → 0.86% of theo), but the **156 million points** members already hold went from about **$3.5M to $7.6M** of potential cost: a **+$4.1M exposure** (Claim 10) (Claim 19). A $4,000 randomized pilot tests restoring the old price on half of members before deciding."},
+ {q:"How would you spend the $100,000?",acts:['opened the $100k plan'],act:()=>{closeDrawer();go('plan')},
+  a:"**Spend $15,100 and keep $84,900.** (1) **Inspect M-1158 and two others: $3,600**, recovering about $200 a day. (2) **New signs for Back Forty: $7,500**, for an expected +5% foot traffic (range 0–10%), measured with door counters. (3) **A randomized comp pilot: $4,000**, which settles the $4.1M points question with a guardrail so heavy losers are never encouraged to play more. We rejected the GM's leases ($33,800), relocation (no zone is full) and promotions (the forecast shows they don't pay) (Claim 13) (Claim 21)."}
+];
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
+const findPre=q=>PREBUILT.find(p=>norm(p.q)===norm(q));
+async function answerPre(p,t){const ids=CLAIM_IDS();p.act();await new Promise(r=>setTimeout(r,350));
+ const head=`<div class="acts2">${p.acts.map(a=>'<span>↳ '+esc(a)+'</span>').join('')}<span class="vf">✓ Verified answer</span></div>`;
+ const words=p.a.split(' ');let n=0;
+ await new Promise(res=>{const iv=setInterval(()=>{n=Math.min(words.length,n+4);t.innerHTML=head+md(words.slice(0,n).join(' '))+(n<words.length?'<span class="caret">▍</span>':'');$('#askLog').scrollTop=1e9;if(n>=words.length){clearInterval(iv);res()}},28)});}
+
+async function ask(q){if(busy||!q.trim())return;const pq=findPre(q);
+ if(pq){busy=true;$('#askIn').value='';add('me',q);const t0=add('bot','<span class="typing"><i></i><i></i><i></i></span>',true);
+  await answerPre(pq,t0);history.push({role:'user',parts:[{text:q}]},{role:'model',parts:[{text:pq.a}]});if(history.length>24)history=history.slice(-24);busy=false;return}
+ let used=0;try{used=+sessionStorage.getItem('askN')||0;sessionStorage.setItem('askN',used+1)}catch(e){}
  if(used>=30){add('bot','You have reached this session\'s question limit. Reload the page to continue.');return}
  busy=true;$('#askIn').value='';add('me',q);const t=add('bot','<span class="typing"><i></i><i></i><i></i></span> <span class="st">Reading the dashboard…</span>',true);
  history.push({role:'user',parts:[{text:q}]});const acts=[],ids=CLAIM_IDS();
@@ -105,21 +130,21 @@ async function ask(q){if(busy||!q.trim())return;let used=0;try{used=+sessionStor
    if(streamed.trim().length>40&&fc.every(p=>DISPLAY_TOOLS.has(p.functionCall.name))){show(streamed,true);break}
    if(!streamed)t.innerHTML=(acts.length?`<div class="acts2">${acts.map(a=>'<span>↳ '+esc(a)+'</span>').join('')}</div>`:'')+'<span class="typing"><i></i><i></i><i></i></span> <span class="st">Writing the answer…</span>';}
  }catch(e){const busyMsg=/quota|429|busy|demand|503|timeout/i.test(e.message);
-  t.innerHTML=(busyMsg?'Gemini is getting a lot of questions right now. Please try again in a few seconds.':'Sorry, the AI service is unavailable right now ('+esc(e.message.slice(0,80))+').')+' Everything else on the dashboard works without it.';history.pop()}
+  t.innerHTML=(busyMsg?'Gemini is getting a lot of questions right now. Try again in a few seconds, or tap one of the <b>✓ verified questions</b> below for an instant answer.':'Sorry, the AI service is unavailable right now ('+esc(e.message.slice(0,80))+').')+' Everything else on the dashboard works without it.';history.pop()}
  if(history.length>24)history=history.slice(-24);busy=false;$('#askLog').scrollTop=1e9;}
 function add(who,html,raw){const d=document.createElement('div');d.className='msg '+who;d.innerHTML=raw||who==='bot'?html:esc(html);$('#askLog').appendChild(d);$('#askLog').scrollTop=1e9;return d}
 // UI
 const ui=document.createElement('div');ui.innerHTML=`<button class="askfab" id="askFab" aria-expanded="false" aria-controls="askBox">✦ Ask the floor</button>
 <section class="askbox" id="askBox" hidden aria-label="Ask the floor, AI analyst"><div class="askhead"><div><b>✦ Ask the floor</b><span>Gemini analyst · answers only from this dashboard's verified numbers</span></div><button class="btn ghost" id="askX" aria-label="Close">✕</button></div>
-<div class="asklog" id="askLog" aria-live="polite"><div class="msg bot">Ask me anything about the floor review. I can also <b>drive the dashboard</b>: open machines, set filters, play the floor map or run the plan simulator.</div></div>
-<div class="chips" id="askChips">${["Why shouldn't we replace the bottom 10?","Is M-1158 broken or unlucky? Show me.","What changed on May 1?","Show Back Forty when the walkway closed","What if the signs only lift traffic 2%?","Which machines are unluckiest this quarter?"].map(q=>`<button>${q}</button>`).join('')}</div>
+<div class="asklog" id="askLog" aria-live="polite"><div class="msg bot">Ask me anything about the floor review, or tap a <b>✓ verified question</b> below for an instant answer. I also <b>drive the dashboard</b>: I open machines, set filters, play the floor map and run the plan simulator.</div></div>
+<div class="chips" id="askChips">${PREBUILT.map(p=>`<button title="Instant verified answer">✓ ${esc(p.q)}</button>`).join('')}</div>
 <form class="askform" id="askForm"><input id="askIn" placeholder="e.g. How early could we have caught the leak?" autocomplete="off" aria-label="Your question"><button class="btn primary" aria-label="Send">➤</button></form>
-<p class="asknote">AI-generated; verify against the cited claim. Powered by Google Gemini.</p></section>`;
+<p class="asknote">✓ answers are pre-verified from the analysis. Other answers are generated by Google Gemini from the same numbers; check the cited claim.</p></section>`;
 document.body.appendChild(ui);
 const open=v=>{$('#askBox').hidden=!v;$('#askFab').setAttribute('aria-expanded',v);if(v)setTimeout(()=>$('#askIn').focus(),50)};
 $('#askFab').onclick=()=>open($('#askBox').hidden);$('#askX').onclick=()=>open(false);
 $('#askForm').onsubmit=e=>{e.preventDefault();ask($('#askIn').value)};
-$('#askChips').onclick=e=>{const b=e.target.closest('button');if(b)ask(b.textContent)};
+$('#askChips').onclick=e=>{const b=e.target.closest('button');if(b)ask(b.textContent.replace(/^✓\s*/,''))};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#askBox').hidden)open(false)});
 window.askFloor=ask;
 })();
