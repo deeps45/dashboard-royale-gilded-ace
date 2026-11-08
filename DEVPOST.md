@@ -70,3 +70,16 @@ python, duckdb, pandas, numpy, scikit-learn, javascript, html5, css3, plotly.js,
 ## Notes for the form
 - The casino is fictional and all of its data is synthetic (challenge release 0.9.0-draft).
 - AI tools used: Claude (Anthropic, via Claude Code) for code and drafting; Google Gemini powers the in-app assistant. Full disclosure is in APPENDIX.md.
+
+## Generative AI question
+**Did you implement a generative AI model or API in your hack this weekend?**
+
+Yes. We used the Google Gemini API (gemini-3.1-flash-lite, with gemini-3.5-flash and gemini-3.8-flash as fallbacks) to build "Ask the Floor", an AI analyst inside the dashboard.
+
+How: Gemini answers questions only from the dashboard's verified numbers and our 26 evidence claims, which it receives as grounding with each question. It cites claim numbers and uses function calling to drive the dashboard: it opens a machine's profile, switches sections, sets filters, ranks machines, plays the animated floor map and runs the $100k plan simulator. Answers stream in word by word. The API key never reaches the browser: it lives in a Cloudflare Worker that only accepts requests from our site, allowlists models, caps request size, rate-limits each visitor and caches repeated answers. Guardrails tell it to frame unusual payouts as reasons to inspect rather than accusations, never to encourage heavy-losing players to gamble more, and to say "not in the data" instead of guessing. Six common questions have pre-verified instant answers, so the demo never depends on API availability.
+
+Why: a casino general manager shouldn't have to learn a dashboard to get an answer. They can ask "Is M-1158 broken or unlucky?" and the assistant both explains the evidence and shows it on screen.
+
+No analytical result comes from the AI. Every number is produced by our Python/DuckDB analysis and checked by 37 automated assertions. We also used Claude (Anthropic, via Claude Code) to help write code and draft documentation; this is disclosed in our appendix.
+
+**Gemini Project Number:** 46812102427
