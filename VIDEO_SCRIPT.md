@@ -1,19 +1,23 @@
-# 2-minute video script
+# Video script: "Luck, Location, or a Leak?" (1:55)
 
-**0:00 – Hook (Verdict section, four tiles).** “Management wants to replace the ten machines that earned the least. Our dashboard says: don't. Luck explains most of the spread, location explains the rest, and one machine is leaking.”
+**Before recording:** open a fresh private/incognito window so the casino entrance plays. Start the screen recording first, then paste the link: https://deeps45.github.io/dashboard-royale-gilded-ace/. Browser at full screen, zoom 100%. About 255 spoken words at a calm pace.
 
-**0:12 – Money after costs (Section 1, contribution chart).** “Every one of those ten makes money after its lease, service and power costs. A lease ordered July 1 would need $211 a day of extra play just to pay itself back. The one swap the casino already tried added nine dollars.” *Point at the red break-even line.*
+| Time | On screen (what you do) | Voice-over (what you say) |
+|---|---|---|
+| **0:00 – 0:10** | Page opens on the slot machine. Pull the lever; the reels land on LUCK · LOCATION · LEAK. Click **Enter the floor**. | "Management wants to replace the ten slot machines that earned the least. Before spending a dollar, we asked: luck, location, or a leak? The answer is all three." |
+| **0:10 – 0:22** | Overview. Point at the headline, then the jackpot meters (they roll on entry). | "Across 249 million dollars wagered, nine of those ten sit in the Back Forty, the quietest zone. None draws weak play for its zone, and all ten are profitable after costs. A new lease would need 211 dollars a day of extra play just to pay for itself." |
+| **0:22 – 0:38** | Click **🃏 Play: call the cause**. On M-5076 pick *Too new*; the card flips. Click **Next**. On M-1158 pick *Leak*; it flips. | "Try it yourself: call the cause. This one has only been on the floor seven weeks. But this one, M-1158, is different." |
+| **0:38 – 0:55** | Leak detector tab → **Pull the lever** → **Auto-spin 3,000**. The red line crosses the alarm. Scroll to the Tiger Data tiles. | "Both machines run the same game. M-1158 pays on 38.6% of spins instead of 31.5%, every single month, in two independent systems. It's very likely misconfigured, costing about 73 thousand a year. Running this test hourly in Tiger Data would have caught it after just ten hours, with zero false alarms." |
+| **0:55 – 1:08** | Floor map tab → **▶ Play Jan → Jun**. Let it reach March. | "Why is Back Forty so quiet? When its walkway closed in March, door counts fell 30% and play fell 29%. Demand there is foot traffic, not machines." |
+| **1:08 – 1:20** | Players & comps tab → scroll to the four liability tiles. | "And a cost nobody priced: on May 1, every comp got 53% cheaper in points overnight. The points members already hold jumped from 3.5 to 7.6 million dollars of potential cost." |
+| **1:20 – 1:32** | Forecast tab → point at the leaderboard, then the July calendar. | "Our forecast was chosen by cross-validation and scored once on May and June: 76% less error than the baseline. It tells us promotions don't pay here, and which July days need the extra technicians." |
+| **1:32 – 1:47** | $100k plan tab → point at the budget bar, then click one **Evidence** link. | "So the plan spends 15,100 dollars: inspect three machines, add signs for the Back Forty, and run a randomized comp pilot. Every action links to its evidence. We keep 84,900." |
+| **1:47 – 1:55** | Click **✦ Ask the floor** → tap **✓ How early could we have caught it?** Let the answer stream. | "And anyone can ask the floor. Luck, location, or a leak? Now you can see which is which." |
 
-**0:25 – Luck (Section 1 histogram).** “We score every machine's luck exactly, from its bet sizes and its game's payout variance. The scores follow a normal curve, which is what pure luck looks like. One machine doesn't fit: M-1158.”
+## If you're running long
+Cut the comps beat (1:08–1:20) and say instead: "We also found a 4-million-dollar points liability, priced in the plan."
 
-**0:35 – Leak Detector.** “So we ran a second test: how often a machine pays at all. M-1158 pays on 38.6% of spins against a 31.5% setting, every month. And it's not a meter glitch: the player-tracking system records the same rate. Two systems, z-scores of 124 and 103.” *Click the red dot; the Luck Lens drifts out of the band.*
-
-**0:50 – Location (Section 2, door counters).** “Nine of the ten sit in the Back Forty. When its walkway closed in March, the door counters fell 30%, the detour zone rose 14%, and play fell 29%. Coin-in there tracks foot traffic one-for-one.” *Demo: Zone filter → Back Forty, then bank B-38.*
-
-**1:05 – Comps (Section 5, liability tiles).** “On May 1, every comp got 53% cheaper in points, overnight. The monthly bill barely moved, but the 156 million points members already hold went from $3.5 million to $7.6 million of potential cost.” *Demo: click the May–Jun preset.*
-
-**1:20 – Model.** “Six forecasters, chosen by cross-validation on January to April, scored once on May and June: 76% less error than a flat average. It says the June promotion's lift was noise, so we don't buy a $15,000 promotion.”
-
-**1:35 – Plan (Section 6).** “We spend $15,100: inspect three machines, put up signs for the Back Forty, and run a randomized comp pilot that settles the $4 million question, with a guardrail so heavy losers are never pushed to play more. We keep $84,900.” *Demo: click an Evidence link; type 10 into lease replacements and watch the checker.*
-
-**1:55 – Close.** “Luck, location, or a leak? All three, and now you can see which is which.”
+## Recording tips
+- Practise once with the script open on a second screen. Pause about half a second after each click so the animation lands.
+- If the entrance already played in your browser, use a new incognito window, or skip that beat and start on the Overview.
+- Upload to YouTube as **Unlisted** and paste the link into Devpost. Check it's 2:00 or less.
