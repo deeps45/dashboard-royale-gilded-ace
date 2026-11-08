@@ -1,6 +1,6 @@
 # Video script: "Luck, Location, or a Leak?" (1:55)
 
-**Before recording:** open a fresh private/incognito window so the casino entrance plays. Start the screen recording first, then paste the link: https://deeps45.github.io/dashboard-royale-gilded-ace/. Browser at full screen, zoom 100%. About 255 spoken words at a calm pace.
+**Before recording:** open a fresh private/incognito window so the casino entrance plays. Start the screen recording first, then paste the link: https://deeps45.github.io/dashboard-royale-gilded-ace/. Browser at full screen, zoom 100%. About 290 spoken words: a brisk, natural pace (about 150 words a minute). If you speak slowly, use the trim below.
 
 | Time | On screen (what you do) | Voice-over (what you say) |
 |---|---|---|
