@@ -155,6 +155,56 @@ pre.code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:va
 @media (max-width:640px){.top{position:static}.brandrow,.filters,.tabs{padding-left:16px;padding-right:16px}main{padding:12px}
  section{padding:16px 14px;border-radius:12px}.hero{padding:22px 16px}.chart{height:300px}.fg{flex:1 1 42%}.fg.presets{flex-basis:100%}.fg select,.fg input{width:100%}
  .answer{font-size:15.5px}.topact #resetBtn{display:none}.hero-sub{font-size:16px}}
+
+/* ===== casino layer ===== */
+.hero{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(120% 140% at 85% 0%,var(--felt2) 0%,var(--felt1) 60%,#06140f 100%)}
+.hero .display{background:linear-gradient(180deg,#fff7d6 0%,#f0d58a 45%,#c9a13b 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+.slots{display:flex;gap:8px;align-items:center;flex:0 0 auto;padding:14px 12px 14px 16px;border-radius:18px;background:linear-gradient(180deg,#3b2a0c,#1d1505);border:2px solid #c9a13b;box-shadow:inset 0 0 0 3px #0b0803,0 10px 30px rgba(0,0,0,.45);position:relative;align-self:center}
+.reel{width:108px;height:66px;overflow:hidden;border-radius:10px;background:linear-gradient(180deg,#d9d4c5 0%,#fffdf6 22%,#fffdf6 78%,#d9d4c5 100%);box-shadow:inset 0 6px 10px rgba(0,0,0,.35),inset 0 -6px 10px rgba(0,0,0,.35);position:relative}
+.reel.won{box-shadow:inset 0 6px 10px rgba(0,0,0,.25),inset 0 -6px 10px rgba(0,0,0,.25),0 0 0 2px #f0d58a,0 0 18px rgba(240,213,138,.75)}
+.strip{will-change:transform}.sym{height:66px;display:grid;place-items:center;font:700 28px/1 "Playfair Display",Georgia,serif;color:#14130f}
+.sym.fin{font:800 17px/1 Inter,system-ui,sans-serif;letter-spacing:1.5px;color:#7a1f1f}
+.lever{position:relative;width:26px;height:92px;border:0;background:transparent;cursor:pointer;padding:0;margin-left:4px}
+.lever .arm{position:absolute;left:11px;top:16px;width:5px;height:66px;border-radius:3px;background:linear-gradient(90deg,#8c8c8c,#e6e6e6,#8c8c8c);transform-origin:50% 100%;transition:transform .25s}
+.lever .knob{position:absolute;left:3px;top:2px;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff8a80,#c62828 60%,#7f0000);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:transform .25s;z-index:1}
+.lever.pulled .knob{transform:translateY(58px)}.lever.pulled .arm{transform:scaleY(.12)}
+.lever.big{height:120px;width:34px}.lever.big .arm{height:92px;left:14px;width:6px}.lever.big .knob{width:28px;height:28px}.lever.big.pulled .knob{transform:translateY(80px)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.felt{background:radial-gradient(130% 120% at 50% 0%,#17694c 0%,#0f4a36 55%,#0a3022 100%);border:1px solid color-mix(in srgb,var(--gold) 55%,transparent);border-radius:16px;padding:20px;color:#f6f0dc;box-shadow:inset 0 0 60px rgba(0,0,0,.35)}
+/* call it */
+.cgrow{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:26px;align-items:center}
+.pcard{position:relative;height:400px;perspective:1200px}.pcard .pface{position:absolute;inset:0;border-radius:18px;padding:18px 20px;background:#fffdf6;color:#14130f;box-shadow:0 18px 40px rgba(0,0,0,.45);backface-visibility:hidden;transition:transform .6s cubic-bezier(.3,.7,.3,1);border:6px solid #fffdf6;outline:2px solid #c9a13b;outline-offset:-12px}
+.pcard .back{transform:rotateY(180deg)}.pcard.flip .front{transform:rotateY(-180deg)}.pcard.flip .back{transform:rotateY(0)}
+.pc-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:#6b675d;text-transform:uppercase;letter-spacing:.6px}
+.suit{font-size:26px;color:#14130f}.suit.red{color:#b3261e}
+.pc-id{font:700 44px/1.1 "Playfair Display",Georgia,serif;margin:14px 0 2px}.pc-sub{color:#6b675d;font-size:14px}
+.pc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.pc-stats div{background:#f3efe3;border-radius:10px;padding:8px 10px}.pc-stats b{display:block;font-size:17px}.pc-stats span{font-size:11.5px;color:#6b675d}
+.pc-q{position:absolute;left:20px;right:20px;bottom:18px;text-align:center;font-weight:700;color:#7a1f1f;font-size:15px}
+.verdict2{margin:12px 0;font-size:15px}.pc-exp{font-size:13.5px;line-height:1.55;color:#2c2a25}.pc-mini{position:absolute;left:20px;right:20px;bottom:16px;display:flex;justify-content:space-between;font-size:11.5px;color:#6b675d}
+.pcard .ok{color:#16794d;font-weight:700}.pcard .bad{color:#b3261e;font-weight:700}
+.cgprog{display:flex;gap:6px;margin-bottom:12px}.cgprog i{width:22px;height:30px;border-radius:4px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}.cgprog i.done{background:#c9a13b}.cgprog i.now{background:#fffdf6}
+.cgscore{font-size:15px;margin:4px 0}.cgscore b{color:#f0d58a;font-size:20px}.cghint{opacity:.85;margin:0 0 14px}
+.cgopts{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:440px}
+.optb{padding:14px 12px;border-radius:999px;border:2px dashed rgba(255,255,255,.5);background:radial-gradient(circle,#1b1b1b 0 55%,#2b2b2b 56%);color:#fff;font-weight:600;font-size:14.5px;cursor:pointer;transition:transform .12s,border-color .12s}
+.optb:hover:not(:disabled){transform:translateY(-2px);border-color:#f0d58a}.optb.right{border:2px solid #3cbf85;background:#14563d}.optb.wrong{border:2px solid #e66767;background:#5b1d1d}.optb:disabled{cursor:default;opacity:.95}
+.cgnext{display:flex;gap:8px;margin-top:16px}.felt .btn:not(.primary){background:rgba(255,255,255,.08);color:#f6f0dc;border-color:rgba(255,255,255,.25)}
+.cfinal{text-align:center;padding:10px}.cfinal p{max-width:640px;margin:8px auto 16px;opacity:.92}.cta2{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.chipbig{width:120px;height:120px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font:700 40px/1 "Playfair Display",Georgia,serif;color:#1a1405;background:radial-gradient(circle,#f0d58a 0 52%,#fffdf6 53% 58%,#c9a13b 59%);border:6px dashed #fffdf6;box-shadow:0 10px 30px rgba(0,0,0,.4)}.chipbig small{font-size:18px}
+/* lever simulator */
+.lvwrap{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center}
+.lvm{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:14px}.lvm.leak{border-color:rgba(230,103,103,.6)}
+.lvh{font-weight:700;margin-bottom:8px}.lvh .t-mut{font-weight:400;color:#cfc8b0}
+.lvreel{display:flex;gap:6px;justify-content:center;margin:6px 0 10px}.lvreel span{width:58px;height:58px;border-radius:10px;display:grid;place-items:center;background:#fffdf6;color:#14130f;font:700 24px/1 "Playfair Display",Georgia,serif;box-shadow:inset 0 4px 8px rgba(0,0,0,.3)}
+.lvreel span.w{background:#f0d58a;box-shadow:0 0 14px rgba(240,213,138,.8)}
+.lvs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}.lvs b{display:block;font-size:20px;font-variant-numeric:tabular-nums}.lvs span{font-size:11.5px;opacity:.8}.lvs b.bad{color:#ff9b8f}
+.lvctl{display:flex;flex-direction:column;align-items:center;gap:12px}.lvbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.coin{position:fixed;z-index:70;width:22px;height:22px;margin:-11px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;color:#5a4208;background:radial-gradient(circle at 35% 35%,#fff3c4,#e2b84a 60%,#9c7417);pointer-events:none;animation:coin 1.1s ease-out forwards}
+.coin.alarm{color:#fff;background:radial-gradient(circle at 35% 35%,#ff9b8f,#c62828)}
+@keyframes coin{0%{transform:translate(0,0) scale(.6);opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 160px)) scale(1) rotate(540deg);opacity:0}}
+.tile,.act{transition:transform .15s,box-shadow .15s,border-color .15s}.tile:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--gold2) 60%,var(--border))}
+@media (max-width:900px){.cgrow{grid-template-columns:1fr}.pcard{max-width:360px;margin:0 auto}.lvwrap{grid-template-columns:1fr}.lvctl{flex-direction:row}.slots{transform:scale(.85);transform-origin:right center}}
+@media (max-width:640px){.slots{display:none}.cgopts{grid-template-columns:1fr 1fr}}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 </style>
@@ -185,9 +235,9 @@ pre.code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:va
    <span class="kicker">The Gilded Ace · floor review · Jan–Jun 2025</span>
    <h2 class="display">Don't replace the bottom 10.</h2>
    <p class="hero-sub">Most of them are victims of <b>location</b> and <b>luck</b>. One is <b>leaking</b>. And the comp program is carrying a cost no one priced.</p>
-   <div class="cta"><button class="btn primary" id="tourBtn">▶ Take the judge tour</button><button class="btn" data-go="floor">See it on the floor map</button><button class="btn" data-go="plant">Jump to the $100k plan</button></div>
+   <div class="cta"><button class="btn primary" id="tourBtn">▶ Take the judge tour</button><button class="btn" data-go="machines">🃏 Play: call the cause</button><button class="btn" data-go="floor">See it on the floor map</button><button class="btn" data-go="plant">Jump to the $100k plan</button></div>
   </div>
-  <div class="spade" aria-hidden="true">♠</div>
+  <div class="slots" id="slots" role="img" aria-label="Slot machine reels that land on Luck, Location and Leak"></div>
  </div>
  <div class="causes"><div class="tile"><b>Luck</b><span>Luck scores across 310 machines follow a normal curve (SD 1.09). Luck explains the spread, and it doesn't persist (r = 0.11 between halves).</span></div><div class="tile"><b>Location</b><span>9 of 10 sit in Back Forty. When its walkway closed, door counts fell 30% and play fell 29%: demand there is foot traffic.</span></div><div class="tile"><b class="bad">Leak</b><span>M-1158 pays on 38.6% of spins vs 31.5% configured, in the meters <i>and</i> in the carded sessions (z = +124 / +103).</span></div><div class="tile"><b class="bad">+$4.1M</b><span>Hidden comp exposure: on May 1 the 156M unredeemed points became worth 2.2× as much.</span></div></div>
 </section>
@@ -218,7 +268,12 @@ pre.code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:va
   <aside class="maplegend" id="mapNote"></aside></div>
  <p class="ev">Positions: <code>floor_locations</code> (each machine's latest slot). Walkways: <code>floor_walkways</code>; the red dashed link is W-ENT-B40, closed for renovation Mar 3 – Apr 7. Circled machines are the GM's bottom 10. Click any machine to open its profile.</p>
 </section></div>
-<div class="panel" id="tab-machines" role="tabpanel" hidden><section id="q1">
+<div class="panel" id="tab-machines" role="tabpanel" hidden><section id="callit">
+ <div class="shead"><span class="kicker">Your turn · 60 seconds</span><h2>Call it: why did each machine earn so little?</h2>
+ <p class="answer">The GM's ten lowest earners are dealt one at a time. Call the cause, then flip the card to see what the data says.</p></div>
+ <div id="callit_game" class="felt"></div>
+</section>
+<section id="q1">
  <div class="shead"><span class="kicker">Chapter 1 · Machines</span><h2>1 · Which machines are truly underperforming?</h2><p class="answer">Luck and location explain the list. None of the GM's 10 draws weak play, and all ten are profitable after costs.</p></div>
  <details class="method"><summary>How we measured this</summary><p>A machine's luck score (z) is (actual house win − theo) ÷ the standard deviation expected from luck alone. That standard deviation is computed exactly from each machine's <code>sum_bet_squared</code> × its game's <code>payout_multiplier_variance</code>. A score between −2 and +2 is ordinary luck. Demand is measured as theo per day on the floor: what the machine <i>should</i> earn given how much it was played, which removes luck.</p></details>
  <div class="grid">
@@ -243,6 +298,21 @@ pre.code{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;background:va
  </div>
 <div class="callout" id="ev_sess"></div>
  <p class="ev">The Luck Lens plots cumulative (house win − theo). The shaded band is ±2σ of pure luck, which widens as play accumulates. A healthy machine wanders inside it; a leak drifts out and stays out. Competing explanation, tampering: the 80 reported tampering attempts are scattered (at most 3 on any machine), and none involve M-1158. A steady 38.6% hit rate from January 1 fits a configuration or records mismatch, not an intermittent intrusion. Code: <code>analysis/hit_audit.py</code>.</p>
+</section>
+<section id="leversim">
+ <div class="shead"><span class="kicker">Try it yourself</span><h2>Pull the lever: can you spot the leak?</h2>
+ <p class="answer">Both machines run the same game. One pays out like its settings say; the other is M-1158. Pull until the difference stops looking like luck.</p></div>
+ <details class="method"><summary>How we measured this</summary><p>Each pull draws a hit with the machine's real probability: the configured <span id="lv_p0"></span> for the fair machine and M-1158's observed <span id="lv_p1"></span>. The z-score compares each machine's hits with the configured rate: z = (hits − p·spins) ÷ √(p(1−p)·spins). By the formula, the gap should cross z = 5 after about <b id="lv_theory"></b> spins. The real hourly monitor (Tiger Data section below) fired after 1,276.</p></details>
+ <div class="lvwrap felt">
+  <div class="lvm" id="lv_fair"><div class="lvh">Fair Desert Gold <span class="t-mut">configured 31.5%</span></div><div class="lvreel" id="lv_fair_reel"><span>♠</span><span>♥</span><span>7</span></div>
+   <div class="lvs"><div><b id="lv_fair_n">0</b><span>spins</span></div><div><b id="lv_fair_r">–</b><span>hit rate</span></div><div><b id="lv_fair_z">0</b><span>z</span></div></div></div>
+  <div class="lvctl"><button class="lever big" id="lever2" aria-label="Pull the lever 300 times"><span class="knob"></span><span class="arm"></span></button>
+   <div class="lvbtns"><button class="btn" id="lv_1">Pull ×1</button><button class="btn" id="lv_100">×100</button><button class="btn primary" id="lv_auto">Auto-spin 3,000</button><button class="btn ghost" id="lv_reset">Reset</button></div></div>
+  <div class="lvm leak" id="lv_leak"><div class="lvh">M-1158 <span class="t-mut">same game</span></div><div class="lvreel" id="lv_leak_reel"><span>♦</span><span>★</span><span>BAR</span></div>
+   <div class="lvs"><div><b id="lv_leak_n">0</b><span>spins</span></div><div><b id="lv_leak_r">–</b><span>hit rate</span></div><div><b id="lv_leak_z">0</b><span>z</span></div></div></div>
+ </div>
+ <p class="callout" id="lv_msg"></p>
+ <div id="c_lever" role="img" aria-label="Cumulative hit-rate z for both machines as spins accumulate" class="chart"></div>
 </section>
 <section id="tiger">
  <div class="shead"><span class="kicker">Powered by Tiger Data</span><h2>The leak alarm, live: caught on day one</h2>
@@ -719,7 +789,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();endTo
 
 // ---- theme + reset ----
 $('#themeBtn').onclick=()=>{document.documentElement.dataset.theme=isDark()?'light':'dark';rerender()};
-function rerender(){render();renderDeep();renderTiger();if(MAP.sel)openDrawer(MAP.sel,true)}
+function rerender(){render();renderDeep();renderTiger();if(window.casinoRefresh)casinoRefresh();if(MAP.sel)openDrawer(MAP.sel,true)}
 function resetFilters(){Object.assign(S,{f0:'2025-01-01',f1:'2025-06-30',zone:'',bank:'',tier:'',age:'',reg:''});
  ['f0','f1'].forEach(k=>$('#'+k).value=S[k]);['fz','fb','ft','fa','fr'].forEach(k=>$('#'+k).value='');fillBanks();
  document.querySelectorAll('[data-p]').forEach(b=>b.classList.toggle('on',b.dataset.p==='2025-01-01,2025-06-30'));render()}
@@ -858,5 +928,6 @@ function chapterNav(){const tabs=[...document.querySelectorAll('.tabs button')];
 </script>
 <script src="ask-config.js"></script>
 <script src="ask.js"></script>
+<script src="casino.js"></script>
 </body>
 </html>
