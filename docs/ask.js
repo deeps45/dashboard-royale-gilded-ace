@@ -1,6 +1,6 @@
 // "Ask the Floor": a Gemini analyst grounded in the dashboard's verified numbers, able to drive the dashboard via function calling.
 (function(){
-const EP=window.ASK_ENDPOINT, MODELS=window.GEMINI_MODELS||['gemini-3.8-flash','gemini-3.5-flash','gemini-3.1-flash-lite'];
+const EP=window.ASK_ENDPOINT, MODELS=window.GEMINI_MODELS||['gemini-3.5-flash','gemini-3.1-flash-lite','gemini-3.8-flash'];
 if(!EP)return;  // the key lives in a Cloudflare Worker (worker/), never in this page
 const SECT={overview:'verdict',floor_map:'floorsec',machines:'q1',leak_detector:'leak',tiger_live_alarm:'tiger',demand:'q2',downtime:'q3',players:'q4',comps:'q5',forecast:'model',plan:'plan',stress_tests:'robust',evidence:'evidence'};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -59,10 +59,10 @@ function run(name,a){a=a||{};
 const ACT={navigate:a=>'opened '+String(a.section).replace(/_/g,' '),set_filters:a=>'set filters'+(a.zone?': '+a.zone:'')+(a.bank?' · '+a.bank:'')+(a.from?' · '+a.from+'→'+(a.to||''):''),machine_profile:a=>'opened '+a.machine_id,rank_machines:a=>'ranked machines by '+String(a.metric).replace(/_/g,' '),play_floor_map:()=>'playing the floor map',run_plan_simulator:()=>'ran the plan simulator'};
 let history=[],busy=false;
 async function call(contents){let last;
- for(const m of MODELS){for(let i=0;i<3;i++){
-  try{const r=await fetch(EP,{method:'POST',signal:AbortSignal.timeout(30000),headers:{'Content-Type':'application/json'},body:JSON.stringify({model:m,request:{systemInstruction:{parts:[{text:SYS()}]},contents,tools:TOOLS,generationConfig:{temperature:0.2,maxOutputTokens:900}}})});
+ for(const m of MODELS){for(let i=0;i<2;i++){
+  try{const r=await fetch(EP,{method:'POST',signal:AbortSignal.timeout(28000),headers:{'Content-Type':'application/json'},body:JSON.stringify({model:m,request:{systemInstruction:{parts:[{text:SYS()}]},contents,tools:TOOLS,generationConfig:{temperature:0.2,maxOutputTokens:900}}})});
    const j=await r.json().catch(()=>({}));if(r.ok&&j.candidates&&j.candidates[0].content)return j.candidates[0].content;
-   last=(j.error&&j.error.message)||('HTTP '+r.status);if(r.status===400||r.status===429)break;}catch(e){last=e.message}
+   last=(j.error&&j.error.message)||('HTTP '+r.status);if([400,429,504,404].includes(r.status))break;}catch(e){last=e.message;break}
   await new Promise(res=>setTimeout(res,700*(i+1)))}}
  throw new Error(last||'no response');}
 async function ask(q){if(busy||!q.trim())return;let used=0;try{used=+sessionStorage.getItem('askN')||0;sessionStorage.setItem('askN',used+1)}catch(e){}
