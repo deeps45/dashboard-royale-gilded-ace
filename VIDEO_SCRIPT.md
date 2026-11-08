@@ -1,4 +1,4 @@
-# Video script: "Luck, Location, or a Leak?" (1:55)
+# Video script: "Luck, Location, or a Leak?" (1:57)
 
 **Before recording:** open a fresh private/incognito window so the casino entrance plays. Start the screen recording first, then paste the link: https://deeps45.github.io/dashboard-royale-gilded-ace/. Browser at full screen, zoom 100%. About 290 spoken words: a brisk, natural pace (about 150 words a minute). If you speak slowly, use the trim below.
 
@@ -12,7 +12,7 @@
 | **1:08 – 1:20** | Players & comps tab → scroll to the four liability tiles. | "And a cost nobody priced: on May 1, every comp got 53% cheaper in points overnight. The points members already hold jumped from 3.5 to 7.6 million dollars of potential cost." |
 | **1:20 – 1:32** | Forecast tab → point at the leaderboard, then the July calendar. | "Our forecast was chosen by cross-validation and scored once on May and June: 76% less error than the baseline. It tells us promotions don't pay here, and which July days need the extra technicians." |
 | **1:32 – 1:47** | $100k plan tab → point at the budget bar, then click one **Evidence** link. | "So the plan spends 15,100 dollars: inspect three machines, add signs for the Back Forty, and run a randomized comp pilot. Every action links to its evidence. We keep 84,900." |
-| **1:47 – 1:55** | Click **✦ Ask the floor** → tap **✓ How early could we have caught it?** Let the answer stream. | "And anyone can ask the floor. Luck, location, or a leak? Now you can see which is which." |
+| **1:47 – 1:57** | Click **✦ Ask the floor** → tap **✓ How early could we have caught it?** Let the answer stream. Then move the cursor to the gold **▶ Judge tour** button (top right) and hover; don't click. | "Anyone can ask the floor, or take the one-minute judge tour. Luck, location, or a leak? Now you can see which is which." |
 
 ## If you're running long
 Cut the comps beat (1:08–1:20) and say instead: "We also found a 4-million-dollar points liability, priced in the plan."
