@@ -12,3 +12,8 @@ namespace_id = "1001"
   period = 60
 
 # GEMINI_API_KEY is stored as an encrypted secret: `npx wrangler secret put GEMINI_API_KEY`
+
+# Answer cache: identical requests (same question, same dashboard view, same history) are served without calling Gemini
+[[kv_namespaces]]
+binding = "ASK_CACHE"
+id = "893b904e1dca424a9128e23a61bd28a4"

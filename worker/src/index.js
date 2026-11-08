@@ -16,7 +16,7 @@ const json = (obj, status, origin) =>
   new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json', ...(origin ? cors(origin) : {}) } });
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const origin = req.headers.get('Origin') || '';
     const ok = ALLOWED_ORIGINS.includes(origin);
     if (req.method === 'OPTIONS') return ok ? new Response(null, { status: 204, headers: cors(origin) }) : new Response(null, { status: 403 });
@@ -43,18 +43,33 @@ export default {
       tools: payload.tools,
       generationConfig: { temperature: 0.2, ...(payload.generationConfig || {}), maxOutputTokens: Math.min(MAX_OUTPUT_TOKENS, (payload.generationConfig || {}).maxOutputTokens || MAX_OUTPUT_TOKENS) },
     };
+    const stream = body.stream === true;
+    // cache key: hash of model + the exact request (question, facts/view, history, tool results)
+    const keyBuf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(model + '|' + (stream ? 's' : 'j') + '|' + JSON.stringify(clean)));
+    const key = 'v1:' + [...new Uint8Array(keyBuf)].map(b => b.toString(16).padStart(2, '0')).join('');
+    if (env.ASK_CACHE) {
+      const hit = await env.ASK_CACHE.get(key);
+      if (hit) return new Response(hit, { status: 200, headers: { 'Content-Type': stream ? 'text/event-stream' : 'application/json', 'X-Ask-Cache': 'hit', ...cors(origin) } });
+    }
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:` + (stream ? 'streamGenerateContent?alt=sse' : 'generateContent');
     let r;
     try {
-      r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      r = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
         body: JSON.stringify(clean),
-        signal: AbortSignal.timeout(25_000),  // fail fast so the page can retry with a fallback model
+        signal: AbortSignal.timeout(stream ? 45_000 : 25_000),  // fail fast so the page can retry with a fallback model
       });
     } catch (e) {
       return json({ error: { message: 'upstream timeout' } }, 504, origin);
     }
+    if (stream && r.ok) {
+      const [toClient, toCache] = r.body.tee();
+      if (env.ASK_CACHE) ctx.waitUntil(new Response(toCache).text().then(t => t.includes('"candidates"') && !t.includes('"error"') ? env.ASK_CACHE.put(key, t, { expirationTtl: 7 * 86400 }) : null).catch(() => {}));
+      return new Response(toClient, { status: 200, headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'X-Ask-Cache': 'miss', ...cors(origin) } });
+    }
     const text = await r.text();
+    if (r.ok && env.ASK_CACHE && text.includes('"candidates"')) ctx.waitUntil(env.ASK_CACHE.put(key, text, { expirationTtl: 7 * 86400 }));
     return new Response(text, { status: r.status, headers: { 'Content-Type': 'application/json', ...cors(origin) } });
   },
 };
