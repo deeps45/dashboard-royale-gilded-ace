@@ -122,6 +122,10 @@ td:last-child{white-space:normal;min-width:160px}
 .chnav{display:flex;justify-content:space-between;gap:10px;margin:4px 0 18px}.chnav .nx{margin-left:auto}
 .loader{position:fixed;inset:0;z-index:60;display:grid;place-content:center;justify-items:center;gap:10px;background:var(--bg);color:var(--text2);transition:opacity .4s}
 .loader.done{opacity:0;pointer-events:none}
+.zl{margin:14px 0 10px;display:flex;flex-direction:column;gap:4px}.zlh{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.zlr{display:grid;grid-template-columns:96px 1fr 62px;align-items:center;gap:8px;border:0;background:transparent;padding:3px 4px;border-radius:6px;cursor:pointer;text-align:left;color:var(--text2);font-size:12.5px}
+.zlr:hover,.zlr.on{background:var(--surface)}.zlr.on span{color:var(--text);font-weight:600}.zlr i{height:8px;border-radius:4px;display:block}.zlr b{text-align:right;color:var(--text);font-variant-numeric:tabular-nums}
+.mapwrap{grid-template-columns:minmax(0,1fr) 290px}
 .askfab{position:fixed;right:20px;bottom:20px;z-index:44;border:0;border-radius:999px;padding:12px 18px;font-weight:600;cursor:pointer;color:#1a1405;background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 8px 30px rgba(0,0,0,.35)}
 .askfab:hover{transform:translateY(-2px)}
 .askbox{position:fixed;right:20px;bottom:76px;z-index:45;width:min(420px,calc(100vw - 24px));height:min(600px,calc(100vh - 110px));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--gold2);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden}
@@ -732,40 +736,58 @@ function setMonth(mo,silent){MAP.mo=mo;$('#mapMonth').querySelectorAll('button')
 function drawFloor(){if(!D||!D.floor||!document.getElementById('c_floor'))return;
  const F=D.floor,dk=isDark(),byId={};R.forEach(r=>byId[r.id]=r);const mm=monthAgg();
  const bottom=R.slice().sort((a,b)=>a.hw-b.hw).slice(0,10).map(r=>r.id);
- let ids=Object.keys(F.m).filter(id=>MAP.mo>=0?mm[id]&&mm[id][MAP.mo][1]>0:byId[id]);
- const val=id=>{if(MAP.mo>=0){const c=mm[id][MAP.mo];return c[0]/c[1]}const r=byId[id];return MAP.metric==='tpd'?r.tpd:MAP.metric==='z'?r.z:MAP.metric==='hz'?r.hz:r.avail*100};
+ const monthly=MAP.mo>=0,key=monthly?'tpd':MAP.metric;
+ const ids=Object.keys(F.m).filter(id=>monthly?mm[id]&&mm[id][MAP.mo][1]>0:byId[id]);
+ const zoneOf=id=>byId[id]?byId[id].zone:(Object.entries(F.zbox).find(([z,b])=>{const[x,y]=F.m[id];return x>=b[0]-1&&x<=b[1]+1&&y>=b[2]-1&&y<=b[3]+1})||[null])[0];
+ const val=id=>{if(monthly){const c=mm[id][MAP.mo];return c[0]/c[1]}const r=byId[id];return key==='tpd'?r.tpd:key==='z'?r.z:key==='hz'?r.hz:r.avail*100};
  const seq=dk?[[0,'#1a2738'],[0.5,'#2a78d6'],[1,'#cde2fb']]:[[0,'#e4effc'],[0.5,'#3987e5'],[1,'#0d366b']],mid=dk?'#383835':'#e9e7e1';
  const div=[[0,dk?'#e66767':'#c9302c'],[0.5,mid],[1,dk?'#3987e5':'#2a78d6']],divR=[[0,dk?'#3987e5':'#2a78d6'],[0.5,mid],[1,dk?'#e66767':'#c9302c']];
- const spec={tpd:{cs:seq,cmin:100,cmax:800,t:'Theo per day ($)',f:v=>usd(v)},z:{cs:div,cmin:-4,cmax:4,t:'Luck z',f:v=>fmt(v,2)},hz:{cs:divR,cmin:-5,cmax:5,t:'Hit-rate z',f:v=>fmt(v,1)},avail:{cs:seq,cmin:97,cmax:100,t:'Availability %',f:v=>fmt(v,2)+'%'}}[MAP.mo>=0?'tpd':MAP.metric];
- const inF=id=>{const r=byId[id];if(!S.zone&&!S.bank)return true;if(!r)return false;return(!S.zone||r.zone===S.zone)&&(!S.bank||r.bank===S.bank)};
- const zc={};F.zones.forEach(z=>zc[z[0]]=[z[2],z[3]]);
- const mon=MAP.mo,closed=mon===2;
- const walks=F.walk.map(w=>{const a=zc[w[1]],b=zc[w[2]],cl=!!w[3];return{type:'scatter',mode:'lines',x:[a[0],b[0]],y:[a[1],b[1]],hoverinfo:'text',text:cl?'W-ENT-B40: closed for renovation Mar 3 – Apr 7':w[0],
-  line:{color:cl?css('--crit'):css('--border'),width:cl?(closed?6:3):2.5,dash:cl?'dash':'solid'},showlegend:false}});
- const v=ids.map(val);
+ const SP={tpd:{cs:seq,cmin:100,cmax:750,t:'Theo per day',f:v=>usd(v),u:'/day',better:'high'},z:{cs:div,cmin:-4,cmax:4,t:'Luck z',f:v=>(v>0?'+':'')+fmt(v,2),u:' avg',better:'high'},
+  hz:{cs:divR,cmin:-5,cmax:5,t:'Hit-rate z',f:v=>(v>0?'+':'')+fmt(v,1),u:' avg',better:'low'},avail:{cs:seq,cmin:98.5,cmax:100,t:'Availability',f:v=>fmt(v,2)+'%',u:'',better:'high'}}[key];
+ const lerp=(cs,t)=>{t=Math.max(0,Math.min(1,t));let i=0;while(i<cs.length-2&&t>cs[i+1][0])i++;const[a0,c0]=cs[i],[a1,c1]=cs[i+1],u=(t-a0)/(a1-a0||1),h=c=>[1,3,5].map(k=>parseInt(c.slice(k,k+2),16));
+  const A=h(c0),B=h(c1);return 'rgb('+A.map((v,k)=>Math.round(v+(B[k]-v)*u)).join(',')+')'};
+ const inF=id=>{if(!S.zone&&!S.bank)return true;const r=byId[id];return !!r&&(!S.zone||r.zone===S.zone)&&(!S.bank||r.bank===S.bank)};
+ const v=ids.map(val),Z={};ids.forEach((id,i)=>{const z=zoneOf(id);if(!z)return;(Z[z]=Z[z]||[]).push(v[i])});
+ const zv={};Object.entries(Z).forEach(([z,a])=>zv[z]=a.reduce((x,y)=>x+y,0)/a.length);
+ const closed=MAP.mo===2,P=3.2,zc={};Object.entries(F.zbox).forEach(([z,b])=>zc[z]=[(b[0]+b[1])/2,(b[2]+b[3])/2]);
+ const shapes=[];
+ // walkways first (zone boxes are drawn on top, so only the corridor between zones shows)
+ F.walk.forEach(w=>{const a=zc[w[1]],b=zc[w[2]],cl=!!w[3];shapes.push({type:'line',layer:'below',x0:a[0],y0:a[1],x1:b[0],y1:b[1],line:{color:cl?css('--crit'):(dk?'#3a3b36':'#d9d4c5'),width:cl?(closed?9:5):7,dash:cl?(closed?'dot':'dash'):'solid'}})});
+ Object.entries(F.zbox).forEach(([z,b])=>{const t=(zv[z]-SP.cmin)/(SP.cmax-SP.cmin),sel=S.zone===z,b40=z==='Z-B40';
+  shapes.push({type:'rect',layer:'below',x0:b[0]-P,x1:b[1]+P,y0:b[2]-P,y1:b[3]+P,fillcolor:css('--surface2'),line:{width:0}});
+  shapes.push({type:'rect',layer:'below',x0:b[0]-P,x1:b[1]+P,y0:b[2]-P,y1:b[3]+P,fillcolor:zv[z]==null?'rgba(0,0,0,0)':lerp(SP.cs,t),opacity:dk?0.5:0.3,
+   line:{color:sel?css('--gold2'):(b40&&closed?css('--crit'):css('--border')),width:sel||(b40&&closed)?3:1.5,dash:b40&&closed?'dash':'solid'}})});
  const pts={type:'scatter',mode:'markers',x:ids.map(id=>F.m[id][0]),y:ids.map(id=>F.m[id][1]),customdata:ids,
-  marker:{symbol:'square',size:11,color:v.map(x=>Math.max(spec.cmin,Math.min(spec.cmax,x))),colorscale:spec.cs,cmin:spec.cmin,cmax:spec.cmax,opacity:ids.map(id=>inF(id)?1:0.15),line:{color:css('--surface'),width:1},
-   colorbar:{title:{text:spec.t,side:'right'},thickness:10,len:0.7,outlinewidth:0,tickfont:{color:css('--text2')}}},
-  text:ids.map((id,i)=>{const r=byId[id];return `<b>${id}</b> · ${r?D.zones[r.zone]+' · '+r.bank:''}<br>${MAP.mo>=0?MONTHS[MAP.mo]+' theo/day':spec.t}: ${spec.f(v[i])}`+(r?`<br>${r.theme} · ${r.mf}`:'')+'<br><i>click for profile</i>'}),hovertemplate:'%{text}<extra></extra>',showlegend:false};
- const gm=bottom.filter(id=>F.m[id]),ring={type:'scatter',mode:'markers',x:gm.map(id=>F.m[id][0]),y:gm.map(id=>F.m[id][1]),customdata:gm,marker:{symbol:'circle-open',size:22,color:css('--s4'),line:{width:2.5}},name:"GM's bottom 10",hovertemplate:"%{customdata}: on the GM's list<extra></extra>"};
- const sel=MAP.sel&&F.m[MAP.sel]?[{type:'scatter',mode:'markers',x:[F.m[MAP.sel][0]],y:[F.m[MAP.sel][1]],marker:{symbol:'circle-open',size:32,color:css('--text'),line:{width:3}},hoverinfo:'skip',showlegend:false}]:[];
- const poi={type:'scatter',mode:'markers+text',x:F.poi.map(p=>p[2]),y:F.poi.map(p=>p[3]),text:F.poi.map(p=>p[1]),textposition:F.poi.map(p=>p[3]<5?'bottom center':p[2]<5?'middle right':'top center'),
-  marker:{symbol:F.poi.map(p=>p[0]==='entrance'?'triangle-up':'diamond'),size:13,color:F.poi.map(p=>p[0]==='entrance'?css('--gold2'):css('--muted'))},textfont:{size:11,color:css('--text2')},hovertemplate:'%{text}<extra></extra>',showlegend:false};
- // zone labels with zone-level number
- const zstat=z=>{let a=0,n=0;ids.forEach((id,i)=>{const r=byId[id];const zz=r?r.zone:null;if(zz===z){a+=MAP.metric==='tpd'||MAP.mo>=0?v[i]:v[i];n++}});return n?a/n:null};
- const ann=F.zones.map(z=>{const s=zstat(z[0]);return{x:z[2],y:z[3],text:`<b>${z[1]}</b>`+(s!=null?`<br>${spec.f(s)}${MAP.metric==='tpd'||MAP.mo>=0?'/day':' avg'}`:''),showarrow:false,yshift:-30,
-  font:{size:12,color:css('--text')},bgcolor:dk?'rgba(23,24,21,.82)':'rgba(255,254,250,.85)',borderpad:3}});
- if(closed)ann.push({x:17,y:71,text:'<b>Walkway closed</b>',showarrow:false,font:{color:css('--crit'),size:12},bgcolor:dk?'rgba(23,24,21,.9)':'rgba(255,254,250,.9)'});
- plot('c_floor',[...walks,pts,ring,...sel,poi],{margin:{l:6,r:6,t:6,b:6},xaxis:{visible:false,range:[-8,142]},yaxis:{visible:false,autorange:'reversed',scaleanchor:'x',range:[118,-10]},
-  annotations:ann,legend:{orientation:'h',x:0,y:1.04},showlegend:true,dragmode:false,hovermode:'closest'});
- const el=document.getElementById('c_floor');el.removeAllListeners&&el.removeAllListeners('plotly_click');el.on('plotly_click',e=>{const id=e.points[0].customdata;if(typeof id==='string')openDrawer(id)});
- // side note
- const b40=zstat('Z-B40'),fl=v.reduce((a,b)=>a+b,0)/v.length;
- const notes={tpd:`<span class="big">${usd(b40)}</span>theo per machine-day in <b>Back Forty</b> vs ${usd(fl)} floor average (${fmt((b40/fl-1)*100,0)}%).<br><br>Back Forty is reached from the main doors only through walkway W-ENT-B40; the other routes are 80–100 m.${MAP.mo>=0?`<br><br><b>${MONTHS[MAP.mo]}</b>${closed?': the walkway is closed all month and Back Forty dims.':MAP.mo===3?': the walkway reopens on April 7 and demand recovers.':'.'}`:' Press <b>Play</b> to watch March.'}`,
-  z:`<span class="big">1</span>machine sits beyond −3 on luck: <b>M-1158</b> (red). Scattered blue and pale-red squares are ordinary luck; there is no cluster by zone.`,
-  hz:`<span class="big">+124</span>hit-rate z for <b>M-1158</b>, the single red square. Every other machine's hit rate is within ±3 of its configuration.`,
-  avail:`<span class="big">${fmt(R.reduce((a,r)=>a+r.av,0)/R.reduce((a,r)=>a+r.sc,0)*100,2)}%</span>floor availability. Downtime is too small and too scattered to explain the GM's list.`};
- $('#mapNote').innerHTML=(MAP.mo>=0?notes.tpd:notes[MAP.metric])+`<br><br><span class="t-mut">Gold triangles: entrances. Gold rings: the GM's bottom 10. Faded squares: outside your zone/bank filter.</span>`;
+  marker:{symbol:'square',size:10,color:v.map(x=>Math.max(SP.cmin,Math.min(SP.cmax,x))),colorscale:SP.cs,cmin:SP.cmin,cmax:SP.cmax,opacity:ids.map(id=>inF(id)?1:0.15),line:{color:css('--surface'),width:1.2},
+   colorbar:{title:{text:SP.t+(monthly?' · '+MONTHS[MAP.mo]:''),side:'right'},thickness:10,len:0.6,y:0.5,outlinewidth:0,tickfont:{color:css('--text2'),size:11}}},
+  text:ids.map((id,i)=>{const r=byId[id];return `<b>${id}</b>${r?' · '+r.theme:''}<br>${r?D.zones[r.zone]+' · bank '+r.bank:''}<br>${monthly?MONTHS[MAP.mo]+' theo/day':SP.t}: <b>${SP.f(v[i])}</b>`+(r&&!monthly?`<br>luck z ${fmt(r.z,1)} · hit-rate z ${fmt(r.hz,1)}`:'')+'<br><i>click for the full profile</i>'}),hovertemplate:'%{text}<extra></extra>',showlegend:false};
+ const gm=bottom.filter(id=>F.m[id]),ring={type:'scatter',mode:'markers',x:gm.map(id=>F.m[id][0]),y:gm.map(id=>F.m[id][1]),customdata:gm,marker:{symbol:'circle-open',size:21,color:css('--s4'),line:{width:2.5}},name:"GM's bottom 10",hovertemplate:"%{customdata}: on the GM's replace list<extra></extra>"};
+ const leak=F.m['M-1158']&&!monthly?[{type:'scatter',mode:'markers',x:[F.m['M-1158'][0]],y:[F.m['M-1158'][1]],customdata:['M-1158'],marker:{symbol:'diamond-open',size:26,color:css('--crit'),line:{width:2.5}},name:'M-1158 (leak)',hovertemplate:'M-1158: fails both payout tests<extra></extra>'}]:[];
+ const sel=MAP.sel&&F.m[MAP.sel]?[{type:'scatter',mode:'markers',x:[F.m[MAP.sel][0]],y:[F.m[MAP.sel][1]],marker:{symbol:'circle-open',size:34,color:css('--text'),line:{width:3}},hoverinfo:'skip',showlegend:false}]:[];
+ const snap=p=>{let[x,y]=[p[2],p[3]];Object.values(F.zbox).forEach(b=>{const x0=b[0]-P,x1=b[1]+P,y0=b[2]-P,y1=b[3]+P;if(x>=x0&&x<=x1&&y>=y0&&y<=y1){const d=[[x-x0,'l'],[x1-x,'r'],[y-y0,'t'],[y1-y,'b']].sort((u,w)=>u[0]-w[0])[0][1];
+  if(d==='l')x=x0-2.5;if(d==='r')x=x1+2.5;if(d==='t')y=y0-2.5;if(d==='b')y=y1+2.5}});return[p[0],p[1],x,y]};
+ const ent=F.poi.filter(p=>p[0]==='entrance').map(snap),out=F.poi.filter(p=>p[0]==='outlet');
+ const poi=[{type:'scatter',mode:'markers+text',x:ent.map(p=>p[2]),y:ent.map(p=>p[3]),text:ent.map(p=>'<b>'+p[1]+'</b>'),textposition:ent.map(p=>p[2]<5?'middle left':'middle right'),
+   marker:{symbol:ent.map(p=>p[2]<5?'triangle-right':p[3]<5?'triangle-down':'triangle-up'),size:16,color:css('--gold2'),line:{color:css('--surface'),width:1}},textfont:{size:11.5,color:css('--text')},hovertemplate:'%{text}: entrance<extra></extra>',showlegend:false},
+  {type:'scatter',mode:'markers+text',x:out.map(p=>p[2]),y:out.map(p=>p[3]),text:out.map(p=>p[1]),textposition:'middle right',marker:{symbol:'star',size:13,color:css('--muted')},textfont:{size:10.5,color:css('--text2')},hovertemplate:'%{text}: food & drink<extra></extra>',showlegend:false}];
+ const bg=dk?'rgba(23,24,21,.88)':'rgba(255,254,250,.9)';
+ const ann=Object.entries(F.zbox).map(([z,b])=>({x:b[0]-P,y:b[2]-P,xanchor:'left',yanchor:'bottom',showarrow:false,align:'left',bgcolor:bg,borderpad:3,
+  text:`<b>${D.zones[z]}</b>  ${zv[z]!=null?SP.f(zv[z])+SP.u:''}`,font:{size:12.5,color:z==='Z-B40'?css('--crit'):css('--text')}}));
+ const wb=F.walk.find(w=>w[3]);if(wb){const a=zc[wb[1]],b=zc[wb[2]];ann.push({x:Math.min(a[0],b[0])-6,y:(F.zbox[wb[1]][3]+F.zbox[wb[2]][2])/2,xanchor:'right',text:closed?'<b>Walkway closed</b><br>Mar 3 – Apr 7':'W-ENT-B40<br>closed Mar 3 – Apr 7',showarrow:false,bgcolor:bg,borderpad:3,font:{size:11,color:css('--crit')}})}
+ if(monthly)ann.push({xref:'paper',yref:'paper',x:0.86,y:0.99,xanchor:'right',yanchor:'top',text:MONTHS[MAP.mo].toUpperCase()+' 2025',showarrow:false,font:{size:38,color:dk?'rgba(255,255,255,.14)':'rgba(0,0,0,.10)',family:'Playfair Display,Georgia,serif'}});
+ plot('c_floor',[pts,ring,...leak,...sel,...poi],{margin:{l:4,r:4,t:4,b:4},shapes,annotations:ann,showlegend:true,legend:{orientation:'h',x:0,y:1.0,bgcolor:'rgba(0,0,0,0)'},dragmode:false,hovermode:'closest',
+  xaxis:{visible:false,range:[-12,146],fixedrange:true},yaxis:{visible:false,range:[124,-14],scaleanchor:'x',fixedrange:true}});
+ const el=document.getElementById('c_floor');el.removeAllListeners&&el.removeAllListeners('plotly_click');el.on('plotly_click',e=>{const id=e.points[0].customdata;if(typeof id==='string'&&/^M-/.test(id))openDrawer(id)});
+ // side panel: zone leaderboard for the current metric
+ const zs=Object.keys(zv).sort((a,b)=>SP.better==='high'?zv[b]-zv[a]:zv[a]-zv[b]),mx=Math.max(...zs.map(z=>Math.abs(zv[z])))||1;
+ const fl=v.reduce((a,b)=>a+b,0)/v.length,b40=zv['Z-B40'];
+ const lead={tpd:`<span class="big">${usd(b40)}</span>theo per machine-day in <b>Back Forty</b>, ${fmt((b40/fl-1)*100,0)}% vs the floor average${monthly?` in <b>${MONTHS[MAP.mo]}</b>`:''}.${closed?' The walkway is closed all month.':MAP.mo===3?' The walkway reopens April 7.':monthly?'':' Press <b>Play</b> to watch March.'}`,
+  z:`<span class="big">1</span>machine beyond −3 on luck: <b>M-1158</b> (red diamond). Zone averages sit near zero: luck doesn't cluster by location.`,
+  hz:`<span class="big">+124</span>hit-rate z for <b>M-1158</b> (red diamond). Every other machine is within ±3 of its configuration.`,
+  avail:`<span class="big">${fmt(R.reduce((a,r)=>a+r.av,0)/R.reduce((a,r)=>a+r.sc,0)*100,2)}%</span>floor availability: downtime is too small and scattered to explain the GM's list.`}[key];
+ $('#mapNote').innerHTML=lead+`<div class="zl"><div class="zlh">${SP.t} by zone${monthly?' · '+MONTHS[MAP.mo]:''}</div>`+zs.map(z=>`<button class="zlr${S.zone===z?' on':''}" data-z="${z}" title="Filter to ${D.zones[z]}"><span>${D.zones[z]}</span><i style="width:${Math.max(4,Math.abs(zv[z])/mx*100)}%;background:${z==='Z-B40'?css('--crit'):css('--s1')}"></i><b>${SP.f(zv[z])}</b></button>`).join('')+
+  `</div><span class="t-mut">Click a zone to filter the whole dashboard; click a square for its profile. Gold rings: the GM's bottom 10.</span>`;
+ document.querySelectorAll('#mapNote .zlr').forEach(b=>b.onclick=()=>{const z=b.dataset.z;S.zone=S.zone===z?'':z;$('#fz').value=S.zone;S.bank='';fillBanks();render()});
 }
 
 // ---- machine drawer ----

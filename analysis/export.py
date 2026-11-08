@@ -60,7 +60,8 @@ out['floor']={'m':{r.machine_id:[round(xy.loc[r.loc,'x'],1),round(xy.loc[r.loc,'
  'zones':fl[fl.node_type=='zone'][['zone_id','name','x','y']].values.tolist(),
  'poi':fl[fl.node_type.isin(['entrance','outlet'])][['node_type','name','x','y']].values.tolist(),
  'walk':q("select walkway_id, zone_a, zone_b, closed_from_utc::varchar f, closed_to_utc::varchar t from 'data/2_machine_decision/floor_walkways.parquet'").values.tolist(),
- 'retired':q("select machine_id from 'data/2_machine_decision/machines.parquet' where retire_date is not null").machine_id.tolist()}
+ 'retired':q("select machine_id from 'data/2_machine_decision/machines.parquet' where retire_date is not null").machine_id.tolist(),
+ 'zbox':{r[0]:[r[1],r[2],r[3],r[4]] for r in q("select zone_id, min(x_m)::double, max(x_m)::double, min(y_m)::double, max(y_m)::double from 'data/2_machine_decision/floor_locations.parquet' where node_type='slot' group by 1").itertuples(index=False)}}
 out['events']=q("select name, event_type, start_date::varchar s, end_date::varchar e, announced_date::varchar a from 'data/4_context/events.parquet'").to_dict('records')
 out['actions']=q("select action_type_id id, name, unit_cost_cents/100.0 cost, recurring_cost_cents_per_day/100.0 rec, lead_days lead, quantity_limit lim, incompatibility_group grp from 'data/2_machine_decision/action_catalog.parquet'").to_dict('records')
 s=json.dumps(out,separators=(',',':'),default=str).replace('NaN','null'); open('docs/data.json','w').write(s); print(len(s)/1e6,'MB', len(dates), len(mids), len(banks))
