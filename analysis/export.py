@@ -48,6 +48,19 @@ r as (select gaming_date, shift, actual_headcount techs from 'data/5_optional/sh
 select o.shift, r.techs, count(*) n, avg(w) wait from o join r on r.gaming_date=o.gd and r.shift=o.shift group by all order by all""").round(2).to_dict('records')
 out['roster']=q("""select strftime(gaming_date,'%Y-%m') mo, shift, avg(planned_headcount) plan, avg(actual_headcount) act from 'data/5_optional/shift_roster.parquet' where role='slot_tech' group by all order by all""").round(2).to_dict('list')
 out['robust']=json.load(open('analysis/robustness.json'))
+out['deep']=json.load(open('analysis/deep.json'))
+import os
+if os.path.exists('analysis/tiger.json'): out['tiger']=json.load(open('analysis/tiger.json'))
+m3=json.load(open('analysis/model3.json')); out['model3']={k:v for k,v in m3.items() if k not in ('preds','cv_folds')}
+# floor map: each machine's latest slot, zone centres, entrances, outlets, walkways
+fl=q("select location_id, node_type, zone_id, name, x_m::double x, y_m::double y from 'data/2_machine_decision/floor_locations.parquet'")
+last=q("""select machine_id, arg_max(location_id, gaming_date) loc from 'data/2_machine_decision/machine_day.parquet' where location_id is not null group by 1""")
+xy=fl.set_index('location_id')[['x','y']]
+out['floor']={'m':{r.machine_id:[round(xy.loc[r.loc,'x'],1),round(xy.loc[r.loc,'y'],1)] for r in last.itertuples()},
+ 'zones':fl[fl.node_type=='zone'][['zone_id','name','x','y']].values.tolist(),
+ 'poi':fl[fl.node_type.isin(['entrance','outlet'])][['node_type','name','x','y']].values.tolist(),
+ 'walk':q("select walkway_id, zone_a, zone_b, closed_from_utc::varchar f, closed_to_utc::varchar t from 'data/2_machine_decision/floor_walkways.parquet'").values.tolist(),
+ 'retired':q("select machine_id from 'data/2_machine_decision/machines.parquet' where retire_date is not null").machine_id.tolist()}
 out['events']=q("select name, event_type, start_date::varchar s, end_date::varchar e, announced_date::varchar a from 'data/4_context/events.parquet'").to_dict('records')
 out['actions']=q("select action_type_id id, name, unit_cost_cents/100.0 cost, recurring_cost_cents_per_day/100.0 rec, lead_days lead, quantity_limit lim, incompatibility_group grp from 'data/2_machine_decision/action_catalog.parquet'").to_dict('records')
 s=json.dumps(out,separators=(',',':'),default=str).replace('NaN','null'); open('docs/data.json','w').write(s); print(len(s)/1e6,'MB', len(dates), len(mids), len(banks))
